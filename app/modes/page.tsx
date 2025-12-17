@@ -43,14 +43,25 @@ export default function ModesPage() {
     setResponse('')
 
     try {
-      const res = await fetch('/api/archon-mode', {
+      // Map modes to N8N webhook endpoints
+      const webhookMap: Record<Mode, string> = {
+        executive: 'daily',
+        cto: 'decisions',
+        operations: 'decision-action',
+        health: 'archon/health',
+      }
+
+      const webhook = webhookMap[selectedMode]
+      
+      // Call N8N directly
+      const res = await fetch(`https://n8n.selfarchitectai.com/webhook/${webhook}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: selectedMode, query }),
+        body: JSON.stringify({ query, mode: selectedMode, timestamp: new Date().toISOString() }),
       })
 
       const data = await res.json()
-      setResponse(data.response || JSON.stringify(data, null, 2))
+      setResponse(data.message || data.response || JSON.stringify(data, null, 2))
     } catch (error) {
       setResponse(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
