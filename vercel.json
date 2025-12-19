@@ -2,10 +2,42 @@
   "buildCommand": "next build",
   "outputDirectory": ".next",
   "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "edge"
+    }
+  },
   "rewrites": [
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/api/archon/:path*", "destination": "/api/archon-proxy?service=:path*" },
+    { "source": "/api/health", "destination": "/api/health" },
+    { "source": "/api/analytics", "destination": "/api/analytics" },
+    { "source": "/api/webhook/:type", "destination": "/api/webhook?type=:type" }
+  ],
+  "headers": [
     {
-      "source": "/dashboard",
-      "destination": "/dashboard.html"
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" },
+        { "key": "X-ARCHON-Version", "value": "2.3.0" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/health",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
