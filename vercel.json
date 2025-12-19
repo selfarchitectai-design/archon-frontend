@@ -33,11 +33,5 @@
         { "key": "Referrer-Policy", "value": "origin-when-cross-origin" }
       ]
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/health",
-      "schedule": "*/15 * * * *"
-    }
   ]
 }
