@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARCHON V2.3 - Ultimate Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
     <style>
-        * { font-family: 'Inter', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        /* ═══════════════════════════════════════════════════════════════ */
+        /* BASE STYLES - Tailwind Replacement */
+        /* ═══════════════════════════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         
         :root {
             --bg-primary: #0a0a0f;
             --bg-secondary: #12121a;
             --bg-card: #1a1a24;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
             --accent-cyan: #06b6d4;
@@ -23,11 +27,188 @@
             --accent-red: #ef4444;
         }
         
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
         body {
             background: var(--bg-primary);
-            color: #e5e7eb;
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
         }
         
+        /* Layout */
+        .flex { display: flex; }
+        .flex-1 { flex: 1; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .items-start { align-items: start; }
+        .items-end { align-items: flex-end; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .flex-wrap { flex-wrap: wrap; }
+        
+        /* Spacing */
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-5 { padding: 1.25rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .pt-4 { padding-top: 1rem; }
+        .pt-16 { padding-top: 4rem; }
+        .pb-3 { padding-bottom: 0.75rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mx-1 { margin-left: 0.25rem; margin-right: 0.25rem; }
+        .ml-64 { margin-left: 16rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        
+        /* Sizing */
+        .w-2 { width: 0.5rem; }
+        .w-3 { width: 0.75rem; }
+        .w-4 { width: 1rem; }
+        .w-5 { width: 1.25rem; }
+        .w-6 { width: 1.5rem; }
+        .w-8 { width: 2rem; }
+        .w-10 { width: 2.5rem; }
+        .w-full { width: 100%; }
+        .h-2 { height: 0.5rem; }
+        .h-3 { height: 0.75rem; }
+        .h-4 { height: 1rem; }
+        .h-5 { height: 1.25rem; }
+        .h-6 { height: 1.5rem; }
+        .h-8 { height: 2rem; }
+        .h-10 { height: 2.5rem; }
+        .h-40 { height: 10rem; }
+        .h-64 { height: 16rem; }
+        .h-full { height: 100%; }
+        .min-h-screen { min-height: 100vh; }
+        .max-w-\[200px\] { max-width: 200px; }
+        
+        /* Typography */
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-5xl { font-size: 3rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .break-all { word-break: break-all; }
+        
+        /* Colors */
+        .text-white { color: #ffffff; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-500 { color: #6b7280; }
+        .text-gray-600 { color: #4b5563; }
+        .text-blue-400 { color: #60a5fa; }
+        .text-purple-400 { color: #a78bfa; }
+        .text-cyan-400 { color: #22d3ee; }
+        .text-green-400 { color: #4ade80; }
+        .text-orange-400 { color: #fb923c; }
+        .text-red-400 { color: #f87171; }
+        .text-yellow-400 { color: #facc15; }
+        
+        /* Backgrounds */
+        .bg-white\/5 { background: rgba(255,255,255,0.05); }
+        .bg-white\/10 { background: rgba(255,255,255,0.1); }
+        .bg-black\/30 { background: rgba(0,0,0,0.3); }
+        .bg-green-500 { background: #22c55e; }
+        .bg-green-500\/10 { background: rgba(34,197,94,0.1); }
+        .bg-green-500\/20 { background: rgba(34,197,94,0.2); }
+        .bg-green-500\/30 { background: rgba(34,197,94,0.3); }
+        .bg-red-500 { background: #ef4444; }
+        .bg-red-500\/20 { background: rgba(239,68,68,0.2); }
+        .bg-yellow-500 { background: #eab308; }
+        .bg-yellow-500\/20 { background: rgba(234,179,8,0.2); }
+        .bg-blue-500\/10 { background: rgba(59,130,246,0.1); }
+        .bg-blue-500\/20 { background: rgba(59,130,246,0.2); }
+        .bg-blue-500\/30 { background: rgba(59,130,246,0.3); }
+        .bg-purple-500\/10 { background: rgba(139,92,246,0.1); }
+        .bg-purple-500\/20 { background: rgba(139,92,246,0.2); }
+        .bg-purple-500\/30 { background: rgba(139,92,246,0.3); }
+        .bg-cyan-500\/20 { background: rgba(6,182,212,0.2); }
+        .bg-cyan-500\/30 { background: rgba(6,182,212,0.3); }
+        .bg-orange-500\/20 { background: rgba(249,115,22,0.2); }
+        .bg-orange-500\/30 { background: rgba(249,115,22,0.3); }
+        .bg-gray-500\/20 { background: rgba(107,114,128,0.2); }
+        .bg-gray-500\/30 { background: rgba(107,114,128,0.3); }
+        
+        /* Borders */
+        .border { border-width: 1px; border-style: solid; }
+        .border-b { border-bottom-width: 1px; border-style: solid; }
+        .border-r { border-right-width: 1px; border-style: solid; }
+        .border-t { border-top-width: 1px; border-style: solid; }
+        .border-white\/5 { border-color: rgba(255,255,255,0.05); }
+        .border-white\/10 { border-color: rgba(255,255,255,0.1); }
+        .border-white\/20 { border-color: rgba(255,255,255,0.2); }
+        .border-green-500\/20 { border-color: rgba(34,197,94,0.2); }
+        .border-green-500\/30 { border-color: rgba(34,197,94,0.3); }
+        .border-blue-500\/30 { border-color: rgba(59,130,246,0.3); }
+        .border-purple-500\/20 { border-color: rgba(139,92,246,0.2); }
+        .border-purple-500\/30 { border-color: rgba(139,92,246,0.3); }
+        .border-cyan-500\/30 { border-color: rgba(6,182,212,0.3); }
+        .border-orange-500\/30 { border-color: rgba(249,115,22,0.3); }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-full { border-radius: 9999px; }
+        .rounded-t { border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem; }
+        
+        /* Effects */
+        .overflow-hidden { overflow: hidden; }
+        .overflow-x-auto { overflow-x: auto; }
+        .overflow-y-auto { overflow-y: auto; }
+        .cursor-pointer { cursor: pointer; }
+        .transition-all { transition: all 0.3s ease; }
+        .transition-colors { transition: color 0.2s, background-color 0.2s, border-color 0.2s; }
+        
+        /* Position */
+        .fixed { position: fixed; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .top-0 { top: 0; }
+        .left-0 { left: 0; }
+        .right-0 { right: 0; }
+        .bottom-0 { bottom: 0; }
+        .top-16 { top: 4rem; }
+        .z-50 { z-index: 50; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        
+        /* Custom Styles */
         .glass {
             background: rgba(26, 26, 36, 0.8);
             backdrop-filter: blur(20px);
@@ -44,23 +225,7 @@
             background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-        
-        .gradient-border {
-            position: relative;
-        }
-        
-        .gradient-border::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
+            background-clip: text;
         }
         
         .pulse-dot {
@@ -81,19 +246,14 @@
             to { stroke-dashoffset: -20; }
         }
         
-        .status-online { color: #10b981; }
-        .status-warning { color: #f59e0b; }
-        .status-error { color: #ef4444; }
-        
-        .scroll-hidden::-webkit-scrollbar { display: none; }
-        
         .tab-active {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
             border-color: rgba(139, 92, 246, 0.5);
         }
         
-        .network-node {
-            transition: all 0.3s ease;
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
         }
         
         .network-node:hover {
@@ -101,22 +261,44 @@
             filter: brightness(1.2);
         }
         
-        .metric-card {
-            transition: all 0.3s ease;
-        }
+        .hover\:bg-white\/5:hover { background: rgba(255,255,255,0.05); }
+        .hover\:bg-white\/10:hover { background: rgba(255,255,255,0.1); }
+        .hover\:bg-purple-500\/30:hover { background: rgba(139,92,246,0.3); }
+        .hover\:bg-cyan-500\/30:hover { background: rgba(6,182,212,0.3); }
+        .hover\:border-purple-500\/30:hover { border-color: rgba(139,92,246,0.3); }
         
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
-        }
+        .scroll-hidden::-webkit-scrollbar { display: none; }
+        .scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem; text-align: left; }
+        
+        /* Code */
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+        
+        /* Button reset */
+        button { background: none; border: none; cursor: pointer; color: inherit; }
+        a { color: inherit; text-decoration: none; }
+        
+        /* SVG icons */
+        .lucide { width: 1em; height: 1em; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
     </style>
 </head>
-<body class="min-h-screen">
-    <div id="app"></div>
+<body>
+    <div id="app">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+            <div style="text-align: center;">
+                <div class="pulse-dot" style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; margin: 0 auto 20px;"></div>
+                <p style="color: #9ca3af;">Loading ARCHON Dashboard...</p>
+            </div>
+        </div>
+    </div>
     
     <script>
         // ═══════════════════════════════════════════════════════════════
-        // ARCHON DASHBOARD - Main Application
+        // ARCHON DASHBOARD V2.3 - Production Ready
         // ═══════════════════════════════════════════════════════════════
         
         const LAMBDA_URLS = {
@@ -129,20 +311,54 @@
         const API_BASE = 'https://d6gy1zr8vj.execute-api.us-east-1.amazonaws.com/prod';
         const GITHUB_REPO = 'selfarchitectai-design/archon-v2-platform';
         
-        // State
         let state = {
             activeTab: 'overview',
             lambdaStatus: {},
             pipelineRuns: [],
-            trends: [],
-            metrics: {
-                totalRequests: 0,
-                avgLatency: 0,
-                uptime: 99.9,
-                costSavings: 35
-            },
             loading: true
         };
+        
+        // ═══════════════════════════════════════════════════════════════
+        // Icon Helper - Manual SVG icons
+        // ═══════════════════════════════════════════════════════════════
+        const icons = {
+            brain: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
+            server: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>',
+            'git-branch': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>',
+            'trending-up': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+            plug: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>',
+            network: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
+            'book-open': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+            'layout-dashboard': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>',
+            zap: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+            'refresh-cw': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
+            'dollar-sign': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+            globe: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+            boxes: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>',
+            eye: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+            'git-merge': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>',
+            bell: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+            clock: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            play: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+            download: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+            'file-text': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>',
+            flame: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+            github: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>',
+            package: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+            database: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>',
+            activity: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+            'message-square': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+            workflow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>',
+            triangle: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>',
+            'external-link': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>',
+            'chevron-right': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
+        };
+        
+        function icon(name, cls = '') {
+            const size = cls.includes('w-6') ? 24 : cls.includes('w-5') ? 20 : cls.includes('w-4') ? 16 : cls.includes('w-3') ? 12 : 20;
+            const svg = icons[name] || icons.zap;
+            return `<span class="inline-flex ${cls}" style="width:${size}px;height:${size}px">${svg}</span>`;
+        }
         
         // ═══════════════════════════════════════════════════════════════
         // API Functions
@@ -158,13 +374,7 @@
                 });
                 const latency = Date.now() - start;
                 const data = await response.json();
-                return { 
-                    name, 
-                    status: data.status || 'healthy', 
-                    latency,
-                    version: data.version || 'v2.3.0',
-                    capabilities: data.capabilities || []
-                };
+                return { name, status: data.status || 'healthy', latency };
             } catch (e) {
                 return { name, status: 'error', latency: 0, error: e.message };
             }
@@ -177,7 +387,6 @@
                 checkLambdaHealth('trend', LAMBDA_URLS.trend),
                 checkLambdaHealth('intake', LAMBDA_URLS.intake)
             ]);
-            
             state.lambdaStatus = {};
             results.forEach(r => state.lambdaStatus[r.name] = r);
             state.loading = false;
@@ -198,21 +407,6 @@
             }
         }
         
-        async function runTrendAnalysis() {
-            try {
-                const response = await fetch(LAMBDA_URLS.trend, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'collect' })
-                });
-                const data = await response.json();
-                state.trends = data.trends || [];
-                render();
-            } catch (e) {
-                console.error('Trend error:', e);
-            }
-        }
-        
         // ═══════════════════════════════════════════════════════════════
         // Render Functions
         // ═══════════════════════════════════════════════════════════════
@@ -228,8 +422,6 @@
                     </main>
                 </div>
             `;
-            lucide.createIcons();
-            attachEventListeners();
         }
         
         function renderHeader() {
@@ -237,11 +429,11 @@
             const totalCount = Object.keys(LAMBDA_URLS).length;
             
             return `
-                <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
+                <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-white\/10">
                     <div class="flex items-center justify-between px-6 py-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 flex items-center justify-center">
-                                <i data-lucide="brain" class="w-6 h-6 text-white"></i>
+                            <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center">
+                                ${icon('brain', 'w-6 h-6 text-white')}
                             </div>
                             <div>
                                 <h1 class="text-xl font-bold gradient-text">ARCHON V2.3</h1>
@@ -250,18 +442,18 @@
                         </div>
                         
                         <div class="flex items-center gap-6">
-                            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500\/10 border border-green-500\/20">
                                 <span class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></span>
                                 <span class="text-sm text-green-400">${healthyCount}/${totalCount} Systems Online</span>
                             </div>
                             
-                            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                                <i data-lucide="zap" class="w-4 h-4 text-purple-400"></i>
+                            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500\/10 border border-purple-500\/20">
+                                ${icon('zap', 'w-4 h-4 text-purple-400')}
                                 <span class="text-sm text-purple-400">Proactive Mode</span>
                             </div>
                             
-                            <button onclick="fetchAllHealth()" class="p-2 rounded-lg hover:bg-white/5 transition-colors">
-                                <i data-lucide="refresh-cw" class="w-5 h-5 text-gray-400"></i>
+                            <button onclick="fetchAllHealth()" class="p-2 rounded-lg hover:bg-white\/5 transition-colors">
+                                ${icon('refresh-cw', 'w-5 h-5 text-gray-400')}
                             </button>
                         </div>
                     </div>
@@ -282,38 +474,26 @@
             ];
             
             return `
-                <aside class="fixed left-0 top-16 bottom-0 w-64 glass border-r border-white/10 p-4 overflow-y-auto scroll-hidden">
+                <aside class="fixed left-0 top-16 bottom-0" style="width:256px;background:rgba(26,26,36,0.8);backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,0.1);padding:16px;overflow-y:auto">
                     <nav class="space-y-2">
                         ${tabs.map(tab => `
                             <button 
                                 onclick="setActiveTab('${tab.id}')"
-                                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${state.activeTab === tab.id ? 'tab-active border border-purple-500/30' : 'hover:bg-white/5'}"
+                                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${state.activeTab === tab.id ? 'tab-active border border-purple-500\/30' : 'hover:bg-white\/5'}"
                             >
-                                <i data-lucide="${tab.icon}" class="w-5 h-5 ${state.activeTab === tab.id ? 'text-purple-400' : 'text-gray-500'}"></i>
+                                ${icon(tab.icon, `w-5 h-5 ${state.activeTab === tab.id ? 'text-purple-400' : 'text-gray-500'}`)}
                                 <span class="${state.activeTab === tab.id ? 'text-white font-medium' : 'text-gray-400'}">${tab.label}</span>
                             </button>
                         `).join('')}
                     </nav>
                     
-                    <div class="mt-8 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20">
+                    <div class="mt-8 p-4 rounded-xl" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(59,130,246,0.1));border:1px solid rgba(139,92,246,0.2)">
                         <h3 class="text-sm font-semibold text-white mb-2">Quick Stats</h3>
                         <div class="space-y-2 text-xs">
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Lambda Count</span>
-                                <span class="text-white font-mono">6</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Workflows</span>
-                                <span class="text-white font-mono">10</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Cost Savings</span>
-                                <span class="text-green-400 font-mono">35%</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Uptime</span>
-                                <span class="text-green-400 font-mono">99.9%</span>
-                            </div>
+                            <div class="flex justify-between"><span class="text-gray-500">Lambda Count</span><span class="text-white mono">6</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Workflows</span><span class="text-white mono">10</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Cost Savings</span><span class="text-green-400 mono">35%</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Uptime</span><span class="text-green-400 mono">99.9%</span></div>
                         </div>
                     </div>
                 </aside>
@@ -334,10 +514,34 @@
             }
         }
         
+        function renderMetricCard(title, value, iconName, color, subtitle) {
+            const colors = {
+                blue: { bg: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.3)', text: 'text-blue-400' },
+                green: { bg: 'rgba(34,197,94,0.15)', border: 'rgba(34,197,94,0.3)', text: 'text-green-400' },
+                purple: { bg: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.3)', text: 'text-purple-400' },
+                cyan: { bg: 'rgba(6,182,212,0.15)', border: 'rgba(6,182,212,0.3)', text: 'text-cyan-400' }
+            };
+            const c = colors[color];
+            
+            return `
+                <div class="metric-card glass rounded-2xl p-5 transition-all cursor-pointer" style="background:${c.bg};border:1px solid ${c.border}">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-gray-400">${title}</p>
+                            <p class="text-3xl font-bold mt-1">${value}</p>
+                            <p class="text-xs text-gray-500 mt-1">${subtitle}</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white\/5">
+                            ${icon(iconName, `w-6 h-6 ${c.text}`)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
         function renderOverview() {
             return `
                 <div class="pt-16 space-y-6">
-                    <!-- Hero Metrics -->
                     <div class="grid grid-cols-4 gap-4">
                         ${renderMetricCard('Lambda Functions', '6', 'server', 'blue', '14 → 6 (57% ↓)')}
                         ${renderMetricCard('Monthly Cost', '$13', 'dollar-sign', 'green', '$20 → $13 (35% ↓)')}
@@ -345,24 +549,22 @@
                         ${renderMetricCard('Autonomy Level', '99.5%', 'brain', 'cyan', 'Full Proactive')}
                     </div>
                     
-                    <!-- System Status Grid -->
                     <div class="grid grid-cols-2 gap-6">
-                        <!-- Lambda Status -->
                         <div class="glass rounded-2xl p-6">
                             <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                                <i data-lucide="server" class="w-5 h-5 text-blue-400"></i>
+                                ${icon('server', 'w-5 h-5 text-blue-400')}
                                 Lambda Health Status
                             </h2>
                             <div class="space-y-3">
                                 ${Object.entries(state.lambdaStatus).map(([name, data]) => `
-                                    <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-white\/5">
                                         <div class="flex items-center gap-3">
                                             <span class="w-2 h-2 rounded-full ${data.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'} pulse-dot"></span>
                                             <span class="font-medium">archon-${name}</span>
                                         </div>
                                         <div class="flex items-center gap-4">
                                             <span class="text-xs text-gray-500 mono">${data.latency}ms</span>
-                                            <span class="px-2 py-1 rounded text-xs ${data.status === 'healthy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${data.status}</span>
+                                            <span class="px-2 py-1 rounded text-xs ${data.status === 'healthy' ? 'bg-green-500\/20 text-green-400' : 'bg-red-500\/20 text-red-400'}">${data.status}</span>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -370,18 +572,17 @@
                             </div>
                         </div>
                         
-                        <!-- Recent Pipelines -->
                         <div class="glass rounded-2xl p-6">
                             <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                                <i data-lucide="git-branch" class="w-5 h-5 text-purple-400"></i>
+                                ${icon('git-branch', 'w-5 h-5 text-purple-400')}
                                 Recent Workflows
                             </h2>
                             <div class="space-y-3">
                                 ${state.pipelineRuns.slice(0, 5).map(run => `
-                                    <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-white\/5">
                                         <div class="flex items-center gap-3">
                                             <span class="w-2 h-2 rounded-full ${run.conclusion === 'success' ? 'bg-green-500' : run.conclusion === 'failure' ? 'bg-red-500' : 'bg-yellow-500'}"></span>
-                                            <span class="text-sm truncate max-w-[200px]">${run.name}</span>
+                                            <span class="text-sm truncate" style="max-width:200px">${run.name}</span>
                                         </div>
                                         <span class="text-xs text-gray-500">${new Date(run.created_at).toLocaleDateString()}</span>
                                     </div>
@@ -391,54 +592,18 @@
                         </div>
                     </div>
                     
-                    <!-- Architecture Overview -->
                     <div class="glass rounded-2xl p-6">
                         <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <i data-lucide="boxes" class="w-5 h-5 text-cyan-400"></i>
-                            ARCHON V2.3 Architecture
+                            ${icon('boxes', 'w-5 h-5 text-cyan-400')}
+                            System Capabilities
                         </h2>
-                        <div class="relative h-64 bg-black/30 rounded-xl overflow-hidden">
-                            ${renderArchitectureDiagram()}
-                        </div>
-                    </div>
-                    
-                    <!-- Capabilities Grid -->
-                    <div class="grid grid-cols-3 gap-4">
-                        ${renderCapabilityCard('🧠', 'AI Orchestration', 'Multi-model AI koordinasyonu: Claude, GPT-4, Gemini, Mistral', ['orchestrate', 'decide', 'analyze'])}
-                        ${renderCapabilityCard('📈', 'Trend Analysis', 'HackerNews, GitHub, ProductHunt trend takibi', ['collect', 'analyze', 'report'])}
-                        ${renderCapabilityCard('⚡', 'Event Processing', 'Real-time event collection ve Slack notifications', ['notify', 'collect', 'ideate'])}
-                        ${renderCapabilityCard('📥', 'Customer Intake', 'Müşteri feedback ve update yönetimi', ['create', 'process', 'review'])}
-                        ${renderCapabilityCard('🔄', 'CI/CD Pipeline', '10 GitHub Actions workflow, otomatik deploy', ['lint', 'build', 'deploy'])}
-                        ${renderCapabilityCard('🛡️', 'Self-Healing', 'Otomatik health check ve recovery', ['monitor', 'alert', 'recover'])}
-                    </div>
-                </div>
-            `;
-        }
-        
-        function renderMetricCard(title, value, icon, color, subtitle) {
-            const colors = {
-                blue: 'from-blue-500/20 to-blue-600/10 border-blue-500/30',
-                green: 'from-green-500/20 to-green-600/10 border-green-500/30',
-                purple: 'from-purple-500/20 to-purple-600/10 border-purple-500/30',
-                cyan: 'from-cyan-500/20 to-cyan-600/10 border-cyan-500/30'
-            };
-            const iconColors = {
-                blue: 'text-blue-400',
-                green: 'text-green-400',
-                purple: 'text-purple-400',
-                cyan: 'text-cyan-400'
-            };
-            
-            return `
-                <div class="metric-card glass rounded-2xl p-5 bg-gradient-to-br ${colors[color]} border">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <p class="text-sm text-gray-400">${title}</p>
-                            <p class="text-3xl font-bold mt-1">${value}</p>
-                            <p class="text-xs text-gray-500 mt-1">${subtitle}</p>
-                        </div>
-                        <div class="p-3 rounded-xl bg-white/5">
-                            <i data-lucide="${icon}" class="w-6 h-6 ${iconColors[color]}"></i>
+                        <div class="grid grid-cols-3 gap-4">
+                            ${renderCapabilityCard('🧠', 'AI Orchestration', 'Multi-model AI: Claude, GPT-4, Gemini', ['orchestrate', 'decide', 'analyze'])}
+                            ${renderCapabilityCard('📈', 'Trend Analysis', 'HackerNews, GitHub trend takibi', ['collect', 'analyze', 'report'])}
+                            ${renderCapabilityCard('⚡', 'Event Processing', 'Real-time events & Slack', ['notify', 'collect', 'ideate'])}
+                            ${renderCapabilityCard('📥', 'Customer Intake', 'Feedback & update yönetimi', ['create', 'process', 'review'])}
+                            ${renderCapabilityCard('🔄', 'CI/CD Pipeline', '10 GitHub Actions workflow', ['lint', 'build', 'deploy'])}
+                            ${renderCapabilityCard('🛡️', 'Self-Healing', 'Otomatik health & recovery', ['monitor', 'alert', 'recover'])}
                         </div>
                     </div>
                 </div>
@@ -452,105 +617,24 @@
                     <h3 class="font-semibold mb-2">${title}</h3>
                     <p class="text-sm text-gray-400 mb-3">${desc}</p>
                     <div class="flex flex-wrap gap-1">
-                        ${actions.map(a => `<span class="px-2 py-1 rounded bg-white/5 text-xs mono text-gray-400">${a}</span>`).join('')}
+                        ${actions.map(a => `<span class="px-2 py-1 rounded bg-white\/5 text-xs mono text-gray-400">${a}</span>`).join('')}
                     </div>
                 </div>
             `;
         }
         
-        function renderArchitectureDiagram() {
-            return `
-                <svg viewBox="0 0 800 250" class="w-full h-full">
-                    <!-- Background Grid -->
-                    <defs>
-                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
-                        </pattern>
-                        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.5"/>
-                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.5"/>
-                        </linearGradient>
-                    </defs>
-                    <rect width="800" height="250" fill="url(#grid)"/>
-                    
-                    <!-- GitHub -->
-                    <g transform="translate(50, 100)" class="network-node">
-                        <rect x="-30" y="-25" width="60" height="50" rx="8" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="600">GitHub</text>
-                        <text x="0" y="40" text-anchor="middle" fill="#9ca3af" font-size="8">Actions</text>
-                    </g>
-                    
-                    <!-- API Gateway -->
-                    <g transform="translate(200, 100)" class="network-node">
-                        <rect x="-40" y="-25" width="80" height="50" rx="8" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="600">API Gateway</text>
-                        <text x="0" y="40" text-anchor="middle" fill="#9ca3af" font-size="8">REST API</text>
-                    </g>
-                    
-                    <!-- Lambda Functions -->
-                    <g transform="translate(400, 50)" class="network-node">
-                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(59,130,246,0.2)" stroke="rgba(59,130,246,0.5)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Brain</text>
-                    </g>
-                    <g transform="translate(400, 110)" class="network-node">
-                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Actions</text>
-                    </g>
-                    <g transform="translate(400, 170)" class="network-node">
-                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(6,182,212,0.2)" stroke="rgba(6,182,212,0.5)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Trend</text>
-                    </g>
-                    <g transform="translate(400, 230)" class="network-node">
-                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Intake</text>
-                    </g>
-                    
-                    <!-- DynamoDB -->
-                    <g transform="translate(550, 100)" class="network-node">
-                        <rect x="-35" y="-25" width="70" height="50" rx="8" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="11" font-weight="600">DynamoDB</text>
-                        <text x="0" y="40" text-anchor="middle" fill="#9ca3af" font-size="8">5 Tables</text>
-                    </g>
-                    
-                    <!-- External APIs -->
-                    <g transform="translate(700, 50)" class="network-node">
-                        <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="#9ca3af" font-size="9">HackerNews</text>
-                    </g>
-                    <g transform="translate(700, 100)" class="network-node">
-                        <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="#9ca3af" font-size="9">GitHub API</text>
-                    </g>
-                    <g transform="translate(700, 150)" class="network-node">
-                        <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
-                        <text x="0" y="5" text-anchor="middle" fill="#9ca3af" font-size="9">Slack</text>
-                    </g>
-                    
-                    <!-- Connection Lines -->
-                    <line x1="80" y1="100" x2="160" y2="100" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
-                    <line x1="240" y1="100" x2="365" y2="50" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
-                    <line x1="240" y1="100" x2="365" y2="110" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
-                    <line x1="240" y1="100" x2="365" y2="170" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
-                    <line x1="435" y1="110" x2="515" y2="100" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
-                    <line x1="435" y1="170" x2="660" y2="50" stroke="rgba(6,182,212,0.3)" stroke-width="1" class="flow-line"/>
-                    <line x1="435" y1="170" x2="660" y2="100" stroke="rgba(6,182,212,0.3)" stroke-width="1" class="flow-line"/>
-                    <line x1="435" y1="110" x2="660" y2="150" stroke="rgba(245,158,11,0.3)" stroke-width="1" class="flow-line"/>
-                </svg>
-            `;
-        }
-        
         function renderPipelines() {
             const workflows = [
-                { name: 'ci-cd.yml', desc: 'Ana CI/CD Pipeline', trigger: 'push/PR', status: 'active', stages: ['Lint', 'Build', 'Deploy', 'Health'] },
-                { name: 'health-check.yml', desc: 'Scheduled Health Check', trigger: 'cron: */6h', status: 'active', stages: ['Check All', 'Report'] },
-                { name: 'trend-analysis.yml', desc: 'Trend Analysis', trigger: 'cron: 2x/day', status: 'active', stages: ['Collect', 'Analyze', 'Report'] },
-                { name: 'release.yml', desc: 'Auto Release', trigger: 'tag: v*', status: 'active', stages: ['Changelog', 'Package', 'Release'] },
-                { name: 'labeler.yml', desc: 'Auto Labeler', trigger: 'PR/Issue', status: 'active', stages: ['Detect', 'Label'] },
-                { name: 'stale.yml', desc: 'Stale Manager', trigger: 'cron: daily', status: 'active', stages: ['Scan', 'Mark', 'Close'] },
-                { name: 'welcome.yml', desc: 'Welcome Bot', trigger: 'first PR/Issue', status: 'active', stages: ['Detect', 'Comment'] },
-                { name: 'webhook-trigger.yml', desc: 'ARCHON Webhook', trigger: 'push/release', status: 'active', stages: ['Event', 'Brain'] },
-                { name: 'issue-to-archon.yml', desc: 'Issue → ARCHON', trigger: 'critical label', status: 'active', stages: ['Detect', 'Intake'] },
-                { name: 'code-quality.yml', desc: 'Code Quality', trigger: 'PR with .py', status: 'active', stages: ['Flake8', 'Black'] }
+                { name: 'ci-cd.yml', desc: 'Ana CI/CD Pipeline', trigger: 'push/PR', stages: ['Lint', 'Build', 'Deploy', 'Health'] },
+                { name: 'health-check.yml', desc: 'Scheduled Health Check', trigger: 'cron: */6h', stages: ['Check', 'Report'] },
+                { name: 'trend-analysis.yml', desc: 'Trend Analysis', trigger: 'cron: 2x/day', stages: ['Collect', 'Analyze'] },
+                { name: 'release.yml', desc: 'Auto Release', trigger: 'tag: v*', stages: ['Changelog', 'Release'] },
+                { name: 'labeler.yml', desc: 'Auto Labeler', trigger: 'PR/Issue', stages: ['Detect', 'Label'] },
+                { name: 'stale.yml', desc: 'Stale Manager', trigger: 'cron: daily', stages: ['Scan', 'Close'] },
+                { name: 'webhook-trigger.yml', desc: 'ARCHON Webhook', trigger: 'push/release', stages: ['Event', 'Brain'] },
+                { name: 'issue-to-archon.yml', desc: 'Issue → ARCHON', trigger: 'critical label', stages: ['Detect', 'Intake'] },
+                { name: 'code-quality.yml', desc: 'Code Quality', trigger: 'PR .py', stages: ['Flake8', 'Black'] },
+                { name: 'welcome.yml', desc: 'Welcome Bot', trigger: 'first PR', stages: ['Detect', 'Comment'] }
             ];
             
             return `
@@ -558,8 +642,8 @@
                     <div class="flex items-center justify-between">
                         <h1 class="text-2xl font-bold">CI/CD Pipelines</h1>
                         <a href="https://github.com/${GITHUB_REPO}/actions" target="_blank" 
-                           class="px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors flex items-center gap-2">
-                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                           class="px-4 py-2 rounded-lg bg-purple-500\/20 border border-purple-500\/30 text-purple-400 hover:bg-purple-500\/30 transition-colors flex items-center gap-2">
+                            ${icon('external-link', 'w-4 h-4')}
                             View on GitHub
                         </a>
                     </div>
@@ -572,55 +656,20 @@
                                         <h3 class="font-semibold mono text-sm">${w.name}</h3>
                                         <p class="text-gray-400 text-sm">${w.desc}</p>
                                     </div>
-                                    <span class="px-2 py-1 rounded text-xs bg-green-500/20 text-green-400">${w.status}</span>
+                                    <span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span>
                                 </div>
                                 <div class="flex items-center gap-2 mb-3">
-                                    <i data-lucide="play" class="w-4 h-4 text-gray-500"></i>
+                                    ${icon('play', 'w-4 h-4 text-gray-500')}
                                     <span class="text-xs text-gray-500">${w.trigger}</span>
                                 </div>
-                                <div class="flex gap-2">
+                                <div class="flex gap-2 flex-wrap">
                                     ${w.stages.map((s, i) => `
-                                        <div class="flex items-center">
-                                            <span class="px-2 py-1 rounded bg-white/5 text-xs">${s}</span>
-                                            ${i < w.stages.length - 1 ? '<i data-lucide="chevron-right" class="w-3 h-3 text-gray-600 mx-1"></i>' : ''}
-                                        </div>
+                                        <span class="px-2 py-1 rounded bg-white\/5 text-xs">${s}</span>
+                                        ${i < w.stages.length - 1 ? '<span class="text-gray-600">→</span>' : ''}
                                     `).join('')}
                                 </div>
                             </div>
                         `).join('')}
-                    </div>
-                    
-                    <!-- Recent Runs -->
-                    <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4">Recent Workflow Runs</h2>
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="text-left text-gray-500 text-sm border-b border-white/10">
-                                        <th class="pb-3">Workflow</th>
-                                        <th class="pb-3">Status</th>
-                                        <th class="pb-3">Branch</th>
-                                        <th class="pb-3">Duration</th>
-                                        <th class="pb-3">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${state.pipelineRuns.slice(0, 10).map(run => `
-                                        <tr class="border-b border-white/5 hover:bg-white/5">
-                                            <td class="py-3 font-medium">${run.name}</td>
-                                            <td class="py-3">
-                                                <span class="px-2 py-1 rounded text-xs ${run.conclusion === 'success' ? 'bg-green-500/20 text-green-400' : run.conclusion === 'failure' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">
-                                                    ${run.conclusion || run.status}
-                                                </span>
-                                            </td>
-                                            <td class="py-3 text-gray-400 mono text-sm">${run.head_branch}</td>
-                                            <td class="py-3 text-gray-400 text-sm">-</td>
-                                            <td class="py-3 text-gray-400 text-sm">${new Date(run.created_at).toLocaleString()}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             `;
@@ -628,80 +677,42 @@
         
         function renderLambdas() {
             const lambdas = [
-                { 
-                    name: 'archon-brain', 
-                    memory: '512MB', 
-                    color: 'blue',
-                    url: LAMBDA_URLS.brain,
-                    consolidated: ['orchestrator', 'decision_engine', 'pattern_analyzer'],
-                    actions: ['orchestrate', 'decide', 'analyze', 'process', 'health']
-                },
-                { 
-                    name: 'archon-actions', 
-                    memory: '256MB', 
-                    color: 'orange',
-                    url: LAMBDA_URLS.actions,
-                    consolidated: ['action_executor', 'slack_notifier', 'event_collector', 'mvp_ideator'],
-                    actions: ['execute', 'notify', 'collect_event', 'ideate', 'health']
-                },
-                { 
-                    name: 'archon-trend', 
-                    memory: '512MB', 
-                    color: 'cyan',
-                    url: LAMBDA_URLS.trend,
-                    consolidated: ['trend_collector', 'trend_analyzer', 'trend_reporter'],
-                    actions: ['collect', 'analyze', 'report', 'full_pipeline', 'health']
-                },
-                { 
-                    name: 'archon-intake', 
-                    memory: '256MB', 
-                    color: 'green',
-                    url: LAMBDA_URLS.intake,
-                    consolidated: ['update_intake', 'feedback_processor'],
-                    actions: ['create_update', 'process', 'review', 'list', 'health']
-                }
+                { name: 'archon-brain', memory: '512MB', color: 'blue', consolidated: ['orchestrator', 'decision_engine', 'pattern_analyzer'], actions: ['orchestrate', 'decide', 'analyze'] },
+                { name: 'archon-actions', memory: '256MB', color: 'orange', consolidated: ['action_executor', 'slack_notifier', 'event_collector'], actions: ['execute', 'notify', 'collect'] },
+                { name: 'archon-trend', memory: '512MB', color: 'cyan', consolidated: ['trend_collector', 'trend_analyzer', 'trend_reporter'], actions: ['collect', 'analyze', 'report'] },
+                { name: 'archon-intake', memory: '256MB', color: 'green', consolidated: ['update_intake', 'feedback_processor'], actions: ['create', 'process', 'review'] }
             ];
-            
-            const colorMap = {
-                blue: { bg: 'bg-blue-500/20', border: 'border-blue-500/30', text: 'text-blue-400' },
-                orange: { bg: 'bg-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400' },
-                cyan: { bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' },
-                green: { bg: 'bg-green-500/20', border: 'border-green-500/30', text: 'text-green-400' }
-            };
             
             return `
                 <div class="pt-16 space-y-6">
                     <h1 class="text-2xl font-bold">Lambda Functions</h1>
                     
-                    <!-- Consolidation Stats -->
                     <div class="glass rounded-2xl p-6">
                         <h2 class="text-lg font-semibold mb-4">Consolidation Summary</h2>
                         <div class="grid grid-cols-4 gap-4">
-                            <div class="text-center p-4 rounded-xl bg-white/5">
+                            <div class="text-center p-4 rounded-xl bg-white\/5">
                                 <p class="text-3xl font-bold text-red-400">14</p>
                                 <p class="text-sm text-gray-500">Before</p>
                             </div>
-                            <div class="text-center p-4 rounded-xl bg-white/5">
+                            <div class="text-center p-4 rounded-xl bg-white\/5">
                                 <p class="text-3xl font-bold">→</p>
                             </div>
-                            <div class="text-center p-4 rounded-xl bg-white/5">
+                            <div class="text-center p-4 rounded-xl bg-white\/5">
                                 <p class="text-3xl font-bold text-green-400">6</p>
                                 <p class="text-sm text-gray-500">After</p>
                             </div>
-                            <div class="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                            <div class="text-center p-4 rounded-xl bg-green-500\/10 border border-green-500\/20">
                                 <p class="text-3xl font-bold text-green-400">57%</p>
                                 <p class="text-sm text-gray-500">Reduction</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Lambda Cards -->
                     <div class="grid grid-cols-2 gap-6">
                         ${lambdas.map(l => {
                             const status = state.lambdaStatus[l.name.replace('archon-', '')] || { status: 'unknown', latency: 0 };
-                            const c = colorMap[l.color];
                             return `
-                                <div class="glass rounded-2xl p-6 ${c.border} border">
+                                <div class="glass rounded-2xl p-6 border border-${l.color}-500\/30">
                                     <div class="flex items-start justify-between mb-4">
                                         <div>
                                             <h3 class="text-lg font-semibold">${l.name}</h3>
@@ -712,24 +723,17 @@
                                             <span class="text-sm ${status.status === 'healthy' ? 'text-green-400' : 'text-red-400'}">${status.status}</span>
                                         </div>
                                     </div>
-                                    
                                     <div class="mb-4">
                                         <p class="text-xs text-gray-500 mb-2">Consolidated from:</p>
                                         <div class="flex flex-wrap gap-1">
-                                            ${l.consolidated.map(c => `<span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-400">${c}</span>`).join('')}
+                                            ${l.consolidated.map(c => `<span class="px-2 py-1 rounded bg-white\/5 text-xs text-gray-400">${c}</span>`).join('')}
                                         </div>
                                     </div>
-                                    
-                                    <div class="mb-4">
-                                        <p class="text-xs text-gray-500 mb-2">Available actions:</p>
+                                    <div>
+                                        <p class="text-xs text-gray-500 mb-2">Actions:</p>
                                         <div class="flex flex-wrap gap-1">
-                                            ${l.actions.map(a => `<span class="px-2 py-1 rounded ${c.bg} text-xs ${c.text} mono">${a}</span>`).join('')}
+                                            ${l.actions.map(a => `<span class="px-2 py-1 rounded bg-${l.color}-500\/20 text-xs text-${l.color}-400 mono">${a}</span>`).join('')}
                                         </div>
-                                    </div>
-                                    
-                                    <div class="pt-4 border-t border-white/10">
-                                        <p class="text-xs text-gray-500 mb-1">Function URL:</p>
-                                        <code class="text-xs text-gray-400 break-all">${l.url.substring(0, 50)}...</code>
                                     </div>
                                 </div>
                             `;
@@ -744,109 +748,63 @@
                 <div class="pt-16 space-y-6">
                     <div class="flex items-center justify-between">
                         <h1 class="text-2xl font-bold">Trend Analysis</h1>
-                        <button onclick="runTrendAnalysis()" 
-                                class="px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/30 transition-colors flex items-center gap-2">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                            Collect Trends
+                        <button onclick="callTrendAction('full_pipeline')" 
+                                class="px-4 py-2 rounded-lg bg-cyan-500\/20 border border-cyan-500\/30 text-cyan-400 hover:bg-cyan-500\/30 transition-colors flex items-center gap-2">
+                            ${icon('refresh-cw', 'w-4 h-4')}
+                            Run Pipeline
                         </button>
                     </div>
                     
-                    <!-- Sources -->
                     <div class="grid grid-cols-3 gap-4">
                         <div class="glass rounded-xl p-5">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="p-2 rounded-lg bg-orange-500/20">
-                                    <i data-lucide="flame" class="w-5 h-5 text-orange-400"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold">HackerNews</h3>
-                                    <p class="text-xs text-gray-500">Top stories & discussions</p>
-                                </div>
+                                <div class="p-2 rounded-lg bg-orange-500\/20">${icon('flame', 'w-5 h-5 text-orange-400')}</div>
+                                <div><h3 class="font-semibold">HackerNews</h3><p class="text-xs text-gray-500">Top stories</p></div>
                             </div>
                             <div class="text-2xl font-bold text-orange-400">15</div>
-                            <p class="text-xs text-gray-500">trends collected</p>
+                            <p class="text-xs text-gray-500">trends</p>
                         </div>
-                        
                         <div class="glass rounded-xl p-5">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="p-2 rounded-lg bg-purple-500/20">
-                                    <i data-lucide="github" class="w-5 h-5 text-purple-400"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold">GitHub</h3>
-                                    <p class="text-xs text-gray-500">Trending repositories</p>
-                                </div>
+                                <div class="p-2 rounded-lg bg-purple-500\/20">${icon('github', 'w-5 h-5 text-purple-400')}</div>
+                                <div><h3 class="font-semibold">GitHub</h3><p class="text-xs text-gray-500">Trending repos</p></div>
                             </div>
                             <div class="text-2xl font-bold text-purple-400">25</div>
-                            <p class="text-xs text-gray-500">trends collected</p>
+                            <p class="text-xs text-gray-500">trends</p>
                         </div>
-                        
                         <div class="glass rounded-xl p-5">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="p-2 rounded-lg bg-gray-500/20">
-                                    <i data-lucide="package" class="w-5 h-5 text-gray-400"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold">ProductHunt</h3>
-                                    <p class="text-xs text-gray-500">Coming soon</p>
-                                </div>
+                                <div class="p-2 rounded-lg bg-gray-500\/20">${icon('package', 'w-5 h-5 text-gray-400')}</div>
+                                <div><h3 class="font-semibold">ProductHunt</h3><p class="text-xs text-gray-500">Coming soon</p></div>
                             </div>
                             <div class="text-2xl font-bold text-gray-400">-</div>
-                            <p class="text-xs text-gray-500">pending integration</p>
+                            <p class="text-xs text-gray-500">pending</p>
                         </div>
                     </div>
                     
-                    <!-- Pipeline Actions -->
                     <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4">Trend Pipeline Actions</h2>
+                        <h2 class="text-lg font-semibold mb-4">Pipeline Actions</h2>
                         <div class="grid grid-cols-4 gap-4">
-                            <button onclick="callTrendAction('collect')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left">
-                                <i data-lucide="download" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                            <button onclick="callTrendAction('collect')" class="p-4 rounded-xl bg-white\/5 hover:bg-white\/10 transition-colors text-left">
+                                ${icon('download', 'w-6 h-6 text-cyan-400 mb-2')}
                                 <h3 class="font-medium">Collect</h3>
-                                <p class="text-xs text-gray-500">Gather from sources</p>
+                                <p class="text-xs text-gray-500">Gather trends</p>
                             </button>
-                            <button onclick="callTrendAction('analyze')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left">
-                                <i data-lucide="brain" class="w-6 h-6 text-purple-400 mb-2"></i>
+                            <button onclick="callTrendAction('analyze')" class="p-4 rounded-xl bg-white\/5 hover:bg-white\/10 transition-colors text-left">
+                                ${icon('brain', 'w-6 h-6 text-purple-400 mb-2')}
                                 <h3 class="font-medium">Analyze</h3>
-                                <p class="text-xs text-gray-500">Categorize & score</p>
+                                <p class="text-xs text-gray-500">Categorize</p>
                             </button>
-                            <button onclick="callTrendAction('report')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left">
-                                <i data-lucide="file-text" class="w-6 h-6 text-green-400 mb-2"></i>
+                            <button onclick="callTrendAction('report')" class="p-4 rounded-xl bg-white\/5 hover:bg-white\/10 transition-colors text-left">
+                                ${icon('file-text', 'w-6 h-6 text-green-400 mb-2')}
                                 <h3 class="font-medium">Report</h3>
-                                <p class="text-xs text-gray-500">Generate insights</p>
+                                <p class="text-xs text-gray-500">Generate</p>
                             </button>
-                            <button onclick="callTrendAction('full_pipeline')" class="p-4 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 hover:border-purple-500/30 transition-colors text-left">
-                                <i data-lucide="play" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                            <button onclick="callTrendAction('full_pipeline')" class="p-4 rounded-xl bg-cyan-500\/10 border border-cyan-500\/30 hover:bg-cyan-500\/20 transition-colors text-left">
+                                ${icon('play', 'w-6 h-6 text-cyan-400 mb-2')}
                                 <h3 class="font-medium">Full Pipeline</h3>
-                                <p class="text-xs text-gray-500">Run all steps</p>
+                                <p class="text-xs text-gray-500">Run all</p>
                             </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Trend Categories -->
-                    <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4">Category Distribution</h2>
-                        <div class="flex items-end gap-4 h-40">
-                            <div class="flex-1 flex flex-col items-center">
-                                <div class="w-full bg-blue-500/30 rounded-t" style="height: 80%"></div>
-                                <p class="text-xs mt-2">AI</p>
-                                <p class="text-lg font-bold text-blue-400">16</p>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center">
-                                <div class="w-full bg-gray-500/30 rounded-t" style="height: 100%"></div>
-                                <p class="text-xs mt-2">Other</p>
-                                <p class="text-lg font-bold text-gray-400">21</p>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center">
-                                <div class="w-full bg-green-500/30 rounded-t" style="height: 15%"></div>
-                                <p class="text-xs mt-2">DevTools</p>
-                                <p class="text-lg font-bold text-green-400">2</p>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center">
-                                <div class="w-full bg-purple-500/30 rounded-t" style="height: 8%"></div>
-                                <p class="text-xs mt-2">SaaS</p>
-                                <p class="text-lg font-bold text-purple-400">1</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -855,14 +813,12 @@
         
         function renderIntegrations() {
             const integrations = [
-                { name: 'GitHub Actions', icon: 'github', status: 'active', desc: '10 workflows, CI/CD, auto-labeling', color: 'purple' },
-                { name: 'AWS Lambda', icon: 'server', status: 'active', desc: '6 functions, Function URLs enabled', color: 'orange' },
-                { name: 'API Gateway', icon: 'globe', status: 'active', desc: 'REST API, 7 endpoints', color: 'blue' },
-                { name: 'DynamoDB', icon: 'database', status: 'active', desc: '5 tables, on-demand billing', color: 'yellow' },
-                { name: 'CloudWatch', icon: 'activity', status: 'active', desc: 'Logs, metrics, alarms', color: 'cyan' },
-                { name: 'Slack', icon: 'message-square', status: 'active', desc: 'Notifications, alerts', color: 'green' },
-                { name: 'N8N Cloud', icon: 'workflow', status: 'pending', desc: '3 workflows ready', color: 'gray' },
-                { name: 'Vercel', icon: 'triangle', status: 'active', desc: 'Frontend hosting', color: 'white' }
+                { name: 'GitHub Actions', icon: 'github', status: 'active', desc: '10 workflows', color: 'purple' },
+                { name: 'AWS Lambda', icon: 'server', status: 'active', desc: '6 functions', color: 'orange' },
+                { name: 'API Gateway', icon: 'globe', status: 'active', desc: '7 endpoints', color: 'blue' },
+                { name: 'DynamoDB', icon: 'database', status: 'active', desc: '5 tables', color: 'yellow' },
+                { name: 'CloudWatch', icon: 'activity', status: 'active', desc: 'Monitoring', color: 'cyan' },
+                { name: 'Slack', icon: 'message-square', status: 'active', desc: 'Notifications', color: 'green' }
             ];
             
             return `
@@ -874,42 +830,41 @@
                             <div class="glass rounded-xl p-5 glass-hover transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-3">
-                                        <div class="p-3 rounded-xl bg-white/5">
-                                            <i data-lucide="${i.icon}" class="w-6 h-6 text-${i.color}-400"></i>
+                                        <div class="p-3 rounded-xl bg-white\/5">
+                                            ${icon(i.icon, `w-6 h-6 text-${i.color}-400`)}
                                         </div>
                                         <div>
                                             <h3 class="font-semibold">${i.name}</h3>
                                             <p class="text-sm text-gray-400">${i.desc}</p>
                                         </div>
                                     </div>
-                                    <span class="px-2 py-1 rounded text-xs ${i.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">${i.status}</span>
+                                    <span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">${i.status}</span>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                     
-                    <!-- API Endpoints -->
                     <div class="glass rounded-2xl p-6">
                         <h2 class="text-lg font-semibold mb-4">API Endpoints</h2>
                         <div class="space-y-2">
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
                                 <code class="text-sm">POST /v1/brain</code>
                                 <span class="text-xs text-gray-500">Orchestration</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
                                 <code class="text-sm">POST /v1/actions</code>
-                                <span class="text-xs text-gray-500">Events & Notifications</span>
+                                <span class="text-xs text-gray-500">Events</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
                                 <code class="text-sm">POST /v1/trend</code>
-                                <span class="text-xs text-gray-500">Trend Analysis</span>
+                                <span class="text-xs text-gray-500">Trends</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
                                 <code class="text-sm">POST /v1/intake</code>
-                                <span class="text-xs text-gray-500">Customer Updates</span>
+                                <span class="text-xs text-gray-500">Customer</span>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-4 mono">Base: ${API_BASE}</p>
+                        <p class="text-xs text-gray-500 mt-4 mono">${API_BASE}</p>
                     </div>
                 </div>
             `;
@@ -921,114 +876,59 @@
                     <h1 class="text-2xl font-bold">Network Architecture</h1>
                     
                     <div class="glass rounded-2xl p-6">
-                        <div class="relative h-[500px] bg-black/30 rounded-xl overflow-hidden">
-                            <svg viewBox="0 0 1000 500" class="w-full h-full">
-                                <!-- Background -->
+                        <div class="relative h-64 bg-black\/30 rounded-xl overflow-hidden">
+                            <svg viewBox="0 0 800 250" class="w-full h-full">
                                 <defs>
-                                    <pattern id="grid2" width="50" height="50" patternUnits="userSpaceOnUse">
-                                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
-                                    </pattern>
-                                    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.3"/>
-                                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0"/>
-                                    </radialGradient>
+                                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.5"/>
+                                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.5"/>
+                                    </linearGradient>
                                 </defs>
-                                <rect width="1000" height="500" fill="url(#grid2)"/>
                                 
-                                <!-- User/Client -->
-                                <g transform="translate(100, 250)">
-                                    <circle r="40" fill="url(#nodeGlow)"/>
+                                <g transform="translate(80, 125)">
                                     <circle r="30" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)" stroke-width="2"/>
-                                    <text y="5" text-anchor="middle" fill="white" font-size="12">User</text>
-                                    <text y="55" text-anchor="middle" fill="#9ca3af" font-size="9">Client</text>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="11">User</text>
                                 </g>
                                 
-                                <!-- Vercel -->
-                                <g transform="translate(250, 250)">
-                                    <circle r="35" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                                <g transform="translate(220, 125)">
+                                    <rect x="-40" y="-25" width="80" height="50" rx="8" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)"/>
                                     <text y="5" text-anchor="middle" fill="white" font-size="11">Vercel</text>
-                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">Frontend</text>
                                 </g>
                                 
-                                <!-- GitHub -->
-                                <g transform="translate(250, 100)">
-                                    <circle r="35" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)" stroke-width="2"/>
-                                    <text y="5" text-anchor="middle" fill="white" font-size="11">GitHub</text>
-                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">Actions</text>
-                                </g>
-                                
-                                <!-- API Gateway -->
-                                <g transform="translate(450, 250)">
+                                <g transform="translate(400, 125)">
                                     <rect x="-50" y="-30" width="100" height="60" rx="10" fill="rgba(59,130,246,0.2)" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
                                     <text y="5" text-anchor="middle" fill="white" font-size="12">API Gateway</text>
-                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">REST API</text>
                                 </g>
                                 
-                                <!-- Lambda Cluster -->
-                                <g transform="translate(650, 150)">
-                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(59,130,246,0.3)" stroke="rgba(59,130,246,0.6)" stroke-width="2"/>
-                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Brain</text>
-                                </g>
-                                <g transform="translate(650, 220)">
-                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(245,158,11,0.3)" stroke="rgba(245,158,11,0.6)" stroke-width="2"/>
-                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Actions</text>
-                                </g>
-                                <g transform="translate(650, 290)">
-                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(6,182,212,0.3)" stroke="rgba(6,182,212,0.6)" stroke-width="2"/>
-                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Trend</text>
-                                </g>
-                                <g transform="translate(650, 360)">
-                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(16,185,129,0.3)" stroke="rgba(16,185,129,0.6)" stroke-width="2"/>
-                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Intake</text>
+                                <g transform="translate(580, 60)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(59,130,246,0.3)" stroke="rgba(59,130,246,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Brain</text></g>
+                                <g transform="translate(580, 110)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(245,158,11,0.3)" stroke="rgba(245,158,11,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Actions</text></g>
+                                <g transform="translate(580, 160)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(6,182,212,0.3)" stroke="rgba(6,182,212,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Trend</text></g>
+                                <g transform="translate(580, 210)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(16,185,129,0.3)" stroke="rgba(16,185,129,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Intake</text></g>
+                                
+                                <g transform="translate(720, 125)">
+                                    <rect x="-35" y="-25" width="70" height="50" rx="8" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="10">DynamoDB</text>
                                 </g>
                                 
-                                <!-- DynamoDB -->
-                                <g transform="translate(850, 250)">
-                                    <rect x="-45" y="-35" width="90" height="70" rx="10" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)" stroke-width="2"/>
-                                    <text y="0" text-anchor="middle" fill="white" font-size="11">DynamoDB</text>
-                                    <text y="15" text-anchor="middle" fill="#9ca3af" font-size="9">5 Tables</text>
-                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">trends, updates...</text>
-                                </g>
-                                
-                                <!-- External Services -->
-                                <g transform="translate(850, 100)">
-                                    <rect x="-40" y="-20" width="80" height="40" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)"/>
-                                    <text y="5" text-anchor="middle" fill="#9ca3af" font-size="10">External APIs</text>
-                                </g>
-                                <g transform="translate(850, 400)">
-                                    <rect x="-40" y="-20" width="80" height="40" rx="8" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)"/>
-                                    <text y="5" text-anchor="middle" fill="#9ca3af" font-size="10">Slack</text>
-                                </g>
-                                
-                                <!-- Connection Lines -->
-                                <line x1="130" y1="250" x2="215" y2="250" stroke="rgba(139,92,246,0.4)" stroke-width="2" class="flow-line"/>
-                                <line x1="285" y1="250" x2="400" y2="250" stroke="rgba(59,130,246,0.4)" stroke-width="2" class="flow-line"/>
-                                <line x1="285" y1="100" x2="400" y2="230" stroke="rgba(139,92,246,0.3)" stroke-width="1" class="flow-line"/>
-                                
-                                <line x1="500" y1="250" x2="615" y2="150" stroke="rgba(59,130,246,0.4)" stroke-width="2" class="flow-line"/>
-                                <line x1="500" y1="250" x2="615" y2="220" stroke="rgba(245,158,11,0.4)" stroke-width="2" class="flow-line"/>
-                                <line x1="500" y1="250" x2="615" y2="290" stroke="rgba(6,182,212,0.4)" stroke-width="2" class="flow-line"/>
-                                <line x1="500" y1="250" x2="615" y2="360" stroke="rgba(16,185,129,0.4)" stroke-width="2" class="flow-line"/>
-                                
-                                <line x1="685" y1="220" x2="805" y2="250" stroke="rgba(245,158,11,0.3)" stroke-width="1" class="flow-line"/>
-                                <line x1="685" y1="290" x2="805" y2="250" stroke="rgba(6,182,212,0.3)" stroke-width="1" class="flow-line"/>
-                                <line x1="685" y1="360" x2="805" y2="250" stroke="rgba(16,185,129,0.3)" stroke-width="1" class="flow-line"/>
-                                
-                                <line x1="685" y1="290" x2="810" y2="100" stroke="rgba(6,182,212,0.2)" stroke-width="1" class="flow-line"/>
-                                <line x1="685" y1="220" x2="810" y2="400" stroke="rgba(245,158,11,0.2)" stroke-width="1" class="flow-line"/>
+                                <line x1="110" y1="125" x2="180" y2="125" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                                <line x1="260" y1="125" x2="350" y2="125" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                                <line x1="450" y1="100" x2="550" y2="60" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                                <line x1="450" y1="115" x2="550" y2="110" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                                <line x1="450" y1="135" x2="550" y2="160" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                                <line x1="450" y1="150" x2="550" y2="210" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                                <line x1="610" y1="125" x2="685" y2="125" stroke="rgba(245,158,11,0.4)" stroke-width="2" class="flow-line"/>
                             </svg>
                         </div>
                     </div>
                     
-                    <!-- Network Stats -->
                     <div class="grid grid-cols-4 gap-4">
                         <div class="glass rounded-xl p-4 text-center">
                             <p class="text-2xl font-bold text-purple-400">1</p>
-                            <p class="text-xs text-gray-500">Region (us-east-1)</p>
+                            <p class="text-xs text-gray-500">Region</p>
                         </div>
                         <div class="glass rounded-xl p-4 text-center">
                             <p class="text-2xl font-bold text-blue-400">7</p>
-                            <p class="text-xs text-gray-500">API Endpoints</p>
+                            <p class="text-xs text-gray-500">Endpoints</p>
                         </div>
                         <div class="glass rounded-xl p-4 text-center">
                             <p class="text-2xl font-bold text-cyan-400">4</p>
@@ -1048,111 +948,87 @@
                 <div class="pt-16 space-y-6">
                     <h1 class="text-2xl font-bold">Proactive AI Capabilities</h1>
                     
-                    <!-- Autonomy Score -->
-                    <div class="glass rounded-2xl p-6 gradient-border">
+                    <div class="glass rounded-2xl p-6" style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(139,92,246,0.1));border:1px solid rgba(139,92,246,0.3)">
                         <div class="flex items-center justify-between">
                             <div>
                                 <h2 class="text-lg font-semibold">Autonomy Level</h2>
-                                <p class="text-gray-400">Self-management capability score</p>
+                                <p class="text-gray-400">Self-management score</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-5xl font-bold gradient-text">99.5%</p>
                                 <p class="text-sm text-gray-500">Fully Proactive</p>
                             </div>
                         </div>
-                        
-                        <div class="mt-6 h-3 bg-white/10 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full" style="width: 99.5%"></div>
+                        <div class="mt-6 h-3 bg-white\/10 rounded-full overflow-hidden">
+                            <div style="width:99.5%;height:100%;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#06b6d4);border-radius:9999px"></div>
                         </div>
                     </div>
                     
-                    <!-- Proactive Features -->
                     <div class="grid grid-cols-2 gap-6">
                         <div class="glass rounded-xl p-6">
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="p-3 rounded-xl bg-blue-500/20">
-                                    <i data-lucide="eye" class="w-6 h-6 text-blue-400"></i>
-                                </div>
+                                <div class="p-3 rounded-xl bg-blue-500\/20">${icon('eye', 'w-6 h-6 text-blue-400')}</div>
                                 <h3 class="text-lg font-semibold">Self-Monitoring</h3>
                             </div>
                             <ul class="space-y-2 text-sm text-gray-400">
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 6 saatte bir health check</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Otomatik alert generation</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> CloudWatch metrics tracking</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Error pattern detection</li>
+                                <li>✓ 6 saatte bir health check</li>
+                                <li>✓ Otomatik alert generation</li>
+                                <li>✓ CloudWatch metrics</li>
+                                <li>✓ Error pattern detection</li>
                             </ul>
                         </div>
-                        
                         <div class="glass rounded-xl p-6">
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="p-3 rounded-xl bg-purple-500/20">
-                                    <i data-lucide="trending-up" class="w-6 h-6 text-purple-400"></i>
-                                </div>
+                                <div class="p-3 rounded-xl bg-purple-500\/20">${icon('trending-up', 'w-6 h-6 text-purple-400')}</div>
                                 <h3 class="text-lg font-semibold">Trend Discovery</h3>
                             </div>
                             <ul class="space-y-2 text-sm text-gray-400">
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Günde 2x otomatik analiz</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> AI kategorileme</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Opportunity detection</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> MVP ideation</li>
+                                <li>✓ Günde 2x otomatik analiz</li>
+                                <li>✓ AI kategorileme</li>
+                                <li>✓ Opportunity detection</li>
+                                <li>✓ MVP ideation</li>
                             </ul>
                         </div>
-                        
                         <div class="glass rounded-xl p-6">
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="p-3 rounded-xl bg-green-500/20">
-                                    <i data-lucide="git-merge" class="w-6 h-6 text-green-400"></i>
-                                </div>
+                                <div class="p-3 rounded-xl bg-green-500\/20">${icon('git-merge', 'w-6 h-6 text-green-400')}</div>
                                 <h3 class="text-lg font-semibold">Auto-Deploy</h3>
                             </div>
                             <ul class="space-y-2 text-sm text-gray-400">
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Push to main → auto deploy</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Lint + test before deploy</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Post-deploy health check</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Rollback capability</li>
+                                <li>✓ Push → auto deploy</li>
+                                <li>✓ Lint + test</li>
+                                <li>✓ Post-deploy health</li>
+                                <li>✓ Rollback ready</li>
                             </ul>
                         </div>
-                        
                         <div class="glass rounded-xl p-6">
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="p-3 rounded-xl bg-orange-500/20">
-                                    <i data-lucide="bell" class="w-6 h-6 text-orange-400"></i>
-                                </div>
+                                <div class="p-3 rounded-xl bg-orange-500\/20">${icon('bell', 'w-6 h-6 text-orange-400')}</div>
                                 <h3 class="text-lg font-semibold">Smart Notifications</h3>
                             </div>
                             <ul class="space-y-2 text-sm text-gray-400">
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Slack integration</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Priority-based alerts</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Trend highlights</li>
-                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Issue auto-intake</li>
+                                <li>✓ Slack integration</li>
+                                <li>✓ Priority alerts</li>
+                                <li>✓ Trend highlights</li>
+                                <li>✓ Issue auto-intake</li>
                             </ul>
                         </div>
                     </div>
                     
-                    <!-- Scheduled Tasks -->
                     <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4">Scheduled Autonomous Tasks</h2>
+                        <h2 class="text-lg font-semibold mb-4">Scheduled Tasks</h2>
                         <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
-                                <div class="flex items-center gap-3">
-                                    <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i>
-                                    <span>Health Check</span>
-                                </div>
-                                <span class="text-sm text-gray-500 mono">every 6 hours</span>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
+                                <div class="flex items-center gap-3">${icon('clock', 'w-5 h-5 text-blue-400')}<span>Health Check</span></div>
+                                <span class="text-sm text-gray-500 mono">every 6h</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
-                                <div class="flex items-center gap-3">
-                                    <i data-lucide="clock" class="w-5 h-5 text-cyan-400"></i>
-                                    <span>Trend Analysis</span>
-                                </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
+                                <div class="flex items-center gap-3">${icon('clock', 'w-5 h-5 text-cyan-400')}<span>Trend Analysis</span></div>
                                 <span class="text-sm text-gray-500 mono">09:00, 18:00 UTC</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
-                                <div class="flex items-center gap-3">
-                                    <i data-lucide="clock" class="w-5 h-5 text-gray-400"></i>
-                                    <span>Stale Issue Cleanup</span>
-                                </div>
-                                <span class="text-sm text-gray-500 mono">daily at midnight</span>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white\/5">
+                                <div class="flex items-center gap-3">${icon('clock', 'w-5 h-5 text-gray-400')}<span>Stale Cleanup</span></div>
+                                <span class="text-sm text-gray-500 mono">daily</span>
                             </div>
                         </div>
                     </div>
@@ -1165,91 +1041,44 @@
                 <div class="pt-16 space-y-6">
                     <h1 class="text-2xl font-bold">Documentation</h1>
                     
-                    <!-- Quick Reference -->
                     <div class="glass rounded-2xl p-6">
                         <h2 class="text-lg font-semibold mb-4">API Quick Reference</h2>
-                        
                         <div class="space-y-4">
-                            <div class="p-4 rounded-xl bg-black/30">
+                            <div class="p-4 rounded-xl bg-black\/30">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs">POST</span>
+                                    <span class="px-2 py-1 rounded bg-green-500\/20 text-green-400 text-xs">POST</span>
                                     <span class="text-gray-500 text-sm">/v1/brain</span>
                                 </div>
-                                <pre class="text-xs text-gray-400 mono overflow-x-auto"><code>{
-  "action": "orchestrate",
-  "params": {
-    "task_type": "analysis",
-    "data": { ... }
-  }
-}</code></pre>
+                                <pre class="text-xs text-gray-400 mono">{ "action": "orchestrate", "params": { ... } }</pre>
                             </div>
-                            
-                            <div class="p-4 rounded-xl bg-black/30">
+                            <div class="p-4 rounded-xl bg-black\/30">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs">POST</span>
+                                    <span class="px-2 py-1 rounded bg-green-500\/20 text-green-400 text-xs">POST</span>
                                     <span class="text-gray-500 text-sm">/v1/trend</span>
                                 </div>
-                                <pre class="text-xs text-gray-400 mono overflow-x-auto"><code>{
-  "action": "full_pipeline"
-}
-// Actions: collect, analyze, report, full_pipeline</code></pre>
-                            </div>
-                            
-                            <div class="p-4 rounded-xl bg-black/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs">POST</span>
-                                    <span class="text-gray-500 text-sm">/v1/actions</span>
-                                </div>
-                                <pre class="text-xs text-gray-400 mono overflow-x-auto"><code>{
-  "action": "notify",
-  "params": {
-    "channel": "#alerts",
-    "message": "System update"
-  }
-}</code></pre>
+                                <pre class="text-xs text-gray-400 mono">{ "action": "full_pipeline" }</pre>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Links -->
                     <div class="grid grid-cols-2 gap-4">
                         <a href="https://github.com/${GITHUB_REPO}" target="_blank" class="glass rounded-xl p-5 glass-hover transition-all flex items-center gap-4">
-                            <i data-lucide="github" class="w-8 h-8 text-purple-400"></i>
-                            <div>
-                                <h3 class="font-semibold">GitHub Repository</h3>
-                                <p class="text-sm text-gray-400">Source code & workflows</p>
-                            </div>
+                            ${icon('github', 'w-8 h-8 text-purple-400')}
+                            <div><h3 class="font-semibold">GitHub</h3><p class="text-sm text-gray-400">Source & Workflows</p></div>
                         </a>
-                        
-                        <a href="${API_BASE}/v1/brain" target="_blank" class="glass rounded-xl p-5 glass-hover transition-all flex items-center gap-4">
-                            <i data-lucide="globe" class="w-8 h-8 text-blue-400"></i>
-                            <div>
-                                <h3 class="font-semibold">API Gateway</h3>
-                                <p class="text-sm text-gray-400">REST API endpoints</p>
-                            </div>
+                        <a href="${API_BASE}" target="_blank" class="glass rounded-xl p-5 glass-hover transition-all flex items-center gap-4">
+                            ${icon('globe', 'w-8 h-8 text-blue-400')}
+                            <div><h3 class="font-semibold">API</h3><p class="text-sm text-gray-400">REST Endpoints</p></div>
                         </a>
                     </div>
                     
-                    <!-- Version Info -->
                     <div class="glass rounded-xl p-5">
-                        <h3 class="font-semibold mb-3">System Information</h3>
+                        <h3 class="font-semibold mb-3">System Info</h3>
                         <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Version</span>
-                                <span class="mono">v2.3.0</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Region</span>
-                                <span class="mono">us-east-1</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Lambda Runtime</span>
-                                <span class="mono">Python 3.11</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Last Deploy</span>
-                                <span class="mono">Dec 19, 2025</span>
-                            </div>
+                            <div class="flex justify-between"><span class="text-gray-500">Version</span><span class="mono">v2.3.0</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Region</span><span class="mono">us-east-1</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Runtime</span><span class="mono">Python 3.11</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Deploy</span><span class="mono">Dec 19, 2025</span></div>
                         </div>
                     </div>
                 </div>
@@ -1257,15 +1086,15 @@
         }
         
         // ═══════════════════════════════════════════════════════════════
-        // Event Handlers & Utilities
+        // Event Handlers
         // ═══════════════════════════════════════════════════════════════
         
-        function setActiveTab(tab) {
+        window.setActiveTab = function(tab) {
             state.activeTab = tab;
             render();
-        }
+        };
         
-        async function callTrendAction(action) {
+        window.callTrendAction = async function(action) {
             try {
                 const response = await fetch(LAMBDA_URLS.trend, {
                     method: 'POST',
@@ -1273,29 +1102,20 @@
                     body: JSON.stringify({ action })
                 });
                 const data = await response.json();
-                console.log(`Trend ${action}:`, data);
-                alert(`${action} completed! Check console for details.`);
+                alert(`${action} completed! Check console.`);
+                console.log(data);
             } catch (e) {
-                console.error(e);
                 alert('Error: ' + e.message);
             }
-        }
+        };
         
-        function attachEventListeners() {
-            // Add any additional event listeners here
-        }
+        window.fetchAllHealth = fetchAllHealth;
         
         // ═══════════════════════════════════════════════════════════════
         // Initialize
         // ═══════════════════════════════════════════════════════════════
         
-        window.setActiveTab = setActiveTab;
-        window.callTrendAction = callTrendAction;
-        
-        // Initial render
         render();
-        
-        // Fetch data
         fetchAllHealth();
         fetchGitHubWorkflows();
     </script>
