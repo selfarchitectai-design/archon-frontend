@@ -1,23 +1,35 @@
 /**
  * ARCHON Workflow Demo API
- * Demonstrates AI + KV integration
+ * Simplified version without external SDKs
  */
 
-import { anthropic } from '@ai-sdk/anthropic';
-import { generateText } from 'ai';
-import { Redis } from '@upstash/redis';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+// Helper function for Redis REST API
+async function redisCommand(command: string, ...args: (string | number)[]): Promise<any> {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  
+  if (!url || !token) {
+    return null;
+  }
+
+  const response = await fetch(`${url}/${command}/${args.join('/')}`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+
+  if (!response.ok) return null;
+  const data = await response.json();
+  return data.result;
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { task, mode = 'assisted' } = await req.json();
+    const body = await req.json();
+    const task = body.task as string;
+    const mode = body.mode as string || 'assisted';
 
     if (!task) {
       return NextResponse.json(
@@ -26,11 +38,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate unique workflow ID
     const workflowId = `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Store workflow start state
-    await redis.set(
+    // Store workflow state in KV
+    await redisCommand(
+      'SET',
       `workflow:${workflowId}:state`,
       JSON.stringify({
         status: 'running',
@@ -40,59 +52,53 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // Use AI to analyze the task
-    const { text } = await generateText({
-      model: anthropic('claude-sonnet-4-20250514', {
-        baseURL: process.env.AI_GATEWAY_URL,
+    // Call Anthropic API directly
+    const aiResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.AI_GATEWAY_API_KEY || '',
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        messages: [{
+          role: 'user',
+          content: `Analyze this task: ${task} (Mode: ${mode}). Provide brief analysis with steps.`
+        }],
       }),
-      prompt: `You are ARCHON V2.2, an AI operations platform. Analyze this task and provide a structured execution plan:
-
-Task: ${task}
-Mode: ${mode}
-
-Provide your analysis in this format:
-1. Task Understanding: [brief summary]
-2. Execution Steps: [numbered steps]
-3. Expected Outcome: [brief outcome]
-4. Confidence Score: [0-100]
-
-Keep it concise and actionable.`,
     });
 
-    // Update workflow with results
-    await redis.set(
-      `workflow:${workflowId}:result`,
-      JSON.stringify({
-        analysis: text,
-        completedAt: new Date().toISOString(),
-      }),
-      { ex: 3600 } // Expire after 1 hour
-    );
+    if (!aiResponse.ok) {
+      throw new Error('AI request failed');
+    }
 
-    // Update state to completed
-    await redis.set(
-      `workflow:${workflowId}:state`,
+    const aiData = await aiResponse.json() as any;
+    const analysisText = aiData.content?.[0]?.text || 'Analysis not available';
+
+    // Store result
+    await redisCommand(
+      'SETEX',
+      `workflow:${workflowId}:result`,
+      3600,
       JSON.stringify({
-        status: 'completed',
-        task,
-        mode,
-        startTime: new Date().toISOString(),
+        analysis: analysisText,
         completedAt: new Date().toISOString(),
-      }),
-      { ex: 3600 }
+      })
     );
 
     return NextResponse.json({
       workflowId,
       status: 'completed',
-      analysis: text,
+      analysis: analysisText,
       mode,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Workflow Demo Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Workflow execution failed' },
+      { error: 'Workflow execution failed' },
       { status: 500 }
     );
   }
@@ -110,11 +116,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get workflow state and result
-    const [stateStr, resultStr] = await Promise.all([
-      redis.get(`workflow:${workflowId}:state`),
-      redis.get(`workflow:${workflowId}:result`),
-    ]);
+    const stateStr = await redisCommand('GET', `workflow:${workflowId}:state`);
+    const resultStr = await redisCommand('GET', `workflow:${workflowId}:result`);
 
     if (!stateStr) {
       return NextResponse.json(
@@ -132,10 +135,10 @@ export async function GET(req: NextRequest) {
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Workflow GET Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to get workflow' },
+      { error: 'Failed to get workflow' },
       { status: 500 }
     );
   }
