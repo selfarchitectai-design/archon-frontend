@@ -1,17 +1,16 @@
 /**
  * ARCHON AI Chat API
- * Uses Vercel AI Gateway with Anthropic Claude
+ * Direct Anthropic API integration
  */
 
-import { anthropic } from '@ai-sdk/anthropic';
-import { generateText } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, model = 'claude-sonnet-4-20250514' } = await req.json();
+    const body = await req.json();
+    const prompt = body.prompt as string;
 
     if (!prompt) {
       return NextResponse.json(
@@ -20,24 +19,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Use AI SDK with AI Gateway
-    const { text, usage } = await generateText({
-      model: anthropic(model, {
-        baseURL: process.env.AI_GATEWAY_URL,
+    // Direct Anthropic API call
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.AI_GATEWAY_API_KEY || '',
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
       }),
-      prompt,
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`AI request failed: ${errorText}`);
+    }
+
+    const data = await response.json() as any;
+
     return NextResponse.json({
-      response: text,
-      usage,
-      model,
+      response: data.content?.[0]?.text || 'No response',
+      usage: data.usage,
+      model: 'claude-sonnet-4-20250514',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('AI Chat Error:', error);
     return NextResponse.json(
-      { error: error.message || 'AI request failed' },
+      { error: 'AI request failed' },
       { status: 500 }
     );
   }
