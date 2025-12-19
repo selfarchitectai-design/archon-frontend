@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCHON V2.3 - Ultimate Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: #e5e7eb;
+        }
+        
+        .glass {
+            background: rgba(26, 26, 36, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-hover:hover {
+            background: rgba(26, 26, 36, 0.95);
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-border {
+            position: relative;
+        }
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .flow-line {
+            stroke-dasharray: 10;
+            animation: flow 1s linear infinite;
+        }
+        
+        @keyframes flow {
+            to { stroke-dashoffset: -20; }
+        }
+        
+        .status-online { color: #10b981; }
+        .status-warning { color: #f59e0b; }
+        .status-error { color: #ef4444; }
+        
+        .scroll-hidden::-webkit-scrollbar { display: none; }
+        
+        .tab-active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+        
+        .network-node {
+            transition: all 0.3s ease;
+        }
+        
+        .network-node:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+        
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="app"></div>
+    
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // ARCHON DASHBOARD - Main Application
+        // ═══════════════════════════════════════════════════════════════
+        
+        const LAMBDA_URLS = {
+            brain: 'https://jl67xd5pckkhjwdmnvhco2bg440grmtu.lambda-url.us-east-1.on.aws/',
+            actions: 'https://qtomhtef66vivt7wzyit5nuzve0nzvbk.lambda-url.us-east-1.on.aws/',
+            trend: 'https://mjfhxhcsi2u3o2pqhkj55rrlge0ucncm.lambda-url.us-east-1.on.aws/',
+            intake: 'https://wbhdgr46itplcvosjioitclvga0mxlec.lambda-url.us-east-1.on.aws/'
+        };
+        
+        const API_BASE = 'https://d6gy1zr8vj.execute-api.us-east-1.amazonaws.com/prod';
+        const GITHUB_REPO = 'selfarchitectai-design/archon-v2-platform';
+        
+        // State
+        let state = {
+            activeTab: 'overview',
+            lambdaStatus: {},
+            pipelineRuns: [],
+            trends: [],
+            metrics: {
+                totalRequests: 0,
+                avgLatency: 0,
+                uptime: 99.9,
+                costSavings: 35
+            },
+            loading: true
+        };
+        
+        // ═══════════════════════════════════════════════════════════════
+        // API Functions
+        // ═══════════════════════════════════════════════════════════════
+        
+        async function checkLambdaHealth(name, url) {
+            try {
+                const start = Date.now();
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'health' })
+                });
+                const latency = Date.now() - start;
+                const data = await response.json();
+                return { 
+                    name, 
+                    status: data.status || 'healthy', 
+                    latency,
+                    version: data.version || 'v2.3.0',
+                    capabilities: data.capabilities || []
+                };
+            } catch (e) {
+                return { name, status: 'error', latency: 0, error: e.message };
+            }
+        }
+        
+        async function fetchAllHealth() {
+            const results = await Promise.all([
+                checkLambdaHealth('brain', LAMBDA_URLS.brain),
+                checkLambdaHealth('actions', LAMBDA_URLS.actions),
+                checkLambdaHealth('trend', LAMBDA_URLS.trend),
+                checkLambdaHealth('intake', LAMBDA_URLS.intake)
+            ]);
+            
+            state.lambdaStatus = {};
+            results.forEach(r => state.lambdaStatus[r.name] = r);
+            state.loading = false;
+            render();
+        }
+        
+        async function fetchGitHubWorkflows() {
+            try {
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_REPO}/actions/runs?per_page=10`,
+                    { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+                );
+                const data = await response.json();
+                state.pipelineRuns = data.workflow_runs || [];
+                render();
+            } catch (e) {
+                console.error('GitHub API error:', e);
+            }
+        }
+        
+        async function runTrendAnalysis() {
+            try {
+                const response = await fetch(LAMBDA_URLS.trend, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'collect' })
+                });
+                const data = await response.json();
+                state.trends = data.trends || [];
+                render();
+            } catch (e) {
+                console.error('Trend error:', e);
+            }
+        }
+        
+        // ═══════════════════════════════════════════════════════════════
+        // Render Functions
+        // ═══════════════════════════════════════════════════════════════
+        
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${renderHeader()}
+                <div class="flex">
+                    ${renderSidebar()}
+                    <main class="flex-1 p-6 ml-64">
+                        ${renderContent()}
+                    </main>
+                </div>
+            `;
+            lucide.createIcons();
+            attachEventListeners();
+        }
+        
+        function renderHeader() {
+            const healthyCount = Object.values(state.lambdaStatus).filter(s => s.status === 'healthy').length;
+            const totalCount = Object.keys(LAMBDA_URLS).length;
+            
+            return `
+                <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
+                    <div class="flex items-center justify-between px-6 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 flex items-center justify-center">
+                                <i data-lucide="brain" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold gradient-text">ARCHON V2.3</h1>
+                                <p class="text-xs text-gray-500">Self-Evolving AI Operations Platform</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                                <span class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></span>
+                                <span class="text-sm text-green-400">${healthyCount}/${totalCount} Systems Online</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                                <i data-lucide="zap" class="w-4 h-4 text-purple-400"></i>
+                                <span class="text-sm text-purple-400">Proactive Mode</span>
+                            </div>
+                            
+                            <button onclick="fetchAllHealth()" class="p-2 rounded-lg hover:bg-white/5 transition-colors">
+                                <i data-lucide="refresh-cw" class="w-5 h-5 text-gray-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+            `;
+        }
+        
+        function renderSidebar() {
+            const tabs = [
+                { id: 'overview', icon: 'layout-dashboard', label: 'Overview' },
+                { id: 'pipelines', icon: 'git-branch', label: 'CI/CD Pipelines' },
+                { id: 'lambdas', icon: 'server', label: 'Lambda Functions' },
+                { id: 'trends', icon: 'trending-up', label: 'Trend Analysis' },
+                { id: 'integrations', icon: 'plug', label: 'Integrations' },
+                { id: 'network', icon: 'network', label: 'Network Map' },
+                { id: 'proactive', icon: 'brain', label: 'Proactive AI' },
+                { id: 'docs', icon: 'book-open', label: 'Documentation' }
+            ];
+            
+            return `
+                <aside class="fixed left-0 top-16 bottom-0 w-64 glass border-r border-white/10 p-4 overflow-y-auto scroll-hidden">
+                    <nav class="space-y-2">
+                        ${tabs.map(tab => `
+                            <button 
+                                onclick="setActiveTab('${tab.id}')"
+                                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${state.activeTab === tab.id ? 'tab-active border border-purple-500/30' : 'hover:bg-white/5'}"
+                            >
+                                <i data-lucide="${tab.icon}" class="w-5 h-5 ${state.activeTab === tab.id ? 'text-purple-400' : 'text-gray-500'}"></i>
+                                <span class="${state.activeTab === tab.id ? 'text-white font-medium' : 'text-gray-400'}">${tab.label}</span>
+                            </button>
+                        `).join('')}
+                    </nav>
+                    
+                    <div class="mt-8 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20">
+                        <h3 class="text-sm font-semibold text-white mb-2">Quick Stats</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Lambda Count</span>
+                                <span class="text-white font-mono">6</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Workflows</span>
+                                <span class="text-white font-mono">10</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Cost Savings</span>
+                                <span class="text-green-400 font-mono">35%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Uptime</span>
+                                <span class="text-green-400 font-mono">99.9%</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            `;
+        }
+        
+        function renderContent() {
+            switch(state.activeTab) {
+                case 'overview': return renderOverview();
+                case 'pipelines': return renderPipelines();
+                case 'lambdas': return renderLambdas();
+                case 'trends': return renderTrends();
+                case 'integrations': return renderIntegrations();
+                case 'network': return renderNetworkMap();
+                case 'proactive': return renderProactive();
+                case 'docs': return renderDocs();
+                default: return renderOverview();
+            }
+        }
+        
+        function renderOverview() {
+            return `
+                <div class="pt-16 space-y-6">
+                    <!-- Hero Metrics -->
+                    <div class="grid grid-cols-4 gap-4">
+                        ${renderMetricCard('Lambda Functions', '6', 'server', 'blue', '14 → 6 (57% ↓)')}
+                        ${renderMetricCard('Monthly Cost', '$13', 'dollar-sign', 'green', '$20 → $13 (35% ↓)')}
+                        ${renderMetricCard('API Endpoints', '7', 'globe', 'purple', '3 → 7 (133% ↑)')}
+                        ${renderMetricCard('Autonomy Level', '99.5%', 'brain', 'cyan', 'Full Proactive')}
+                    </div>
+                    
+                    <!-- System Status Grid -->
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Lambda Status -->
+                        <div class="glass rounded-2xl p-6">
+                            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                                <i data-lucide="server" class="w-5 h-5 text-blue-400"></i>
+                                Lambda Health Status
+                            </h2>
+                            <div class="space-y-3">
+                                ${Object.entries(state.lambdaStatus).map(([name, data]) => `
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-2 h-2 rounded-full ${data.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'} pulse-dot"></span>
+                                            <span class="font-medium">archon-${name}</span>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <span class="text-xs text-gray-500 mono">${data.latency}ms</span>
+                                            <span class="px-2 py-1 rounded text-xs ${data.status === 'healthy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${data.status}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                                ${Object.keys(state.lambdaStatus).length === 0 ? '<p class="text-gray-500 text-sm">Loading...</p>' : ''}
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Pipelines -->
+                        <div class="glass rounded-2xl p-6">
+                            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                                <i data-lucide="git-branch" class="w-5 h-5 text-purple-400"></i>
+                                Recent Workflows
+                            </h2>
+                            <div class="space-y-3">
+                                ${state.pipelineRuns.slice(0, 5).map(run => `
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-2 h-2 rounded-full ${run.conclusion === 'success' ? 'bg-green-500' : run.conclusion === 'failure' ? 'bg-red-500' : 'bg-yellow-500'}"></span>
+                                            <span class="text-sm truncate max-w-[200px]">${run.name}</span>
+                                        </div>
+                                        <span class="text-xs text-gray-500">${new Date(run.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                `).join('')}
+                                ${state.pipelineRuns.length === 0 ? '<p class="text-gray-500 text-sm">Loading workflows...</p>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Architecture Overview -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <i data-lucide="boxes" class="w-5 h-5 text-cyan-400"></i>
+                            ARCHON V2.3 Architecture
+                        </h2>
+                        <div class="relative h-64 bg-black/30 rounded-xl overflow-hidden">
+                            ${renderArchitectureDiagram()}
+                        </div>
+                    </div>
+                    
+                    <!-- Capabilities Grid -->
+                    <div class="grid grid-cols-3 gap-4">
+                        ${renderCapabilityCard('🧠', 'AI Orchestration', 'Multi-model AI koordinasyonu: Claude, GPT-4, Gemini, Mistral', ['orchestrate', 'decide', 'analyze'])}
+                        ${renderCapabilityCard('📈', 'Trend Analysis', 'HackerNews, GitHub, ProductHunt trend takibi', ['collect', 'analyze', 'report'])}
+                        ${renderCapabilityCard('⚡', 'Event Processing', 'Real-time event collection ve Slack notifications', ['notify', 'collect', 'ideate'])}
+                        ${renderCapabilityCard('📥', 'Customer Intake', 'Müşteri feedback ve update yönetimi', ['create', 'process', 'review'])}
+                        ${renderCapabilityCard('🔄', 'CI/CD Pipeline', '10 GitHub Actions workflow, otomatik deploy', ['lint', 'build', 'deploy'])}
+                        ${renderCapabilityCard('🛡️', 'Self-Healing', 'Otomatik health check ve recovery', ['monitor', 'alert', 'recover'])}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderMetricCard(title, value, icon, color, subtitle) {
+            const colors = {
+                blue: 'from-blue-500/20 to-blue-600/10 border-blue-500/30',
+                green: 'from-green-500/20 to-green-600/10 border-green-500/30',
+                purple: 'from-purple-500/20 to-purple-600/10 border-purple-500/30',
+                cyan: 'from-cyan-500/20 to-cyan-600/10 border-cyan-500/30'
+            };
+            const iconColors = {
+                blue: 'text-blue-400',
+                green: 'text-green-400',
+                purple: 'text-purple-400',
+                cyan: 'text-cyan-400'
+            };
+            
+            return `
+                <div class="metric-card glass rounded-2xl p-5 bg-gradient-to-br ${colors[color]} border">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-gray-400">${title}</p>
+                            <p class="text-3xl font-bold mt-1">${value}</p>
+                            <p class="text-xs text-gray-500 mt-1">${subtitle}</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white/5">
+                            <i data-lucide="${icon}" class="w-6 h-6 ${iconColors[color]}"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderCapabilityCard(emoji, title, desc, actions) {
+            return `
+                <div class="glass rounded-xl p-5 glass-hover cursor-pointer transition-all">
+                    <div class="text-3xl mb-3">${emoji}</div>
+                    <h3 class="font-semibold mb-2">${title}</h3>
+                    <p class="text-sm text-gray-400 mb-3">${desc}</p>
+                    <div class="flex flex-wrap gap-1">
+                        ${actions.map(a => `<span class="px-2 py-1 rounded bg-white/5 text-xs mono text-gray-400">${a}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderArchitectureDiagram() {
+            return `
+                <svg viewBox="0 0 800 250" class="w-full h-full">
+                    <!-- Background Grid -->
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        </pattern>
+                        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.5"/>
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.5"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="800" height="250" fill="url(#grid)"/>
+                    
+                    <!-- GitHub -->
+                    <g transform="translate(50, 100)" class="network-node">
+                        <rect x="-30" y="-25" width="60" height="50" rx="8" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="600">GitHub</text>
+                        <text x="0" y="40" text-anchor="middle" fill="#9ca3af" font-size="8">Actions</text>
+                    </g>
+                    
+                    <!-- API Gateway -->
+                    <g transform="translate(200, 100)" class="network-node">
+                        <rect x="-40" y="-25" width="80" height="50" rx="8" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="600">API Gateway</text>
+                        <text x="0" y="40" text-anchor="middle" fill="#9ca3af" font-size="8">REST API</text>
+                    </g>
+                    
+                    <!-- Lambda Functions -->
+                    <g transform="translate(400, 50)" class="network-node">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(59,130,246,0.2)" stroke="rgba(59,130,246,0.5)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Brain</text>
+                    </g>
+                    <g transform="translate(400, 110)" class="network-node">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Actions</text>
+                    </g>
+                    <g transform="translate(400, 170)" class="network-node">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(6,182,212,0.2)" stroke="rgba(6,182,212,0.5)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Trend</text>
+                    </g>
+                    <g transform="translate(400, 230)" class="network-node">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="10" font-weight="600">Intake</text>
+                    </g>
+                    
+                    <!-- DynamoDB -->
+                    <g transform="translate(550, 100)" class="network-node">
+                        <rect x="-35" y="-25" width="70" height="50" rx="8" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="white" font-size="11" font-weight="600">DynamoDB</text>
+                        <text x="0" y="40" text-anchor="middle" fill="#9ca3af" font-size="8">5 Tables</text>
+                    </g>
+                    
+                    <!-- External APIs -->
+                    <g transform="translate(700, 50)" class="network-node">
+                        <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="#9ca3af" font-size="9">HackerNews</text>
+                    </g>
+                    <g transform="translate(700, 100)" class="network-node">
+                        <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="#9ca3af" font-size="9">GitHub API</text>
+                    </g>
+                    <g transform="translate(700, 150)" class="network-node">
+                        <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="#9ca3af" font-size="9">Slack</text>
+                    </g>
+                    
+                    <!-- Connection Lines -->
+                    <line x1="80" y1="100" x2="160" y2="100" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                    <line x1="240" y1="100" x2="365" y2="50" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                    <line x1="240" y1="100" x2="365" y2="110" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                    <line x1="240" y1="100" x2="365" y2="170" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                    <line x1="435" y1="110" x2="515" y2="100" stroke="url(#lineGrad)" stroke-width="2" class="flow-line"/>
+                    <line x1="435" y1="170" x2="660" y2="50" stroke="rgba(6,182,212,0.3)" stroke-width="1" class="flow-line"/>
+                    <line x1="435" y1="170" x2="660" y2="100" stroke="rgba(6,182,212,0.3)" stroke-width="1" class="flow-line"/>
+                    <line x1="435" y1="110" x2="660" y2="150" stroke="rgba(245,158,11,0.3)" stroke-width="1" class="flow-line"/>
+                </svg>
+            `;
+        }
+        
+        function renderPipelines() {
+            const workflows = [
+                { name: 'ci-cd.yml', desc: 'Ana CI/CD Pipeline', trigger: 'push/PR', status: 'active', stages: ['Lint', 'Build', 'Deploy', 'Health'] },
+                { name: 'health-check.yml', desc: 'Scheduled Health Check', trigger: 'cron: */6h', status: 'active', stages: ['Check All', 'Report'] },
+                { name: 'trend-analysis.yml', desc: 'Trend Analysis', trigger: 'cron: 2x/day', status: 'active', stages: ['Collect', 'Analyze', 'Report'] },
+                { name: 'release.yml', desc: 'Auto Release', trigger: 'tag: v*', status: 'active', stages: ['Changelog', 'Package', 'Release'] },
+                { name: 'labeler.yml', desc: 'Auto Labeler', trigger: 'PR/Issue', status: 'active', stages: ['Detect', 'Label'] },
+                { name: 'stale.yml', desc: 'Stale Manager', trigger: 'cron: daily', status: 'active', stages: ['Scan', 'Mark', 'Close'] },
+                { name: 'welcome.yml', desc: 'Welcome Bot', trigger: 'first PR/Issue', status: 'active', stages: ['Detect', 'Comment'] },
+                { name: 'webhook-trigger.yml', desc: 'ARCHON Webhook', trigger: 'push/release', status: 'active', stages: ['Event', 'Brain'] },
+                { name: 'issue-to-archon.yml', desc: 'Issue → ARCHON', trigger: 'critical label', status: 'active', stages: ['Detect', 'Intake'] },
+                { name: 'code-quality.yml', desc: 'Code Quality', trigger: 'PR with .py', status: 'active', stages: ['Flake8', 'Black'] }
+            ];
+            
+            return `
+                <div class="pt-16 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-2xl font-bold">CI/CD Pipelines</h1>
+                        <a href="https://github.com/${GITHUB_REPO}/actions" target="_blank" 
+                           class="px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors flex items-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                            View on GitHub
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        ${workflows.map(w => `
+                            <div class="glass rounded-xl p-5 glass-hover transition-all">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <h3 class="font-semibold mono text-sm">${w.name}</h3>
+                                        <p class="text-gray-400 text-sm">${w.desc}</p>
+                                    </div>
+                                    <span class="px-2 py-1 rounded text-xs bg-green-500/20 text-green-400">${w.status}</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i data-lucide="play" class="w-4 h-4 text-gray-500"></i>
+                                    <span class="text-xs text-gray-500">${w.trigger}</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    ${w.stages.map((s, i) => `
+                                        <div class="flex items-center">
+                                            <span class="px-2 py-1 rounded bg-white/5 text-xs">${s}</span>
+                                            ${i < w.stages.length - 1 ? '<i data-lucide="chevron-right" class="w-3 h-3 text-gray-600 mx-1"></i>' : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Recent Runs -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">Recent Workflow Runs</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-gray-500 text-sm border-b border-white/10">
+                                        <th class="pb-3">Workflow</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Branch</th>
+                                        <th class="pb-3">Duration</th>
+                                        <th class="pb-3">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.pipelineRuns.slice(0, 10).map(run => `
+                                        <tr class="border-b border-white/5 hover:bg-white/5">
+                                            <td class="py-3 font-medium">${run.name}</td>
+                                            <td class="py-3">
+                                                <span class="px-2 py-1 rounded text-xs ${run.conclusion === 'success' ? 'bg-green-500/20 text-green-400' : run.conclusion === 'failure' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                                                    ${run.conclusion || run.status}
+                                                </span>
+                                            </td>
+                                            <td class="py-3 text-gray-400 mono text-sm">${run.head_branch}</td>
+                                            <td class="py-3 text-gray-400 text-sm">-</td>
+                                            <td class="py-3 text-gray-400 text-sm">${new Date(run.created_at).toLocaleString()}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderLambdas() {
+            const lambdas = [
+                { 
+                    name: 'archon-brain', 
+                    memory: '512MB', 
+                    color: 'blue',
+                    url: LAMBDA_URLS.brain,
+                    consolidated: ['orchestrator', 'decision_engine', 'pattern_analyzer'],
+                    actions: ['orchestrate', 'decide', 'analyze', 'process', 'health']
+                },
+                { 
+                    name: 'archon-actions', 
+                    memory: '256MB', 
+                    color: 'orange',
+                    url: LAMBDA_URLS.actions,
+                    consolidated: ['action_executor', 'slack_notifier', 'event_collector', 'mvp_ideator'],
+                    actions: ['execute', 'notify', 'collect_event', 'ideate', 'health']
+                },
+                { 
+                    name: 'archon-trend', 
+                    memory: '512MB', 
+                    color: 'cyan',
+                    url: LAMBDA_URLS.trend,
+                    consolidated: ['trend_collector', 'trend_analyzer', 'trend_reporter'],
+                    actions: ['collect', 'analyze', 'report', 'full_pipeline', 'health']
+                },
+                { 
+                    name: 'archon-intake', 
+                    memory: '256MB', 
+                    color: 'green',
+                    url: LAMBDA_URLS.intake,
+                    consolidated: ['update_intake', 'feedback_processor'],
+                    actions: ['create_update', 'process', 'review', 'list', 'health']
+                }
+            ];
+            
+            const colorMap = {
+                blue: { bg: 'bg-blue-500/20', border: 'border-blue-500/30', text: 'text-blue-400' },
+                orange: { bg: 'bg-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400' },
+                cyan: { bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' },
+                green: { bg: 'bg-green-500/20', border: 'border-green-500/30', text: 'text-green-400' }
+            };
+            
+            return `
+                <div class="pt-16 space-y-6">
+                    <h1 class="text-2xl font-bold">Lambda Functions</h1>
+                    
+                    <!-- Consolidation Stats -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">Consolidation Summary</h2>
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <p class="text-3xl font-bold text-red-400">14</p>
+                                <p class="text-sm text-gray-500">Before</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <p class="text-3xl font-bold">→</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <p class="text-3xl font-bold text-green-400">6</p>
+                                <p class="text-sm text-gray-500">After</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                                <p class="text-3xl font-bold text-green-400">57%</p>
+                                <p class="text-sm text-gray-500">Reduction</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lambda Cards -->
+                    <div class="grid grid-cols-2 gap-6">
+                        ${lambdas.map(l => {
+                            const status = state.lambdaStatus[l.name.replace('archon-', '')] || { status: 'unknown', latency: 0 };
+                            const c = colorMap[l.color];
+                            return `
+                                <div class="glass rounded-2xl p-6 ${c.border} border">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div>
+                                            <h3 class="text-lg font-semibold">${l.name}</h3>
+                                            <p class="text-sm text-gray-500 mono">${l.memory}</p>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full ${status.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'} pulse-dot"></span>
+                                            <span class="text-sm ${status.status === 'healthy' ? 'text-green-400' : 'text-red-400'}">${status.status}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <p class="text-xs text-gray-500 mb-2">Consolidated from:</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            ${l.consolidated.map(c => `<span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-400">${c}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <p class="text-xs text-gray-500 mb-2">Available actions:</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            ${l.actions.map(a => `<span class="px-2 py-1 rounded ${c.bg} text-xs ${c.text} mono">${a}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pt-4 border-t border-white/10">
+                                        <p class="text-xs text-gray-500 mb-1">Function URL:</p>
+                                        <code class="text-xs text-gray-400 break-all">${l.url.substring(0, 50)}...</code>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderTrends() {
+            return `
+                <div class="pt-16 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-2xl font-bold">Trend Analysis</h1>
+                        <button onclick="runTrendAnalysis()" 
+                                class="px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/30 transition-colors flex items-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                            Collect Trends
+                        </button>
+                    </div>
+                    
+                    <!-- Sources -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="glass rounded-xl p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-orange-500/20">
+                                    <i data-lucide="flame" class="w-5 h-5 text-orange-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">HackerNews</h3>
+                                    <p class="text-xs text-gray-500">Top stories & discussions</p>
+                                </div>
+                            </div>
+                            <div class="text-2xl font-bold text-orange-400">15</div>
+                            <p class="text-xs text-gray-500">trends collected</p>
+                        </div>
+                        
+                        <div class="glass rounded-xl p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-purple-500/20">
+                                    <i data-lucide="github" class="w-5 h-5 text-purple-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">GitHub</h3>
+                                    <p class="text-xs text-gray-500">Trending repositories</p>
+                                </div>
+                            </div>
+                            <div class="text-2xl font-bold text-purple-400">25</div>
+                            <p class="text-xs text-gray-500">trends collected</p>
+                        </div>
+                        
+                        <div class="glass rounded-xl p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-gray-500/20">
+                                    <i data-lucide="package" class="w-5 h-5 text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">ProductHunt</h3>
+                                    <p class="text-xs text-gray-500">Coming soon</p>
+                                </div>
+                            </div>
+                            <div class="text-2xl font-bold text-gray-400">-</div>
+                            <p class="text-xs text-gray-500">pending integration</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Pipeline Actions -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">Trend Pipeline Actions</h2>
+                        <div class="grid grid-cols-4 gap-4">
+                            <button onclick="callTrendAction('collect')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left">
+                                <i data-lucide="download" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <h3 class="font-medium">Collect</h3>
+                                <p class="text-xs text-gray-500">Gather from sources</p>
+                            </button>
+                            <button onclick="callTrendAction('analyze')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left">
+                                <i data-lucide="brain" class="w-6 h-6 text-purple-400 mb-2"></i>
+                                <h3 class="font-medium">Analyze</h3>
+                                <p class="text-xs text-gray-500">Categorize & score</p>
+                            </button>
+                            <button onclick="callTrendAction('report')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left">
+                                <i data-lucide="file-text" class="w-6 h-6 text-green-400 mb-2"></i>
+                                <h3 class="font-medium">Report</h3>
+                                <p class="text-xs text-gray-500">Generate insights</p>
+                            </button>
+                            <button onclick="callTrendAction('full_pipeline')" class="p-4 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 hover:border-purple-500/30 transition-colors text-left">
+                                <i data-lucide="play" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <h3 class="font-medium">Full Pipeline</h3>
+                                <p class="text-xs text-gray-500">Run all steps</p>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Trend Categories -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">Category Distribution</h2>
+                        <div class="flex items-end gap-4 h-40">
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-blue-500/30 rounded-t" style="height: 80%"></div>
+                                <p class="text-xs mt-2">AI</p>
+                                <p class="text-lg font-bold text-blue-400">16</p>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-gray-500/30 rounded-t" style="height: 100%"></div>
+                                <p class="text-xs mt-2">Other</p>
+                                <p class="text-lg font-bold text-gray-400">21</p>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-green-500/30 rounded-t" style="height: 15%"></div>
+                                <p class="text-xs mt-2">DevTools</p>
+                                <p class="text-lg font-bold text-green-400">2</p>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-purple-500/30 rounded-t" style="height: 8%"></div>
+                                <p class="text-xs mt-2">SaaS</p>
+                                <p class="text-lg font-bold text-purple-400">1</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderIntegrations() {
+            const integrations = [
+                { name: 'GitHub Actions', icon: 'github', status: 'active', desc: '10 workflows, CI/CD, auto-labeling', color: 'purple' },
+                { name: 'AWS Lambda', icon: 'server', status: 'active', desc: '6 functions, Function URLs enabled', color: 'orange' },
+                { name: 'API Gateway', icon: 'globe', status: 'active', desc: 'REST API, 7 endpoints', color: 'blue' },
+                { name: 'DynamoDB', icon: 'database', status: 'active', desc: '5 tables, on-demand billing', color: 'yellow' },
+                { name: 'CloudWatch', icon: 'activity', status: 'active', desc: 'Logs, metrics, alarms', color: 'cyan' },
+                { name: 'Slack', icon: 'message-square', status: 'active', desc: 'Notifications, alerts', color: 'green' },
+                { name: 'N8N Cloud', icon: 'workflow', status: 'pending', desc: '3 workflows ready', color: 'gray' },
+                { name: 'Vercel', icon: 'triangle', status: 'active', desc: 'Frontend hosting', color: 'white' }
+            ];
+            
+            return `
+                <div class="pt-16 space-y-6">
+                    <h1 class="text-2xl font-bold">Tool Integrations</h1>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        ${integrations.map(i => `
+                            <div class="glass rounded-xl p-5 glass-hover transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-3 rounded-xl bg-white/5">
+                                            <i data-lucide="${i.icon}" class="w-6 h-6 text-${i.color}-400"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold">${i.name}</h3>
+                                            <p class="text-sm text-gray-400">${i.desc}</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 rounded text-xs ${i.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">${i.status}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- API Endpoints -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">API Endpoints</h2>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <code class="text-sm">POST /v1/brain</code>
+                                <span class="text-xs text-gray-500">Orchestration</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <code class="text-sm">POST /v1/actions</code>
+                                <span class="text-xs text-gray-500">Events & Notifications</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <code class="text-sm">POST /v1/trend</code>
+                                <span class="text-xs text-gray-500">Trend Analysis</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <code class="text-sm">POST /v1/intake</code>
+                                <span class="text-xs text-gray-500">Customer Updates</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-4 mono">Base: ${API_BASE}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderNetworkMap() {
+            return `
+                <div class="pt-16 space-y-6">
+                    <h1 class="text-2xl font-bold">Network Architecture</h1>
+                    
+                    <div class="glass rounded-2xl p-6">
+                        <div class="relative h-[500px] bg-black/30 rounded-xl overflow-hidden">
+                            <svg viewBox="0 0 1000 500" class="w-full h-full">
+                                <!-- Background -->
+                                <defs>
+                                    <pattern id="grid2" width="50" height="50" patternUnits="userSpaceOnUse">
+                                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+                                    </pattern>
+                                    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.3"/>
+                                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0"/>
+                                    </radialGradient>
+                                </defs>
+                                <rect width="1000" height="500" fill="url(#grid2)"/>
+                                
+                                <!-- User/Client -->
+                                <g transform="translate(100, 250)">
+                                    <circle r="40" fill="url(#nodeGlow)"/>
+                                    <circle r="30" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="12">User</text>
+                                    <text y="55" text-anchor="middle" fill="#9ca3af" font-size="9">Client</text>
+                                </g>
+                                
+                                <!-- Vercel -->
+                                <g transform="translate(250, 250)">
+                                    <circle r="35" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="11">Vercel</text>
+                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">Frontend</text>
+                                </g>
+                                
+                                <!-- GitHub -->
+                                <g transform="translate(250, 100)">
+                                    <circle r="35" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="11">GitHub</text>
+                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">Actions</text>
+                                </g>
+                                
+                                <!-- API Gateway -->
+                                <g transform="translate(450, 250)">
+                                    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="rgba(59,130,246,0.2)" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="12">API Gateway</text>
+                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">REST API</text>
+                                </g>
+                                
+                                <!-- Lambda Cluster -->
+                                <g transform="translate(650, 150)">
+                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(59,130,246,0.3)" stroke="rgba(59,130,246,0.6)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Brain</text>
+                                </g>
+                                <g transform="translate(650, 220)">
+                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(245,158,11,0.3)" stroke="rgba(245,158,11,0.6)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Actions</text>
+                                </g>
+                                <g transform="translate(650, 290)">
+                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(6,182,212,0.3)" stroke="rgba(6,182,212,0.6)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Trend</text>
+                                </g>
+                                <g transform="translate(650, 360)">
+                                    <rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(16,185,129,0.3)" stroke="rgba(16,185,129,0.6)" stroke-width="2"/>
+                                    <text y="5" text-anchor="middle" fill="white" font-size="10">Intake</text>
+                                </g>
+                                
+                                <!-- DynamoDB -->
+                                <g transform="translate(850, 250)">
+                                    <rect x="-45" y="-35" width="90" height="70" rx="10" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)" stroke-width="2"/>
+                                    <text y="0" text-anchor="middle" fill="white" font-size="11">DynamoDB</text>
+                                    <text y="15" text-anchor="middle" fill="#9ca3af" font-size="9">5 Tables</text>
+                                    <text y="50" text-anchor="middle" fill="#9ca3af" font-size="8">trends, updates...</text>
+                                </g>
+                                
+                                <!-- External Services -->
+                                <g transform="translate(850, 100)">
+                                    <rect x="-40" y="-20" width="80" height="40" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)"/>
+                                    <text y="5" text-anchor="middle" fill="#9ca3af" font-size="10">External APIs</text>
+                                </g>
+                                <g transform="translate(850, 400)">
+                                    <rect x="-40" y="-20" width="80" height="40" rx="8" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)"/>
+                                    <text y="5" text-anchor="middle" fill="#9ca3af" font-size="10">Slack</text>
+                                </g>
+                                
+                                <!-- Connection Lines -->
+                                <line x1="130" y1="250" x2="215" y2="250" stroke="rgba(139,92,246,0.4)" stroke-width="2" class="flow-line"/>
+                                <line x1="285" y1="250" x2="400" y2="250" stroke="rgba(59,130,246,0.4)" stroke-width="2" class="flow-line"/>
+                                <line x1="285" y1="100" x2="400" y2="230" stroke="rgba(139,92,246,0.3)" stroke-width="1" class="flow-line"/>
+                                
+                                <line x1="500" y1="250" x2="615" y2="150" stroke="rgba(59,130,246,0.4)" stroke-width="2" class="flow-line"/>
+                                <line x1="500" y1="250" x2="615" y2="220" stroke="rgba(245,158,11,0.4)" stroke-width="2" class="flow-line"/>
+                                <line x1="500" y1="250" x2="615" y2="290" stroke="rgba(6,182,212,0.4)" stroke-width="2" class="flow-line"/>
+                                <line x1="500" y1="250" x2="615" y2="360" stroke="rgba(16,185,129,0.4)" stroke-width="2" class="flow-line"/>
+                                
+                                <line x1="685" y1="220" x2="805" y2="250" stroke="rgba(245,158,11,0.3)" stroke-width="1" class="flow-line"/>
+                                <line x1="685" y1="290" x2="805" y2="250" stroke="rgba(6,182,212,0.3)" stroke-width="1" class="flow-line"/>
+                                <line x1="685" y1="360" x2="805" y2="250" stroke="rgba(16,185,129,0.3)" stroke-width="1" class="flow-line"/>
+                                
+                                <line x1="685" y1="290" x2="810" y2="100" stroke="rgba(6,182,212,0.2)" stroke-width="1" class="flow-line"/>
+                                <line x1="685" y1="220" x2="810" y2="400" stroke="rgba(245,158,11,0.2)" stroke-width="1" class="flow-line"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Network Stats -->
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="glass rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-purple-400">1</p>
+                            <p class="text-xs text-gray-500">Region (us-east-1)</p>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-blue-400">7</p>
+                            <p class="text-xs text-gray-500">API Endpoints</p>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-cyan-400">4</p>
+                            <p class="text-xs text-gray-500">Function URLs</p>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-green-400">3</p>
+                            <p class="text-xs text-gray-500">External APIs</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderProactive() {
+            return `
+                <div class="pt-16 space-y-6">
+                    <h1 class="text-2xl font-bold">Proactive AI Capabilities</h1>
+                    
+                    <!-- Autonomy Score -->
+                    <div class="glass rounded-2xl p-6 gradient-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-semibold">Autonomy Level</h2>
+                                <p class="text-gray-400">Self-management capability score</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-5xl font-bold gradient-text">99.5%</p>
+                                <p class="text-sm text-gray-500">Fully Proactive</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 h-3 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full" style="width: 99.5%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proactive Features -->
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-3 rounded-xl bg-blue-500/20">
+                                    <i data-lucide="eye" class="w-6 h-6 text-blue-400"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold">Self-Monitoring</h3>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-400">
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 6 saatte bir health check</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Otomatik alert generation</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> CloudWatch metrics tracking</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Error pattern detection</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="glass rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-3 rounded-xl bg-purple-500/20">
+                                    <i data-lucide="trending-up" class="w-6 h-6 text-purple-400"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold">Trend Discovery</h3>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-400">
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Günde 2x otomatik analiz</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> AI kategorileme</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Opportunity detection</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> MVP ideation</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="glass rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-3 rounded-xl bg-green-500/20">
+                                    <i data-lucide="git-merge" class="w-6 h-6 text-green-400"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold">Auto-Deploy</h3>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-400">
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Push to main → auto deploy</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Lint + test before deploy</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Post-deploy health check</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Rollback capability</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="glass rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-3 rounded-xl bg-orange-500/20">
+                                    <i data-lucide="bell" class="w-6 h-6 text-orange-400"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold">Smart Notifications</h3>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-400">
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Slack integration</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Priority-based alerts</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Trend highlights</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Issue auto-intake</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Scheduled Tasks -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">Scheduled Autonomous Tasks</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i>
+                                    <span>Health Check</span>
+                                </div>
+                                <span class="text-sm text-gray-500 mono">every 6 hours</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="clock" class="w-5 h-5 text-cyan-400"></i>
+                                    <span>Trend Analysis</span>
+                                </div>
+                                <span class="text-sm text-gray-500 mono">09:00, 18:00 UTC</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="clock" class="w-5 h-5 text-gray-400"></i>
+                                    <span>Stale Issue Cleanup</span>
+                                </div>
+                                <span class="text-sm text-gray-500 mono">daily at midnight</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderDocs() {
+            return `
+                <div class="pt-16 space-y-6">
+                    <h1 class="text-2xl font-bold">Documentation</h1>
+                    
+                    <!-- Quick Reference -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-lg font-semibold mb-4">API Quick Reference</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-black/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs">POST</span>
+                                    <span class="text-gray-500 text-sm">/v1/brain</span>
+                                </div>
+                                <pre class="text-xs text-gray-400 mono overflow-x-auto"><code>{
+  "action": "orchestrate",
+  "params": {
+    "task_type": "analysis",
+    "data": { ... }
+  }
+}</code></pre>
+                            </div>
+                            
+                            <div class="p-4 rounded-xl bg-black/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs">POST</span>
+                                    <span class="text-gray-500 text-sm">/v1/trend</span>
+                                </div>
+                                <pre class="text-xs text-gray-400 mono overflow-x-auto"><code>{
+  "action": "full_pipeline"
+}
+// Actions: collect, analyze, report, full_pipeline</code></pre>
+                            </div>
+                            
+                            <div class="p-4 rounded-xl bg-black/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs">POST</span>
+                                    <span class="text-gray-500 text-sm">/v1/actions</span>
+                                </div>
+                                <pre class="text-xs text-gray-400 mono overflow-x-auto"><code>{
+  "action": "notify",
+  "params": {
+    "channel": "#alerts",
+    "message": "System update"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Links -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="https://github.com/${GITHUB_REPO}" target="_blank" class="glass rounded-xl p-5 glass-hover transition-all flex items-center gap-4">
+                            <i data-lucide="github" class="w-8 h-8 text-purple-400"></i>
+                            <div>
+                                <h3 class="font-semibold">GitHub Repository</h3>
+                                <p class="text-sm text-gray-400">Source code & workflows</p>
+                            </div>
+                        </a>
+                        
+                        <a href="${API_BASE}/v1/brain" target="_blank" class="glass rounded-xl p-5 glass-hover transition-all flex items-center gap-4">
+                            <i data-lucide="globe" class="w-8 h-8 text-blue-400"></i>
+                            <div>
+                                <h3 class="font-semibold">API Gateway</h3>
+                                <p class="text-sm text-gray-400">REST API endpoints</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Version Info -->
+                    <div class="glass rounded-xl p-5">
+                        <h3 class="font-semibold mb-3">System Information</h3>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Version</span>
+                                <span class="mono">v2.3.0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Region</span>
+                                <span class="mono">us-east-1</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Lambda Runtime</span>
+                                <span class="mono">Python 3.11</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Last Deploy</span>
+                                <span class="mono">Dec 19, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ═══════════════════════════════════════════════════════════════
+        // Event Handlers & Utilities
+        // ═══════════════════════════════════════════════════════════════
+        
+        function setActiveTab(tab) {
+            state.activeTab = tab;
+            render();
+        }
+        
+        async function callTrendAction(action) {
+            try {
+                const response = await fetch(LAMBDA_URLS.trend, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                const data = await response.json();
+                console.log(`Trend ${action}:`, data);
+                alert(`${action} completed! Check console for details.`);
+            } catch (e) {
+                console.error(e);
+                alert('Error: ' + e.message);
+            }
+        }
+        
+        function attachEventListeners() {
+            // Add any additional event listeners here
+        }
+        
+        // ═══════════════════════════════════════════════════════════════
+        // Initialize
+        // ═══════════════════════════════════════════════════════════════
+        
+        window.setActiveTab = setActiveTab;
+        window.callTrendAction = callTrendAction;
+        
+        // Initial render
+        render();
+        
+        // Fetch data
+        fetchAllHealth();
+        fetchGitHubWorkflows();
+    </script>
+</body>
+</html>
