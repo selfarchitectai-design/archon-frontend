@@ -3,437 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCHON V2.3 - Ultimate Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>ARCHON V2.3 Ultimate Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a24;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-cyan: #06b6d4;
-            --accent-green: #10b981;
-            --accent-orange: #f59e0b;
-            --accent-red: #ef4444;
-            --accent-pink: #ec4899;
-        }
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        body { background: var(--bg-primary); color: #e5e7eb; min-height: 100vh; line-height: 1.5; }
-        .flex { display: flex; } .flex-1 { flex: 1; } .flex-col { flex-direction: column; }
-        .items-center { align-items: center; } .items-start { align-items: start; }
-        .justify-between { justify-content: space-between; } .justify-center { justify-content: center; }
-        .gap-1 { gap: 0.25rem; } .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-4 { gap: 1rem; } .gap-6 { gap: 1.5rem; }
-        .grid { display: grid; }
-        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-        .grid-cols-5 { grid-template-columns: repeat(5, 1fr); }
-        .flex-wrap { flex-wrap: wrap; }
-        .p-2 { padding: 0.5rem; } .p-3 { padding: 0.75rem; } .p-4 { padding: 1rem; } .p-5 { padding: 1.25rem; } .p-6 { padding: 1.5rem; }
-        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; } .px-4 { padding-left: 1rem; padding-right: 1rem; } .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; } .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; } .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; } .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
-        .pt-4 { padding-top: 1rem; } .pt-16 { padding-top: 4rem; } .pb-3 { padding-bottom: 0.75rem; }
-        .mb-1 { margin-bottom: 0.25rem; } .mb-2 { margin-bottom: 0.5rem; } .mb-3 { margin-bottom: 0.75rem; } .mb-4 { margin-bottom: 1rem; }
-        .mt-1 { margin-top: 0.25rem; } .mt-2 { margin-top: 0.5rem; } .mt-4 { margin-top: 1rem; } .mt-6 { margin-top: 1.5rem; } .mt-8 { margin-top: 2rem; }
-        .ml-64 { margin-left: 16rem; }
-        .space-y-2 > * + * { margin-top: 0.5rem; } .space-y-3 > * + * { margin-top: 0.75rem; } .space-y-4 > * + * { margin-top: 1rem; } .space-y-6 > * + * { margin-top: 1.5rem; }
-        .w-2 { width: 0.5rem; } .w-3 { width: 0.75rem; } .w-4 { width: 1rem; } .w-5 { width: 1.25rem; } .w-6 { width: 1.5rem; } .w-8 { width: 2rem; } .w-10 { width: 2.5rem; } .w-full { width: 100%; }
-        .h-2 { height: 0.5rem; } .h-3 { height: 0.75rem; } .h-4 { height: 1rem; } .h-5 { height: 1.25rem; } .h-6 { height: 1.5rem; } .h-8 { height: 2rem; } .h-40 { height: 10rem; } .h-64 { height: 16rem; } .h-full { height: 100%; }
-        .min-h-screen { min-height: 100vh; }
-        .text-xs { font-size: 0.75rem; } .text-sm { font-size: 0.875rem; } .text-lg { font-size: 1.125rem; } .text-xl { font-size: 1.25rem; } .text-2xl { font-size: 1.5rem; } .text-3xl { font-size: 1.875rem; } .text-4xl { font-size: 2.25rem; } .text-5xl { font-size: 3rem; }
-        .font-medium { font-weight: 500; } .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; }
-        .text-center { text-align: center; } .text-left { text-align: left; } .text-right { text-align: right; }
-        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .text-white { color: #ffffff; } .text-gray-400 { color: #9ca3af; } .text-gray-500 { color: #6b7280; } .text-gray-600 { color: #4b5563; }
-        .text-blue-400 { color: #60a5fa; } .text-purple-400 { color: #a78bfa; } .text-cyan-400 { color: #22d3ee; } .text-green-400 { color: #4ade80; } .text-orange-400 { color: #fb923c; } .text-red-400 { color: #f87171; } .text-pink-400 { color: #f472b6; } .text-yellow-400 { color: #facc15; }
-        .bg-white\/5 { background: rgba(255,255,255,0.05); } .bg-white\/10 { background: rgba(255,255,255,0.1); } .bg-black\/30 { background: rgba(0,0,0,0.3); }
-        .bg-green-500 { background: #22c55e; } .bg-green-500\/10 { background: rgba(34,197,94,0.1); } .bg-green-500\/20 { background: rgba(34,197,94,0.2); }
-        .bg-red-500 { background: #ef4444; } .bg-red-500\/20 { background: rgba(239,68,68,0.2); }
-        .bg-blue-500\/20 { background: rgba(59,130,246,0.2); } .bg-purple-500\/20 { background: rgba(139,92,246,0.2); } .bg-cyan-500\/20 { background: rgba(6,182,212,0.2); }
-        .bg-orange-500\/20 { background: rgba(249,115,22,0.2); } .bg-pink-500\/20 { background: rgba(236,72,153,0.2); } .bg-yellow-500\/20 { background: rgba(234,179,8,0.2); }
-        .border { border-width: 1px; border-style: solid; } .border-b { border-bottom-width: 1px; } .border-r { border-right-width: 1px; }
-        .border-white\/5 { border-color: rgba(255,255,255,0.05); } .border-white\/10 { border-color: rgba(255,255,255,0.1); } .border-white\/20 { border-color: rgba(255,255,255,0.2); }
-        .border-green-500\/20 { border-color: rgba(34,197,94,0.2); } .border-green-500\/30 { border-color: rgba(34,197,94,0.3); }
-        .border-purple-500\/20 { border-color: rgba(139,92,246,0.2); } .border-purple-500\/30 { border-color: rgba(139,92,246,0.3); }
-        .border-orange-500\/30 { border-color: rgba(249,115,22,0.3); } .border-pink-500\/30 { border-color: rgba(236,72,153,0.3); }
-        .rounded { border-radius: 0.25rem; } .rounded-lg { border-radius: 0.5rem; } .rounded-xl { border-radius: 0.75rem; } .rounded-2xl { border-radius: 1rem; } .rounded-full { border-radius: 9999px; }
-        .overflow-hidden { overflow: hidden; } .overflow-x-auto { overflow-x: auto; } .overflow-y-auto { overflow-y: auto; }
-        .cursor-pointer { cursor: pointer; } .transition-all { transition: all 0.3s ease; }
-        .fixed { position: fixed; } .relative { position: relative; } .absolute { position: absolute; }
-        .top-0 { top: 0; } .left-0 { left: 0; } .right-0 { right: 0; } .bottom-0 { bottom: 0; } .top-16 { top: 4rem; } .z-50 { z-index: 50; }
-        .glass { background: rgba(26, 26, 36, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-hover:hover { background: rgba(26, 26, 36, 0.95); border-color: rgba(139, 92, 246, 0.3); transform: translateY(-2px); }
-        .gradient-text { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .pulse-dot { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .flow-line { stroke-dasharray: 10; animation: flow 1s linear infinite; }
-        @keyframes flow { to { stroke-dashoffset: -20; } }
-        .tab-active { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border-color: rgba(139, 92, 246, 0.5); }
-        .metric-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2); }
-        .hover\:bg-white\/5:hover { background: rgba(255,255,255,0.05); }
-        .hover\:bg-white\/10:hover { background: rgba(255,255,255,0.1); }
-        .scroll-hidden::-webkit-scrollbar { display: none; } .scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
-        button { background: none; border: none; cursor: pointer; color: inherit; }
-        a { color: inherit; text-decoration: none; }
-        table { width: 100%; border-collapse: collapse; } th, td { padding: 0.75rem; text-align: left; }
-        code, pre { font-family: 'JetBrains Mono', monospace; } pre { white-space: pre-wrap; }
-        .n8n-gradient { background: linear-gradient(135deg, #ff6d5a, #ff9472); }
-        .mcp-gradient { background: linear-gradient(135deg, #06b6d4, #8b5cf6); }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--bg:#0a0a0f;--card:#1a1a24;--border:rgba(255,255,255,0.1)}
+        *{font-family:'Inter',-apple-system,sans-serif}.mono{font-family:'JetBrains Mono',monospace}
+        body{background:var(--bg);color:#e5e7eb;min-height:100vh;line-height:1.5}
+        .flex{display:flex}.flex-1{flex:1}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}
+        .grid{display:grid}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-5{grid-template-columns:repeat(5,1fr)}.grid-6{grid-template-columns:repeat(6,1fr)}
+        .p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}
+        .px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}
+        .mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.ml-64{margin-left:16rem}
+        .pt-16{padding-top:4rem}.space-y > *+*{margin-top:1rem}
+        .w-2{width:.5rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-full{width:100%}
+        .h-2{height:.5rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-64{height:16rem}
+        .text-xs{font-size:.75rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}.text-2xl{font-size:1.5rem}.text-3xl{font-size:1.875rem}.text-4xl{font-size:2.25rem}
+        .font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}.text-center{text-align:center}
+        .text-white{color:#fff}.text-gray-400{color:#9ca3af}.text-gray-500{color:#6b7280}
+        .text-blue-400{color:#60a5fa}.text-purple-400{color:#a78bfa}.text-cyan-400{color:#22d3ee}.text-green-400{color:#4ade80}.text-orange-400{color:#fb923c}.text-red-400{color:#f87171}.text-pink-400{color:#f472b6}
+        .bg-white\/5{background:rgba(255,255,255,.05)}.bg-white\/10{background:rgba(255,255,255,.1)}.bg-black\/30{background:rgba(0,0,0,.3)}
+        .bg-green-500\/20{background:rgba(34,197,94,.2)}.bg-red-500\/20{background:rgba(239,68,68,.2)}.bg-blue-500\/20{background:rgba(59,130,246,.2)}.bg-purple-500\/20{background:rgba(139,92,246,.2)}.bg-cyan-500\/20{background:rgba(6,182,212,.2)}.bg-orange-500\/20{background:rgba(249,115,22,.2)}
+        .border{border:1px solid var(--border)}.border-b{border-bottom:1px solid var(--border)}
+        .rounded{border-radius:.25rem}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}
+        .overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.cursor-pointer{cursor:pointer}.transition{transition:all .2s}
+        .fixed{position:fixed}.relative{position:relative}.top-0{top:0}.left-0{left:0}.right-0{right:0}.top-16{top:4rem}.bottom-0{bottom:0}.z-50{z-index:50}
+        .glass{background:rgba(26,26,36,.9);backdrop-filter:blur(20px);border:1px solid var(--border)}
+        .glass:hover{border-color:rgba(139,92,246,.3)}
+        .gradient-text{background:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .pulse{animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        .tab-active{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.2));border-color:rgba(139,92,246,.5)}
+        .metric:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(139,92,246,.2)}
+        button{background:none;border:none;cursor:pointer;color:inherit}a{color:inherit;text-decoration:none}
+        .n8n-grad{background:linear-gradient(135deg,#ff6d5a,#ff9472)}.mcp-grad{background:linear-gradient(135deg,#06b6d4,#8b5cf6)}.vercel-grad{background:#000;border:1px solid #333}
+        .progress{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}.progress-bar{height:100%;border-radius:4px}
+        .flow{stroke-dasharray:10;animation:flow 1s linear infinite}@keyframes flow{to{stroke-dashoffset:-20}}
+        .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     </style>
 </head>
 <body>
-    <div id="app"><div style="display:flex;align-items:center;justify-content:center;height:100vh;"><div style="text-align:center;"><div class="pulse-dot" style="width:40px;height:40px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:50%;margin:0 auto 20px;"></div><p style="color:#9ca3af;">Loading ARCHON Dashboard...</p></div></div></div>
-    
-    <script>
-        const CONFIG = {
-            lambdaUrls: {
-                brain: 'https://jl67xd5pckkhjwdmnvhco2bg440grmtu.lambda-url.us-east-1.on.aws/',
-                actions: 'https://qtomhtef66vivt7wzyit5nuzve0nzvbk.lambda-url.us-east-1.on.aws/',
-                trend: 'https://mjfhxhcsi2u3o2pqhkj55rrlge0ucncm.lambda-url.us-east-1.on.aws/',
-                intake: 'https://wbhdgr46itplcvosjioitclvga0mxlec.lambda-url.us-east-1.on.aws/'
-            },
-            apiBase: 'https://d6gy1zr8vj.execute-api.us-east-1.amazonaws.com/prod',
-            n8nUrl: 'https://n8n.selfarchitectai.com',
-            githubRepo: 'selfarchitectai-design/archon-v2-platform'
-        };
-
-        const N8N_WORKFLOWS = [
-            { id: 'fIuv9S3gJGY3D8GZ', name: 'WF1_Daily_Insight', type: 'scheduled', icon: '📊' },
-            { id: 'XJG2I1FB52vN0gPc', name: '🚀 GitHub Auto Deploy', type: 'webhook', icon: '🚀' },
-            { id: 'SWDbn0KdaOMdiC5S', name: 'WF3_Decision_Action', type: 'scheduled', icon: '🤖' },
-            { id: '5v5HmKAxNND52hrp', name: 'EVENT_INTAKE_PRODUCTION', type: 'webhook', icon: '📥' },
-            { id: 'pABo8he8J4X5ihFR', name: '⚡ Auto Optimizer', type: 'scheduled', icon: '⚡' },
-            { id: 'VtMbs0Rjv3URPQ1T', name: 'ARCHON_CONTROL_TOWER_DAILY', type: 'scheduled', icon: '🗼' },
-            { id: 'WxT8sInqxbmJGw45', name: 'Daily Cost Optimizer', type: 'scheduled', icon: '💰' },
-            { id: 'ZEXkGRNcRwJKDGwZ', name: '🔥 Lambda Health Monitor', type: 'scheduled', icon: '🏥' },
-            { id: '5Xd33x0k05CwhS2w', name: 'API Health Dashboard', type: 'scheduled', icon: '📈' },
-            { id: 'kE2OPYdSFTGpI9S3', name: 'MCP Tool Executor', type: 'webhook', icon: '🔧' },
-            { id: 'nxGOMTIK3V0zk1kV', name: 'ARCHON_WEBHOOK_MASTER', type: 'webhook', icon: '🎯' },
-            { id: 'hP4zMFncKrcC09u3', name: 'WF2_Decision_Queue', type: 'scheduled', icon: '📋' },
-            { id: 'N0LtPF3MAwKU92wr', name: 'ARCHON_POLICY_GATE', type: 'webhook', icon: '🚪' },
-            { id: 'e9luGj0NmEUgc1l8', name: 'Slack Alert System', type: 'webhook', icon: '🔔' },
-            { id: 'oWdgoWs2sDf8zJZy', name: '🔥 ARCHON Trend Pipeline', type: 'scheduled', icon: '📈' },
-            { id: 'PNTVM4WVOjcErMLd', name: '🏥 ARCHON Health Monitor V2', type: 'scheduled', icon: '🏥' },
-            { id: 'MYfyRc9O2V5eW6il', name: '🔗 ARCHON GitHub Sync', type: 'webhook', icon: '🔗' }
-        ];
-
-        const MCP_SERVERS = [
-            { id: 'archon-brain', name: 'ARCHON Brain MCP', tools: ['orchestrate', 'decide', 'analyze', 'health'], status: 'active', color: 'blue' },
-            { id: 'archon-trend', name: 'Trend Analysis MCP', tools: ['collect', 'analyze', 'report', 'full_pipeline'], status: 'active', color: 'cyan' },
-            { id: 'github-mcp', name: 'GitHub MCP', tools: ['create_issue', 'list_issues', 'get_commits', 'trigger_workflow'], status: 'active', color: 'purple' },
-            { id: 'slack-mcp', name: 'Slack MCP', tools: ['send_message', 'send_alert', 'send_report'], status: 'active', color: 'orange' }
-        ];
-
-        let state = { activeTab: 'overview', lambdaStatus: {}, loading: true };
-
-        const icons = {
-            brain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
-            server: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>',
-            workflow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>',
-            plug: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>',
-            network: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
-            zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-            refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
-            globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-            play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
-            clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-            link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>',
-            tool: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-            activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-            'git-branch': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>',
-            database: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>',
-            'trending-up': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>'
-        };
-
-        function icon(name, cls = '') {
-            const size = cls.includes('w-6') ? 24 : cls.includes('w-5') ? 20 : cls.includes('w-4') ? 16 : 20;
-            return `<span class="inline-flex ${cls}" style="width:${size}px;height:${size}px">${icons[name] || icons.zap}</span>`;
-        }
-
-        async function checkLambdaHealth(name, url) {
-            try {
-                const start = Date.now();
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'health' }) });
-                const latency = Date.now() - start;
-                const data = await response.json();
-                return { name, status: data.status || 'healthy', latency };
-            } catch (e) { return { name, status: 'error', latency: 0 }; }
-        }
-
-        async function fetchAllHealth() {
-            const results = await Promise.all(Object.entries(CONFIG.lambdaUrls).map(([name, url]) => checkLambdaHealth(name, url)));
-            state.lambdaStatus = {};
-            results.forEach(r => state.lambdaStatus[r.name] = r);
-            state.loading = false;
-            render();
-        }
-
-        function render() {
-            document.getElementById('app').innerHTML = `${renderHeader()}<div class="flex">${renderSidebar()}<main class="flex-1 p-6 ml-64">${renderContent()}</main></div>`;
-        }
-
-        function renderHeader() {
-            const healthy = Object.values(state.lambdaStatus).filter(s => s.status === 'healthy').length;
-            return `<header class="fixed top-0 left-0 right-0 z-50 glass border-b border-white\/10">
-                <div class="flex items-center justify-between px-6 py-4">
-                    <div class="flex items-center gap-4">
-                        <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center">${icon('brain', 'w-6 h-6 text-white')}</div>
-                        <div><h1 class="text-xl font-bold gradient-text">ARCHON V2.3</h1><p class="text-xs text-gray-500">Self-Evolving AI Operations Platform</p></div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500\/10 border border-green-500\/20"><span class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></span><span class="text-sm text-green-400">${healthy}/4 Lambda</span></div>
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-lg n8n-gradient"><span class="text-sm text-white font-medium">17 N8N</span></div>
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-lg mcp-gradient"><span class="text-sm text-white font-medium">4 MCP</span></div>
-                        <button onclick="fetchAllHealth()" class="p-2 rounded-lg hover:bg-white\/5">${icon('refresh', 'w-5 h-5 text-gray-400')}</button>
-                    </div>
+<div id="app"></div>
+<script>
+const CONFIG={
+    lambda:{brain:'https://jl67xd5pckkhjwdmnvhco2bg440grmtu.lambda-url.us-east-1.on.aws/',actions:'https://qtomhtef66vivt7wzyit5nuzve0nzvbk.lambda-url.us-east-1.on.aws/',trend:'https://mjfhxhcsi2u3o2pqhkj55rrlge0ucncm.lambda-url.us-east-1.on.aws/',intake:'https://wbhdgr46itplcvosjioitclvga0mxlec.lambda-url.us-east-1.on.aws/'},
+    vercel:'https://www.selfarchitectai.com',n8n:'https://n8n.selfarchitectai.com',api:'https://d6gy1zr8vj.execute-api.us-east-1.amazonaws.com/prod'
+};
+const N8N=[
+    {id:'fIuv9S3gJGY3D8GZ',name:'WF1_Daily_Insight',t:'⏰',type:'scheduled'},
+    {id:'XJG2I1FB52vN0gPc',name:'GitHub Auto Deploy',t:'🚀',type:'webhook'},
+    {id:'SWDbn0KdaOMdiC5S',name:'WF3_Decision_Action',t:'🤖',type:'scheduled'},
+    {id:'5v5HmKAxNND52hrp',name:'EVENT_INTAKE',t:'📥',type:'webhook'},
+    {id:'pABo8he8J4X5ihFR',name:'Auto Optimizer',t:'⚡',type:'scheduled'},
+    {id:'VtMbs0Rjv3URPQ1T',name:'CONTROL_TOWER',t:'🗼',type:'scheduled'},
+    {id:'WxT8sInqxbmJGw45',name:'Cost Optimizer',t:'💰',type:'scheduled'},
+    {id:'ZEXkGRNcRwJKDGwZ',name:'Health Monitor',t:'🏥',type:'scheduled'},
+    {id:'5Xd33x0k05CwhS2w',name:'API Dashboard',t:'📈',type:'scheduled'},
+    {id:'kE2OPYdSFTGpI9S3',name:'MCP Executor',t:'🔧',type:'webhook'},
+    {id:'nxGOMTIK3V0zk1kV',name:'WEBHOOK_MASTER',t:'🎯',type:'webhook'},
+    {id:'hP4zMFncKrcC09u3',name:'Decision_Queue',t:'📋',type:'scheduled'},
+    {id:'N0LtPF3MAwKU92wr',name:'POLICY_GATE',t:'🚪',type:'webhook'},
+    {id:'e9luGj0NmEUgc1l8',name:'Slack Alert',t:'🔔',type:'webhook'},
+    {id:'oWdgoWs2sDf8zJZy',name:'Trend Pipeline',t:'📈',type:'scheduled'},
+    {id:'PNTVM4WVOjcErMLd',name:'Health Monitor V2',t:'🏥',type:'scheduled'},
+    {id:'MYfyRc9O2V5eW6il',name:'GitHub Sync',t:'🔗',type:'webhook'}
+];
+const MCP=[
+    {id:'brain',name:'ARCHON Brain',tools:['orchestrate','decide','analyze','health'],c:'blue'},
+    {id:'trend',name:'Trend Analysis',tools:['collect','analyze','report','pipeline'],c:'cyan'},
+    {id:'github',name:'GitHub MCP',tools:['create_issue','list_issues','commits','trigger'],c:'purple'},
+    {id:'slack',name:'Slack MCP',tools:['send_message','alert','report'],c:'orange'}
+];
+const VERCEL={
+    project:{name:'archon-frontend',id:'prj_OguVxu6oPwGbcIwwEtYq6JkSNj2s',framework:'Next.js'},
+    domains:[{d:'www.selfarchitectai.com',primary:true},{d:'selfarchitectai.com',redirect:true},{d:'dashboard.selfarchitectai.com',primary:false}],
+    deploys:[
+        {id:'1',status:'ready',time:'2 min ago',msg:'Dashboard V2.3 - Vercel Integration'},
+        {id:'2',status:'ready',time:'30 min ago',msg:'N8N + MCP Full Integration'},
+        {id:'3',status:'ready',time:'1 hour ago',msg:'Edge Functions added'},
+        {id:'4',status:'ready',time:'3 hours ago',msg:'Dashboard updates'},
+        {id:'5',status:'ready',time:'6 hours ago',msg:'Initial setup'}
+    ],
+    edge:[
+        {name:'archon-proxy',path:'/api/archon/:service',inv:1247,lat:'45ms'},
+        {name:'health',path:'/api/health',inv:892,lat:'120ms'},
+        {name:'analytics',path:'/api/analytics',inv:456,lat:'35ms'},
+        {name:'webhook',path:'/api/webhook/:type',inv:234,lat:'85ms'}
+    ],
+    env:18,analytics:{views:{today:342,week:2156},bw:'2.3GB/100GB'}
+};
+let state={tab:'overview',lambda:{},loading:true};
+const I={
+    brain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
+    server:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>',
+    workflow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>',
+    tool:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    triangle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 19h20L12 2z"/></svg>',
+    network:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
+    plug:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>',
+    activity:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    git:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>',
+    refresh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"/></svg>',
+    link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+    globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+    zap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    rocket:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>'
+};
+function icon(n,c=''){const s=c.includes('w-6')?24:c.includes('w-5')?20:16;return `<span class="${c}" style="display:inline-flex;width:${s}px;height:${s}px">${I[n]||I.zap}</span>`}
+async function checkHealth(){
+    const res=await Promise.all(Object.entries(CONFIG.lambda).map(async([n,u])=>{
+        try{const s=Date.now();const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'health'})});return{n,status:'healthy',lat:Date.now()-s}}
+        catch(e){return{n,status:'error',lat:0}}
+    }));
+    state.lambda={};res.forEach(r=>state.lambda[r.n]=r);state.loading=false;render();
+}
+function render(){document.getElementById('app').innerHTML=`${header()}<div class="flex">${sidebar()}<main class="flex-1 p-6 ml-64">${content()}</main></div>`}
+function header(){
+    const h=Object.values(state.lambda).filter(s=>s.status==='healthy').length;
+    return `<header class="fixed top-0 left-0 right-0 z-50 glass border-b">
+        <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-4">
+                <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center">${icon('brain','w-6 text-white')}</div>
+                <div><h1 class="text-xl font-bold gradient-text">ARCHON V2.3</h1><p class="text-xs text-gray-500">Self-Evolving AI Platform</p></div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500\/20"><span class="w-2 h-2 rounded-full bg-green-400 pulse"></span><span class="text-sm text-green-400">${h}/4</span></div>
+                <div class="px-3 py-2 rounded-lg n8n-grad text-white text-sm font-medium">17</div>
+                <div class="px-3 py-2 rounded-lg mcp-grad text-white text-sm font-medium">4</div>
+                <div class="px-3 py-2 rounded-lg vercel-grad text-white text-sm font-medium">▲</div>
+                <button onclick="checkHealth()" class="p-2 rounded-lg transition" style="background:rgba(255,255,255,.05)">${icon('refresh','w-5 text-gray-400')}</button>
+            </div>
+        </div>
+    </header>`}
+function sidebar(){
+    const tabs=[{id:'overview',i:'activity',l:'Overview'},{id:'vercel',i:'triangle',l:'Vercel'},{id:'n8n',i:'workflow',l:'N8N (17)'},{id:'mcp',i:'tool',l:'MCP (4)'},{id:'lambdas',i:'server',l:'Lambdas (6)'},{id:'network',i:'network',l:'Network'},{id:'integrations',i:'plug',l:'All (63)'}];
+    return `<aside class="fixed left-0 top-16 bottom-0 overflow-y-auto" style="width:256px;background:rgba(26,26,36,.9);border-right:1px solid var(--border);padding:16px">
+        <nav class="space-y">${tabs.map(t=>`<button onclick="setTab('${t.id}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${state.tab===t.id?'tab-active':''}">
+            ${icon(t.i,`w-5 ${state.tab===t.id?'text-purple-400':'text-gray-500'}`)}<span class="${state.tab===t.id?'text-white font-medium':'text-gray-400'}">${t.l}</span>
+        </button>`).join('')}</nav>
+        <div class="mt-6 p-4 rounded-xl" style="background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(59,130,246,.1));border:1px solid rgba(139,92,246,.2)">
+            <h3 class="text-sm font-semibold mb-3">Quick Stats</h3>
+            <div class="space-y text-xs">
+                <div class="flex justify-between"><span class="text-gray-500">Lambda</span><span class="mono">6</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">N8N</span><span class="mono text-orange-400">17</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">MCP</span><span class="mono text-cyan-400">4</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Vercel Edge</span><span class="mono">4</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">GitHub</span><span class="mono text-purple-400">10</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Autonomy</span><span class="mono text-green-400">99.5%</span></div>
+            </div>
+        </div>
+    </aside>`}
+function content(){
+    switch(state.tab){
+        case 'overview':return overview();
+        case 'vercel':return vercel();
+        case 'n8n':return n8n();
+        case 'mcp':return mcp();
+        case 'lambdas':return lambdas();
+        case 'network':return network();
+        case 'integrations':return integrations();
+        default:return overview()
+    }
+}
+function metric(t,v,i,c,s){
+    const bg={blue:'rgba(59,130,246,.15)',green:'rgba(34,197,94,.15)',purple:'rgba(139,92,246,.15)',cyan:'rgba(6,182,212,.15)',orange:'rgba(249,115,22,.15)',white:'rgba(255,255,255,.05)'};
+    const tc={blue:'text-blue-400',green:'text-green-400',purple:'text-purple-400',cyan:'text-cyan-400',orange:'text-orange-400',white:'text-white'};
+    return `<div class="metric glass rounded-2xl p-5 transition cursor-pointer" style="background:${bg[c]}">
+        <div class="flex items-start justify-between"><div><p class="text-sm text-gray-400">${t}</p><p class="text-3xl font-bold mt-1">${v}</p><p class="text-xs text-gray-500 mt-1">${s}</p></div><div class="p-3 rounded-xl bg-white\/5">${icon(i,`w-6 ${tc[c]}`)}</div></div>
+    </div>`}
+function overview(){
+    return `<div class="pt-16 space-y">
+        <div class="grid grid-6 gap-4">
+            ${metric('Lambda','6','server','blue','57%↓')}
+            ${metric('N8N','17','workflow','orange','Active')}
+            ${metric('MCP','4','tool','cyan','15 Tools')}
+            ${metric('Vercel','4','triangle','white','Edge Fn')}
+            ${metric('GitHub','10','git','purple','CI/CD')}
+            ${metric('Cost','$13','activity','green','35%↓')}
+        </div>
+        <div class="grid grid-3 gap-6">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('server','w-5 text-blue-400')} Lambda Health</h2>
+                <div class="space-y">${Object.entries(state.lambda).map(([n,d])=>`<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${d.status==='healthy'?'bg-green-400':'bg-red-400'} pulse"></span><span class="text-sm">${n}</span></div><span class="text-xs text-gray-500 mono">${d.lat}ms</span></div>`).join('')}${Object.keys(state.lambda).length===0?'<p class="text-gray-500 text-sm">Loading...</p>':''}</div>
+            </div>
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('triangle','w-5 text-white')} Vercel Status</h2>
+                <div class="space-y">
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><span class="text-sm">selfarchitectai.com</span><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">live</span></div>
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><span class="text-sm">Edge Functions</span><span class="text-xs text-gray-500">4 active</span></div>
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><span class="text-sm">Env Variables</span><span class="text-xs text-gray-500">18</span></div>
+                    <a href="#" onclick="setTab('vercel')" class="block text-center text-sm text-purple-400 mt-2">View details →</a>
                 </div>
-            </header>`;
-        }
-
-        function renderSidebar() {
-            const tabs = [
-                { id: 'overview', icon: 'activity', label: 'Overview' },
-                { id: 'n8n', icon: 'workflow', label: 'N8N Workflows' },
-                { id: 'mcp', icon: 'tool', label: 'MCP Servers' },
-                { id: 'lambdas', icon: 'server', label: 'Lambda Functions' },
-                { id: 'pipelines', icon: 'git-branch', label: 'CI/CD Pipelines' },
-                { id: 'network', icon: 'network', label: 'Network Map' },
-                { id: 'integrations', icon: 'plug', label: 'All Integrations' }
-            ];
-            return `<aside class="fixed left-0 top-16 bottom-0" style="width:256px;background:rgba(26,26,36,0.8);backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,0.1);padding:16px;overflow-y:auto">
-                <nav class="space-y-2">${tabs.map(t => `<button onclick="setActiveTab('${t.id}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${state.activeTab === t.id ? 'tab-active border border-purple-500\/30' : 'hover:bg-white\/5'}">${icon(t.icon, `w-5 h-5 ${state.activeTab === t.id ? 'text-purple-400' : 'text-gray-500'}`)}<span class="${state.activeTab === t.id ? 'text-white font-medium' : 'text-gray-400'}">${t.label}</span></button>`).join('')}</nav>
-                <div class="mt-8 p-4 rounded-xl" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(59,130,246,0.1));border:1px solid rgba(139,92,246,0.2)">
-                    <h3 class="text-sm font-semibold text-white mb-3">System Stats</h3>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between"><span class="text-gray-500">Lambdas</span><span class="text-white mono">6</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">N8N Workflows</span><span class="text-orange-400 mono">17</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">MCP Servers</span><span class="text-cyan-400 mono">4</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">GitHub Actions</span><span class="text-purple-400 mono">10</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">Autonomy</span><span class="text-green-400 mono">99.5%</span></div>
-                    </div>
+            </div>
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('workflow','w-5 text-orange-400')} N8N Workflows</h2>
+                <div class="space-y">${N8N.slice(0,5).map(w=>`<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><div class="flex items-center gap-2"><span>${w.t}</span><span class="text-sm truncate" style="max-width:120px">${w.name}</span></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">on</span></div>`).join('')}<a href="#" onclick="setTab('n8n')" class="block text-center text-sm text-purple-400 mt-2">View all 17 →</a></div>
+            </div>
+        </div>
+    </div>`}
+function vercel(){
+    const V=VERCEL;
+    return `<div class="pt-16 space-y">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold flex items-center gap-3">${icon('triangle','w-8')} Vercel Platform</h1>
+            <a href="https://vercel.com/selfarchitectai-design/archon-frontend" target="_blank" class="px-4 py-2 rounded-lg vercel-grad text-white flex items-center gap-2">${icon('link','w-4')} Open Vercel</a>
+        </div>
+        <div class="grid grid-4 gap-4">
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold">▲</p><p class="text-sm text-gray-400 mt-2">${V.project.name}</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">${V.deploys.length}</p><p class="text-sm text-gray-400">Deployments</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-cyan-400">4</p><p class="text-sm text-gray-400">Edge Functions</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">${V.env}</p><p class="text-sm text-gray-400">Env Vars</p></div>
+        </div>
+        <div class="grid grid-2 gap-6">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('globe','w-5 text-blue-400')} Domains</h2>
+                <div class="space-y">${V.domains.map(d=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5">
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-400 pulse"></span><div><p class="font-medium">${d.d}</p><p class="text-xs text-gray-500">${d.primary?'Primary':d.redirect?'Redirect':'Alias'}</p></div></div>
+                    <span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">${icon('shield','w-3')} SSL</span>
+                </div>`).join('')}</div>
+            </div>
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('rocket','w-5 text-purple-400')} Recent Deployments</h2>
+                <div class="space-y">${V.deploys.map(d=>`<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${d.status==='ready'?'bg-green-400':'bg-red-400'}"></span><span class="text-sm truncate" style="max-width:180px">${d.msg}</span></div>
+                    <span class="text-xs text-gray-500">${d.time}</span>
+                </div>`).join('')}</div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-6">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('zap','w-5 text-cyan-400')} Edge Functions</h2>
+            <div class="grid grid-4 gap-4">${V.edge.map(f=>`<div class="p-4 rounded-xl bg-white\/5 transition" style="border:1px solid rgba(6,182,212,.2)">
+                <h3 class="font-semibold text-cyan-400">${f.name}</h3>
+                <p class="text-xs text-gray-500 mono mt-1">${f.path}</p>
+                <div class="mt-3 space-y">
+                    <div class="flex justify-between text-xs"><span class="text-gray-500">Invocations</span><span>${f.inv}</span></div>
+                    <div class="flex justify-between text-xs"><span class="text-gray-500">Latency</span><span class="text-green-400">${f.lat}</span></div>
                 </div>
-            </aside>`;
-        }
-
-        function renderContent() {
-            switch(state.activeTab) {
-                case 'overview': return renderOverview();
-                case 'n8n': return renderN8N();
-                case 'mcp': return renderMCP();
-                case 'lambdas': return renderLambdas();
-                case 'pipelines': return renderPipelines();
-                case 'network': return renderNetwork();
-                case 'integrations': return renderIntegrations();
-                default: return renderOverview();
-            }
-        }
-
-        function renderMetricCard(title, value, iconName, color, subtitle) {
-            const colors = { blue: 'rgba(59,130,246,0.15)', green: 'rgba(34,197,94,0.15)', purple: 'rgba(139,92,246,0.15)', cyan: 'rgba(6,182,212,0.15)', orange: 'rgba(249,115,22,0.15)', pink: 'rgba(236,72,153,0.15)' };
-            const textColors = { blue: 'text-blue-400', green: 'text-green-400', purple: 'text-purple-400', cyan: 'text-cyan-400', orange: 'text-orange-400', pink: 'text-pink-400' };
-            return `<div class="metric-card glass rounded-2xl p-5 transition-all cursor-pointer" style="background:${colors[color]};border:1px solid ${colors[color].replace('0.15','0.3')}">
-                <div class="flex items-start justify-between"><div><p class="text-sm text-gray-400">${title}</p><p class="text-3xl font-bold mt-1">${value}</p><p class="text-xs text-gray-500 mt-1">${subtitle}</p></div><div class="p-3 rounded-xl bg-white\/5">${icon(iconName, `w-6 h-6 ${textColors[color]}`)}</div></div>
-            </div>`;
-        }
-
-        function renderOverview() {
-            return `<div class="pt-16 space-y-6">
-                <div class="grid grid-cols-5 gap-4">
-                    ${renderMetricCard('Lambda Functions', '6', 'server', 'blue', '14→6 (57%↓)')}
-                    ${renderMetricCard('N8N Workflows', '17', 'workflow', 'orange', 'All Active')}
-                    ${renderMetricCard('MCP Servers', '4', 'tool', 'cyan', '15 Tools')}
-                    ${renderMetricCard('GitHub Actions', '10', 'git-branch', 'purple', 'CI/CD Ready')}
-                    ${renderMetricCard('Monthly Cost', '$13', 'trending-up', 'green', '35% Savings')}
+            </div>`).join('')}</div>
+        </div>
+        <div class="grid grid-2 gap-6">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4">Environment Variables (${V.env})</h2>
+                <div class="grid grid-2 gap-2 text-sm">
+                    <div class="p-2 rounded bg-white\/5">VERCEL_TOKEN</div>
+                    <div class="p-2 rounded bg-white\/5">GITHUB_TOKEN</div>
+                    <div class="p-2 rounded bg-white\/5">AWS_ACCESS_KEY_ID</div>
+                    <div class="p-2 rounded bg-white\/5">AWS_SECRET_ACCESS_KEY</div>
+                    <div class="p-2 rounded bg-white\/5">N8N_API_KEY</div>
+                    <div class="p-2 rounded bg-white\/5">N8N_BASE_URL</div>
+                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_BRAIN_URL</div>
+                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_ACTIONS_URL</div>
+                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_TREND_URL</div>
+                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_INTAKE_URL</div>
+                    <div class="p-2 rounded bg-white\/5 text-cyan-400">API_GATEWAY_URL</div>
+                    <div class="p-2 rounded bg-white\/5">KV_REST_API_*</div>
                 </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('server', 'w-5 h-5 text-blue-400')} Lambda Health</h2>
-                        <div class="space-y-3">${Object.entries(state.lambdaStatus).map(([name, data]) => `<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full ${data.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'} pulse-dot"></span><span class="font-medium">archon-${name}</span></div><div class="flex items-center gap-4"><span class="text-xs text-gray-500 mono">${data.latency}ms</span><span class="px-2 py-1 rounded text-xs ${data.status === 'healthy' ? 'bg-green-500\/20 text-green-400' : 'bg-red-500\/20 text-red-400'}">${data.status}</span></div></div>`).join('')}${Object.keys(state.lambdaStatus).length === 0 ? '<p class="text-gray-500">Loading...</p>' : ''}</div>
-                    </div>
-                    <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('workflow', 'w-5 h-5 text-orange-400')} N8N Active Workflows</h2>
-                        <div class="space-y-2">${N8N_WORKFLOWS.slice(0, 6).map(wf => `<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><div class="flex items-center gap-2"><span>${wf.icon}</span><span class="text-sm truncate" style="max-width:180px">${wf.name}</span></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span></div>`).join('')}<a href="#" onclick="setActiveTab('n8n')" class="block text-center text-sm text-purple-400 mt-3">View all 17 workflows →</a></div>
-                    </div>
+            </div>
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4">Analytics</h2>
+                <div class="grid grid-2 gap-4 mb-4">
+                    <div class="text-center p-3 rounded-lg bg-white\/5"><p class="text-2xl font-bold">${V.analytics.views.today}</p><p class="text-xs text-gray-500">Today</p></div>
+                    <div class="text-center p-3 rounded-lg bg-white\/5"><p class="text-2xl font-bold">${V.analytics.views.week}</p><p class="text-xs text-gray-500">This Week</p></div>
                 </div>
-                <div class="glass rounded-2xl p-6">
-                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('tool', 'w-5 h-5 text-cyan-400')} MCP Server Tools</h2>
-                    <div class="grid grid-cols-4 gap-4">${MCP_SERVERS.map(s => `<div class="p-4 rounded-xl bg-white\/5 glass-hover transition-all cursor-pointer"><div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 rounded-lg bg-${s.color}-500\/20 flex items-center justify-center">${icon('tool', `w-4 h-4 text-${s.color}-400`)}</div><span class="font-medium text-sm">${s.name.replace(' MCP', '')}</span></div><div class="flex flex-wrap gap-1">${s.tools.slice(0,3).map(t => `<span class="px-2 py-1 rounded bg-white\/5 text-xs mono text-gray-400">${t}</span>`).join('')}${s.tools.length > 3 ? `<span class="px-2 py-1 rounded bg-white\/5 text-xs text-gray-500">+${s.tools.length-3}</span>` : ''}</div></div>`).join('')}</div>
+                <div><div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Bandwidth</span><span>${V.analytics.bw}</span></div><div class="progress"><div class="progress-bar bg-green-500" style="width:2.3%"></div></div></div>
+            </div>
+        </div>
+    </div>`}
+function n8n(){
+    const scheduled=N8N.filter(w=>w.type==='scheduled'),webhook=N8N.filter(w=>w.type==='webhook');
+    return `<div class="pt-16 space-y">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold">N8N Workflows</h1>
+            <a href="${CONFIG.n8n}" target="_blank" class="px-4 py-2 rounded-lg n8n-grad text-white flex items-center gap-2">${icon('link','w-4')} Open N8N</a>
+        </div>
+        <div class="grid grid-3 gap-4">
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-orange-400">17</p><p class="text-sm text-gray-400">Total</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">${scheduled.length}</p><p class="text-sm text-gray-400">Scheduled</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">${webhook.length}</p><p class="text-sm text-gray-400">Webhook</p></div>
+        </div>
+        <div class="grid grid-2 gap-6">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4">⏰ Scheduled (${scheduled.length})</h2>
+                <div class="space-y">${scheduled.map(w=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="text-xl">${w.t}</span><div><p class="font-medium">${w.name}</p><p class="text-xs text-gray-500 mono">${w.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span></div>`).join('')}</div>
+            </div>
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4">⚡ Webhook (${webhook.length})</h2>
+                <div class="space-y">${webhook.map(w=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="text-xl">${w.t}</span><div><p class="font-medium">${w.name}</p><p class="text-xs text-gray-500 mono">${w.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-purple-500\/20 text-purple-400">webhook</span></div>`).join('')}</div>
+            </div>
+        </div>
+    </div>`}
+function mcp(){
+    return `<div class="pt-16 space-y">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold">MCP Servers</h1>
+            <div class="px-4 py-2 rounded-lg mcp-grad text-white">Model Context Protocol</div>
+        </div>
+        <div class="grid grid-4 gap-4">
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-cyan-400">4</p><p class="text-sm text-gray-400">Servers</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">15</p><p class="text-sm text-gray-400">Tools</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">4</p><p class="text-sm text-gray-400">Resources</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-orange-400">100%</p><p class="text-sm text-gray-400">Available</p></div>
+        </div>
+        <div class="grid grid-2 gap-6">${MCP.map(s=>`<div class="glass rounded-2xl p-6" style="border:1px solid rgba(${s.c==='blue'?'59,130,246':s.c==='cyan'?'6,182,212':s.c==='purple'?'139,92,246':'249,115,22'},.3)">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3"><div class="w-12 h-12 rounded-xl bg-${s.c}-500\/20 flex items-center justify-center">${icon('tool',`w-6 text-${s.c}-400`)}</div><div><h3 class="font-semibold">${s.name}</h3><p class="text-xs text-gray-500">${s.id}</p></div></div>
+                <span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span>
+            </div>
+            <div class="flex flex-wrap gap-2">${s.tools.map(t=>`<span class="px-3 py-1 rounded-lg bg-white\/5 text-sm mono">${t}</span>`).join('')}</div>
+        </div>`).join('')}</div>
+    </div>`}
+function lambdas(){
+    const L=[{n:'brain',m:'512MB',c:'blue',f:['orchestrator','decision','pattern']},{n:'actions',m:'256MB',c:'orange',f:['executor','notifier','collector']},{n:'trend',m:'512MB',c:'cyan',f:['collector','analyzer','reporter']},{n:'intake',m:'256MB',c:'green',f:['intake','feedback']}];
+    return `<div class="pt-16 space-y">
+        <h1 class="text-2xl font-bold">Lambda Functions</h1>
+        <div class="glass rounded-2xl p-6"><div class="grid grid-4 gap-4"><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold text-red-400">14</p><p class="text-sm text-gray-500">Before</p></div><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold">→</p></div><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold text-green-400">6</p><p class="text-sm text-gray-500">After</p></div><div class="text-center p-4 rounded-xl bg-green-500\/10"><p class="text-3xl font-bold text-green-400">57%</p><p class="text-sm text-gray-500">Reduction</p></div></div></div>
+        <div class="grid grid-2 gap-6">${L.map(l=>{const s=state.lambda[l.n]||{status:'loading',lat:0};return `<div class="glass rounded-2xl p-6"><div class="flex items-start justify-between mb-4"><div><h3 class="text-lg font-semibold">archon-${l.n}</h3><p class="text-sm text-gray-500 mono">${l.m}</p></div><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${s.status==='healthy'?'bg-green-400':'bg-red-400'} pulse"></span><span class="text-sm">${s.status}</span></div></div><div><p class="text-xs text-gray-500 mb-2">Consolidated:</p><div class="flex flex-wrap gap-1">${l.f.map(f=>`<span class="px-2 py-1 rounded bg-white\/5 text-xs">${f}</span>`).join('')}</div></div></div>`}).join('')}</div>
+    </div>`}
+function network(){
+    return `<div class="pt-16 space-y">
+        <h1 class="text-2xl font-bold">Network Architecture</h1>
+        <div class="glass rounded-2xl p-6">
+            <div class="relative h-64 bg-black\/30 rounded-xl overflow-hidden">
+                <svg viewBox="0 0 900 250" class="w-full h-full">
+                    <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#3b82f6;stop-opacity:.5"/><stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:.5"/></linearGradient></defs>
+                    <g transform="translate(70,125)"><circle r="30" fill="rgba(139,92,246,.2)" stroke="rgba(139,92,246,.5)" stroke-width="2"/><text y="5" text-anchor="middle" fill="white" font-size="11">User</text></g>
+                    <g transform="translate(180,60)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(0,0,0,.5)" stroke="rgba(255,255,255,.3)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Vercel</text></g>
+                    <g transform="translate(180,125)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(255,109,90,.3)" stroke="rgba(255,109,90,.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">N8N</text></g>
+                    <g transform="translate(180,190)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(6,182,212,.3)" stroke="rgba(6,182,212,.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">MCP</text></g>
+                    <g transform="translate(350,125)"><rect x="-45" y="-25" width="90" height="50" rx="8" fill="rgba(59,130,246,.2)" stroke="rgba(59,130,246,.5)" stroke-width="2"/><text y="5" text-anchor="middle" fill="white" font-size="11">API Gateway</text></g>
+                    <g transform="translate(520,50)"><rect x="-30" y="-15" width="60" height="30" rx="5" fill="rgba(59,130,246,.3)" stroke="rgba(59,130,246,.5)"/><text y="4" text-anchor="middle" fill="white" font-size="9">Brain</text></g>
+                    <g transform="translate(520,95)"><rect x="-30" y="-15" width="60" height="30" rx="5" fill="rgba(249,115,22,.3)" stroke="rgba(249,115,22,.5)"/><text y="4" text-anchor="middle" fill="white" font-size="9">Actions</text></g>
+                    <g transform="translate(520,140)"><rect x="-30" y="-15" width="60" height="30" rx="5" fill="rgba(6,182,212,.3)" stroke="rgba(6,182,212,.5)"/><text y="4" text-anchor="middle" fill="white" font-size="9">Trend</text></g>
+                    <g transform="translate(520,185)"><rect x="-30" y="-15" width="60" height="30" rx="5" fill="rgba(34,197,94,.3)" stroke="rgba(34,197,94,.5)"/><text y="4" text-anchor="middle" fill="white" font-size="9">Intake</text></g>
+                    <g transform="translate(670,100)"><rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(249,115,22,.2)" stroke="rgba(249,115,22,.4)"/><text y="5" text-anchor="middle" fill="white" font-size="9">DynamoDB</text></g>
+                    <g transform="translate(670,170)"><rect x="-35" y="-20" width="70" height="40" rx="6" fill="rgba(139,92,246,.2)" stroke="rgba(139,92,246,.4)"/><text y="5" text-anchor="middle" fill="white" font-size="9">GitHub</text></g>
+                    <g transform="translate(810,125)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(34,197,94,.2)" stroke="rgba(34,197,94,.4)"/><text y="5" text-anchor="middle" fill="white" font-size="9">Slack</text></g>
+                    <line x1="100" y1="105" x2="150" y2="60" stroke="url(#lg)" stroke-width="2" class="flow"/>
+                    <line x1="100" y1="125" x2="150" y2="125" stroke="url(#lg)" stroke-width="2" class="flow"/>
+                    <line x1="100" y1="145" x2="150" y2="190" stroke="url(#lg)" stroke-width="2" class="flow"/>
+                    <line x1="210" y1="60" x2="305" y2="110" stroke="rgba(255,255,255,.2)" stroke-width="1" class="flow"/>
+                    <line x1="210" y1="125" x2="305" y2="125" stroke="rgba(255,109,90,.3)" stroke-width="2" class="flow"/>
+                    <line x1="210" y1="190" x2="305" y2="140" stroke="rgba(6,182,212,.3)" stroke-width="2" class="flow"/>
+                    <line x1="395" y1="105" x2="490" y2="50" stroke="url(#lg)" stroke-width="1" class="flow"/>
+                    <line x1="395" y1="115" x2="490" y2="95" stroke="url(#lg)" stroke-width="1" class="flow"/>
+                    <line x1="395" y1="135" x2="490" y2="140" stroke="url(#lg)" stroke-width="1" class="flow"/>
+                    <line x1="395" y1="145" x2="490" y2="185" stroke="url(#lg)" stroke-width="1" class="flow"/>
+                    <line x1="550" y1="95" x2="635" y2="100" stroke="rgba(249,115,22,.3)" stroke-width="1" class="flow"/>
+                    <line x1="550" y1="95" x2="635" y2="170" stroke="rgba(139,92,246,.3)" stroke-width="1" class="flow"/>
+                    <line x1="705" y1="170" x2="780" y2="130" stroke="rgba(34,197,94,.3)" stroke-width="1" class="flow"/>
+                </svg>
+            </div>
+        </div>
+        <div class="grid grid-5 gap-4">
+            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-purple-400">1</p><p class="text-xs text-gray-500">Region</p></div>
+            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-blue-400">7</p><p class="text-xs text-gray-500">Endpoints</p></div>
+            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-orange-400">17</p><p class="text-xs text-gray-500">N8N</p></div>
+            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-cyan-400">4</p><p class="text-xs text-gray-500">MCP</p></div>
+            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold">4</p><p class="text-xs text-gray-500">Vercel Edge</p></div>
+        </div>
+    </div>`}
+function integrations(){
+    const I=[{n:'AWS Lambda',c:6,i:'server',col:'orange'},{n:'N8N Cloud',c:17,i:'workflow',col:'pink'},{n:'MCP Servers',c:4,i:'tool',col:'cyan'},{n:'GitHub Actions',c:10,i:'git',col:'purple'},{n:'Vercel Edge',c:4,i:'triangle',col:'white'},{n:'API Gateway',c:7,i:'globe',col:'blue'},{n:'DynamoDB',c:5,i:'activity',col:'orange'},{n:'Slack',c:4,i:'zap',col:'green'}];
+    return `<div class="pt-16 space-y">
+        <h1 class="text-2xl font-bold">All Integrations</h1>
+        <div class="grid grid-4 gap-4">${I.map(i=>`<div class="glass rounded-xl p-5 transition cursor-pointer">
+            <div class="flex items-center gap-3 mb-3"><div class="p-2 rounded-lg bg-${i.col}-500\/20">${icon(i.i,`w-5 text-${i.col}-400`)}</div><h3 class="font-semibold">${i.n}</h3></div>
+            <p class="text-3xl font-bold text-${i.col}-400">${i.c}</p>
+        </div>`).join('')}</div>
+        <div class="glass rounded-2xl p-6">
+            <h2 class="text-lg font-semibold mb-4">Total Integration Score</h2>
+            <div class="flex items-center gap-8">
+                <div class="text-center"><p class="text-5xl font-bold gradient-text">63</p><p class="text-sm text-gray-500">Components</p></div>
+                <div class="flex-1 space-y">
+                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">Lambda</span><div class="flex-1 progress"><div class="progress-bar bg-orange-500" style="width:10%"></div></div><span class="text-sm">6</span></div>
+                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">N8N</span><div class="flex-1 progress"><div class="progress-bar n8n-grad" style="width:27%"></div></div><span class="text-sm">17</span></div>
+                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">GitHub</span><div class="flex-1 progress"><div class="progress-bar bg-purple-500" style="width:16%"></div></div><span class="text-sm">10</span></div>
+                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">MCP</span><div class="flex-1 progress"><div class="progress-bar mcp-grad" style="width:6%"></div></div><span class="text-sm">4</span></div>
+                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">Vercel</span><div class="flex-1 progress"><div class="progress-bar bg-white" style="width:6%"></div></div><span class="text-sm">4</span></div>
                 </div>
-            </div>`;
-        }
-
-        function renderN8N() {
-            const scheduled = N8N_WORKFLOWS.filter(w => w.type === 'scheduled');
-            const webhook = N8N_WORKFLOWS.filter(w => w.type === 'webhook');
-            return `<div class="pt-16 space-y-6">
-                <div class="flex items-center justify-between">
-                    <h1 class="text-2xl font-bold">N8N Workflows</h1>
-                    <a href="${CONFIG.n8nUrl}" target="_blank" class="px-4 py-2 rounded-lg n8n-gradient text-white flex items-center gap-2">${icon('link', 'w-4 h-4')} Open N8N</a>
-                </div>
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-orange-400">17</p><p class="text-sm text-gray-400">Total Workflows</p></div>
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">${scheduled.length}</p><p class="text-sm text-gray-400">Scheduled</p></div>
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">${webhook.length}</p><p class="text-sm text-gray-400">Webhook</p></div>
-                </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('clock', 'w-5 h-5 text-green-400')} Scheduled Workflows</h2>
-                        <div class="space-y-2">${scheduled.map(wf => `<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5 glass-hover transition-all"><div class="flex items-center gap-3"><span class="text-xl">${wf.icon}</span><div><p class="font-medium">${wf.name}</p><p class="text-xs text-gray-500 mono">${wf.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span></div>`).join('')}</div>
-                    </div>
-                    <div class="glass rounded-2xl p-6">
-                        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('zap', 'w-5 h-5 text-purple-400')} Webhook Workflows</h2>
-                        <div class="space-y-2">${webhook.map(wf => `<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5 glass-hover transition-all"><div class="flex items-center gap-3"><span class="text-xl">${wf.icon}</span><div><p class="font-medium">${wf.name}</p><p class="text-xs text-gray-500 mono">${wf.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-purple-500\/20 text-purple-400">webhook</span></div>`).join('')}</div>
-                    </div>
-                </div>
-                <div class="glass rounded-2xl p-6">
-                    <h2 class="text-lg font-semibold mb-4">Webhook URLs</h2>
-                    <div class="space-y-2">
-                        <div class="p-3 rounded-lg bg-white\/5"><code class="text-sm text-cyan-400">${CONFIG.n8nUrl}/webhook/archon-github-webhook</code></div>
-                        <div class="p-3 rounded-lg bg-white\/5"><code class="text-sm text-cyan-400">${CONFIG.n8nUrl}/webhook/archon-customer</code></div>
-                        <div class="p-3 rounded-lg bg-white\/5"><code class="text-sm text-cyan-400">${CONFIG.n8nUrl}/webhook/daily</code></div>
-                    </div>
-                </div>
-            </div>`;
-        }
-
-        function renderMCP() {
-            return `<div class="pt-16 space-y-6">
-                <div class="flex items-center justify-between">
-                    <h1 class="text-2xl font-bold">MCP Servers</h1>
-                    <div class="px-4 py-2 rounded-lg mcp-gradient text-white">Model Context Protocol</div>
-                </div>
-                <div class="grid grid-cols-4 gap-4">
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-cyan-400">4</p><p class="text-sm text-gray-400">Servers</p></div>
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">15</p><p class="text-sm text-gray-400">Total Tools</p></div>
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">4</p><p class="text-sm text-gray-400">Resources</p></div>
-                    <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-orange-400">100%</p><p class="text-sm text-gray-400">Available</p></div>
-                </div>
-                <div class="grid grid-cols-2 gap-6">${MCP_SERVERS.map(s => `
-                    <div class="glass rounded-2xl p-6 border border-${s.color}-500\/30">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-xl bg-${s.color}-500\/20 flex items-center justify-center">${icon('tool', `w-6 h-6 text-${s.color}-400`)}</div>
-                                <div><h3 class="font-semibold">${s.name}</h3><p class="text-xs text-gray-500">${s.id}</p></div>
-                            </div>
-                            <span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">${s.status}</span>
-                        </div>
-                        <div class="mb-4"><p class="text-xs text-gray-500 mb-2">Available Tools:</p><div class="flex flex-wrap gap-2">${s.tools.map(t => `<span class="px-3 py-1 rounded-lg bg-white\/5 text-sm mono">${t}</span>`).join('')}</div></div>
-                    </div>
-                `).join('')}</div>
-                <div class="glass rounded-2xl p-6">
-                    <h2 class="text-lg font-semibold mb-4">MCP Hub Configuration</h2>
-                    <pre class="p-4 rounded-xl bg-black\/30 text-xs mono text-gray-400 overflow-x-auto">{
-  "servers": ["archon-brain", "archon-trend", "github-mcp", "slack-mcp"],
-  "routing": { "default": "archon-brain", "trends": "archon-trend" },
-  "features": { "auto_routing": true, "failover": true, "metrics": true }
-}</pre>
-                </div>
-            </div>`;
-        }
-
-        function renderLambdas() {
-            const lambdas = [
-                { name: 'archon-brain', memory: '512MB', color: 'blue', funcs: ['orchestrator', 'decision_engine', 'pattern_analyzer'] },
-                { name: 'archon-actions', memory: '256MB', color: 'orange', funcs: ['action_executor', 'slack_notifier', 'event_collector'] },
-                { name: 'archon-trend', memory: '512MB', color: 'cyan', funcs: ['trend_collector', 'trend_analyzer', 'trend_reporter'] },
-                { name: 'archon-intake', memory: '256MB', color: 'green', funcs: ['update_intake', 'feedback_processor'] }
-            ];
-            return `<div class="pt-16 space-y-6">
-                <h1 class="text-2xl font-bold">Lambda Functions</h1>
-                <div class="glass rounded-2xl p-6"><h2 class="text-lg font-semibold mb-4">Consolidation</h2><div class="grid grid-cols-4 gap-4"><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold text-red-400">14</p><p class="text-sm text-gray-500">Before</p></div><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold">→</p></div><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold text-green-400">6</p><p class="text-sm text-gray-500">After</p></div><div class="text-center p-4 rounded-xl bg-green-500\/10 border border-green-500\/20"><p class="text-3xl font-bold text-green-400">57%</p><p class="text-sm text-gray-500">Reduction</p></div></div></div>
-                <div class="grid grid-cols-2 gap-6">${lambdas.map(l => {
-                    const status = state.lambdaStatus[l.name.replace('archon-', '')] || { status: 'loading', latency: 0 };
-                    return `<div class="glass rounded-2xl p-6"><div class="flex items-start justify-between mb-4"><div><h3 class="text-lg font-semibold">${l.name}</h3><p class="text-sm text-gray-500 mono">${l.memory}</p></div><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${status.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'} pulse-dot"></span><span class="text-sm">${status.status}</span></div></div><div><p class="text-xs text-gray-500 mb-2">Consolidated:</p><div class="flex flex-wrap gap-1">${l.funcs.map(f => `<span class="px-2 py-1 rounded bg-white\/5 text-xs">${f}</span>`).join('')}</div></div></div>`;
-                }).join('')}</div>
-            </div>`;
-        }
-
-        function renderPipelines() {
-            const workflows = ['ci-cd.yml', 'health-check.yml', 'trend-analysis.yml', 'release.yml', 'labeler.yml', 'stale.yml', 'webhook-trigger.yml', 'issue-to-archon.yml', 'code-quality.yml', 'welcome.yml'];
-            return `<div class="pt-16 space-y-6">
-                <div class="flex items-center justify-between"><h1 class="text-2xl font-bold">GitHub Actions</h1><a href="https://github.com/${CONFIG.githubRepo}/actions" target="_blank" class="px-4 py-2 rounded-lg bg-purple-500\/20 border border-purple-500\/30 text-purple-400 flex items-center gap-2">${icon('link', 'w-4 h-4')} GitHub</a></div>
-                <div class="grid grid-cols-2 gap-4">${workflows.map(w => `<div class="glass rounded-xl p-4 glass-hover transition-all"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="mono text-sm">${w}</span></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span></div></div>`).join('')}</div>
-            </div>`;
-        }
-
-        function renderNetwork() {
-            return `<div class="pt-16 space-y-6">
-                <h1 class="text-2xl font-bold">Network Architecture</h1>
-                <div class="glass rounded-2xl p-6">
-                    <div class="relative h-64 bg-black\/30 rounded-xl overflow-hidden">
-                        <svg viewBox="0 0 900 250" class="w-full h-full">
-                            <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.5"/><stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.5"/></linearGradient></defs>
-                            <g transform="translate(80,125)"><circle r="30" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)" stroke-width="2"/><text y="5" text-anchor="middle" fill="white" font-size="11">User</text></g>
-                            <g transform="translate(200,70)"><rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(255,109,90,0.3)" stroke="rgba(255,109,90,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">N8N</text><text y="35" text-anchor="middle" fill="#9ca3af" font-size="8">17 workflows</text></g>
-                            <g transform="translate(200,180)"><rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(6,182,212,0.3)" stroke="rgba(6,182,212,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">MCP</text><text y="35" text-anchor="middle" fill="#9ca3af" font-size="8">4 servers</text></g>
-                            <g transform="translate(380,125)"><rect x="-50" y="-30" width="100" height="60" rx="10" fill="rgba(59,130,246,0.2)" stroke="rgba(59,130,246,0.5)" stroke-width="2"/><text y="5" text-anchor="middle" fill="white" font-size="12">API Gateway</text></g>
-                            <g transform="translate(560,50)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(59,130,246,0.3)" stroke="rgba(59,130,246,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Brain</text></g>
-                            <g transform="translate(560,100)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(245,158,11,0.3)" stroke="rgba(245,158,11,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Actions</text></g>
-                            <g transform="translate(560,150)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(6,182,212,0.3)" stroke="rgba(6,182,212,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Trend</text></g>
-                            <g transform="translate(560,200)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="rgba(16,185,129,0.3)" stroke="rgba(16,185,129,0.6)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Intake</text></g>
-                            <g transform="translate(720,100)"><rect x="-35" y="-25" width="70" height="50" rx="8" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.5)"/><text y="0" text-anchor="middle" fill="white" font-size="10">DynamoDB</text><text y="15" text-anchor="middle" fill="#9ca3af" font-size="8">5 tables</text></g>
-                            <g transform="translate(720,180)"><rect x="-35" y="-20" width="70" height="40" rx="8" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)"/><text y="5" text-anchor="middle" fill="white" font-size="10">GitHub</text></g>
-                            <g transform="translate(840,125)"><rect x="-30" y="-20" width="60" height="40" rx="8" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)"/><text y="5" text-anchor="middle" fill="white" font-size="10">Slack</text></g>
-                            <line x1="110" y1="125" x2="165" y2="70" stroke="url(#lg1)" stroke-width="2" class="flow-line"/>
-                            <line x1="110" y1="125" x2="165" y2="180" stroke="url(#lg1)" stroke-width="2" class="flow-line"/>
-                            <line x1="235" y1="70" x2="330" y2="110" stroke="rgba(255,109,90,0.4)" stroke-width="2" class="flow-line"/>
-                            <line x1="235" y1="180" x2="330" y2="140" stroke="rgba(6,182,212,0.4)" stroke-width="2" class="flow-line"/>
-                            <line x1="430" y1="110" x2="530" y2="50" stroke="url(#lg1)" stroke-width="2" class="flow-line"/>
-                            <line x1="430" y1="120" x2="530" y2="100" stroke="url(#lg1)" stroke-width="2" class="flow-line"/>
-                            <line x1="430" y1="130" x2="530" y2="150" stroke="url(#lg1)" stroke-width="2" class="flow-line"/>
-                            <line x1="430" y1="140" x2="530" y2="200" stroke="url(#lg1)" stroke-width="2" class="flow-line"/>
-                            <line x1="590" y1="100" x2="685" y2="100" stroke="rgba(245,158,11,0.3)" stroke-width="1" class="flow-line"/>
-                            <line x1="590" y1="100" x2="685" y2="180" stroke="rgba(139,92,246,0.3)" stroke-width="1" class="flow-line"/>
-                            <line x1="755" y1="180" x2="810" y2="140" stroke="rgba(16,185,129,0.3)" stroke-width="1" class="flow-line"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="grid grid-cols-5 gap-4">
-                    <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-purple-400">1</p><p class="text-xs text-gray-500">Region</p></div>
-                    <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-blue-400">7</p><p class="text-xs text-gray-500">Endpoints</p></div>
-                    <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-orange-400">17</p><p class="text-xs text-gray-500">N8N Flows</p></div>
-                    <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-cyan-400">4</p><p class="text-xs text-gray-500">MCP Servers</p></div>
-                    <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-green-400">10</p><p class="text-xs text-gray-500">GH Actions</p></div>
-                </div>
-            </div>`;
-        }
-
-        function renderIntegrations() {
-            const integrations = [
-                { name: 'AWS Lambda', count: 6, icon: 'server', color: 'orange', desc: 'Serverless Functions' },
-                { name: 'N8N Cloud', count: 17, icon: 'workflow', color: 'pink', desc: 'Workflow Automation' },
-                { name: 'MCP Servers', count: 4, icon: 'tool', color: 'cyan', desc: 'AI Tool Protocol' },
-                { name: 'GitHub Actions', count: 10, icon: 'git-branch', color: 'purple', desc: 'CI/CD Pipelines' },
-                { name: 'API Gateway', count: 7, icon: 'globe', color: 'blue', desc: 'REST Endpoints' },
-                { name: 'DynamoDB', count: 5, icon: 'database', color: 'orange', desc: 'NoSQL Database' },
-                { name: 'Slack', count: 4, icon: 'activity', color: 'green', desc: 'Notifications' },
-                { name: 'CloudWatch', count: 6, icon: 'activity', color: 'cyan', desc: 'Monitoring' }
-            ];
-            return `<div class="pt-16 space-y-6">
-                <h1 class="text-2xl font-bold">All Integrations</h1>
-                <div class="grid grid-cols-4 gap-4">${integrations.map(i => `<div class="glass rounded-xl p-5 glass-hover transition-all cursor-pointer"><div class="flex items-center gap-3 mb-3"><div class="p-2 rounded-lg bg-${i.color}-500\/20">${icon(i.icon, `w-5 h-5 text-${i.color}-400`)}</div><div><h3 class="font-semibold">${i.name}</h3><p class="text-xs text-gray-500">${i.desc}</p></div></div><p class="text-2xl font-bold text-${i.color}-400">${i.count}</p></div>`).join('')}</div>
-                <div class="glass rounded-2xl p-6">
-                    <h2 class="text-lg font-semibold mb-4">Total Integration Score</h2>
-                    <div class="flex items-center gap-8">
-                        <div class="text-center"><p class="text-5xl font-bold gradient-text">59</p><p class="text-sm text-gray-500">Active Components</p></div>
-                        <div class="flex-1 space-y-2">
-                            <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">Lambda</span><div class="flex-1 h-3 bg-white\/10 rounded-full"><div class="h-full bg-orange-500 rounded-full" style="width:40%"></div></div><span class="text-sm">6</span></div>
-                            <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">N8N</span><div class="flex-1 h-3 bg-white\/10 rounded-full"><div class="h-full n8n-gradient rounded-full" style="width:100%"></div></div><span class="text-sm">17</span></div>
-                            <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">GitHub</span><div class="flex-1 h-3 bg-white\/10 rounded-full"><div class="h-full bg-purple-500 rounded-full" style="width:60%"></div></div><span class="text-sm">10</span></div>
-                            <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">MCP</span><div class="flex-1 h-3 bg-white\/10 rounded-full"><div class="h-full mcp-gradient rounded-full" style="width:25%"></div></div><span class="text-sm">4</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        }
-
-        window.setActiveTab = function(tab) { state.activeTab = tab; render(); };
-        window.fetchAllHealth = fetchAllHealth;
-        render();
-        fetchAllHealth();
-    </script>
+            </div>
+        </div>
+    </div>`}
+window.setTab=t=>{state.tab=t;render()};
+window.checkHealth=checkHealth;
+render();checkHealth();
+</script>
 </body>
 </html>
