@@ -1,11 +1,20 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { headers } from "next/headers";
 
 interface Comp { name: string; status: "green" | "yellow" | "red"; latency: number; message: string; }
 interface Health { overall: "green" | "yellow" | "red"; score: number; components: Comp[]; timestamp: string; }
 
-// Simple Icons
+async function getHealth(): Promise<Health | null> {
+  try {
+    const res = await fetch("https://selfarchitectai.com/api/realtime-status", {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 const Brain = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>;
 const Server = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/></svg>;
 const Flow = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>;
@@ -24,7 +33,7 @@ const Gauge = ({ v, c }: { v: number; c: string }) => {
     <div className="relative" style={{ width: sz, height: sz }}>
       <svg className="-rotate-90" width={sz} height={sz}>
         <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={sw} />
-        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={c} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={off} strokeLinecap="round" style={{ transition: "all 1s", filter: `drop-shadow(0 0 10px ${c})` }} />
+        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={c} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={off} strokeLinecap="round" style={{ filter: `drop-shadow(0 0 10px ${c})` }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-5xl font-bold" style={{ color: c }}>{v}</span>
@@ -34,83 +43,32 @@ const Gauge = ({ v, c }: { v: number; c: string }) => {
   );
 };
 
-export default function Dashboard() {
-  const [health, setHealth] = useState<Health | null>(null);
-  const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
-  const [errorMsg, setErrorMsg] = useState("");
-  const [time, setTime] = useState("");
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setStatus("loading");
-        const r = await fetch("/api/realtime-status");
-        if (!r.ok) {
-          throw new Error("API " + r.status);
-        }
-        const d = await r.json();
-        setHealth(d);
-        setTime(new Date().toLocaleTimeString("tr-TR"));
-        setStatus("success");
-      } catch (e: any) {
-        setErrorMsg(e?.message || "Unknown error");
-        setStatus("error");
-      }
-    };
-    load();
-    const i = setInterval(load, 30000);
-    return () => clearInterval(i);
-  }, []);
-
+export default async function Dashboard() {
+  const health = await getHealth();
   const col: Record<string, string> = { green: "#22c55e", yellow: "#eab308", red: "#ef4444" };
 
-  // Loading
-  if (status === "loading") {
+  if (!health) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <p className="text-gray-400 text-lg">Loading dashboard...</p>
-          <p className="text-gray-600 text-sm mt-2">Connecting to ARCHON API</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error
-  if (status === "error") {
-    return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center text-white">
         <div className="glass p-8 rounded-2xl text-center max-w-md">
           <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="text-4xl">❌</span>
           </div>
           <h2 className="text-xl font-bold text-red-400 mb-2">Connection Error</h2>
-          <p className="text-gray-400 mb-4">{errorMsg}</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium transition">
+          <p className="text-gray-400 mb-4">Could not connect to ARCHON API</p>
+          <a href="/dashboard" className="inline-block px-6 py-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium">
             🔄 Retry
-          </button>
+          </a>
         </div>
       </div>
     );
   }
 
-  // No data
-  if (!health) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
-        <p className="text-gray-400">No data available</p>
-      </div>
-    );
-  }
-
-  // Group components
   const g = health.components.reduce((a, c) => {
     const k = c.name.includes("Lambda") ? "l" : c.name.includes("N8N") ? "n" : "v";
     (a[k] = a[k] || []).push(c); return a;
   }, {} as Record<string, Comp[]>);
 
-  // Success - Main Dashboard
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       {/* Header */}
@@ -130,10 +88,10 @@ export default function Dashboard() {
               <Dot s={health.overall} />
               <span className={`text-lg font-bold ${health.overall === "green" ? "text-green-400" : health.overall === "yellow" ? "text-yellow-400" : "text-red-400"}`}>{health.score}%</span>
             </div>
-            <span className="text-sm text-gray-500">{time}</span>
-            <button onClick={() => window.location.reload()} className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition text-gray-400 hover:text-purple-400">
+            <span className="text-sm text-gray-500">{new Date().toLocaleTimeString("tr-TR")}</span>
+            <a href="/dashboard" className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition text-gray-400 hover:text-purple-400">
               🔄
-            </button>
+            </a>
           </div>
         </div>
       </header>
@@ -209,12 +167,13 @@ export default function Dashboard() {
                   <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
                 </linearGradient>
               </defs>
-              {["15%", "38%", "62%", "85%"].map((x, i) => (
-                <line key={`t${i}`} x1="50%" y1="50%" x2={x} y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              ))}
-              {["25%", "50%", "75%"].map((x, i) => (
-                <line key={`b${i}`} x1="50%" y1="50%" x2={x} y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              ))}
+              <line x1="50%" y1="50%" x2="15%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
+              <line x1="50%" y1="50%" x2="38%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
+              <line x1="50%" y1="50%" x2="62%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
+              <line x1="50%" y1="50%" x2="85%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
+              <line x1="50%" y1="50%" x2="25%" y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
+              <line x1="50%" y1="50%" x2="50%" y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
+              <line x1="50%" y1="50%" x2="75%" y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
             </svg>
 
             {/* Core */}
@@ -238,7 +197,7 @@ export default function Dashboard() {
 
             {/* Bottom Nodes */}
             <div className="absolute flex flex-col items-center z-10" style={{ left: "25%", top: "85%", transform: "translate(-50%,-50%)" }}>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/40 to-green-600/20 border border-green-500/60 flex items-center justify-center">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${g.v?.[0]?.status === "green" ? "from-green-500/40 to-green-600/20 border-green-500/60" : "from-yellow-500/40 to-yellow-600/20 border-yellow-500/60"} border flex items-center justify-center`}>
                 <span className="w-6 h-6 text-white"><Globe /></span>
               </div>
               <span className="text-xs text-gray-400 mt-1">Vercel</span>
@@ -252,7 +211,7 @@ export default function Dashboard() {
               <Dot s="yellow" />
             </div>
             <div className="absolute flex flex-col items-center z-10" style={{ left: "75%", top: "85%", transform: "translate(-50%,-50%)" }}>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/40 to-green-600/20 border border-green-500/60 flex items-center justify-center">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${g.n?.[0]?.status === "green" ? "from-green-500/40 to-green-600/20 border-green-500/60" : "from-yellow-500/40 to-yellow-600/20 border-yellow-500/60"} border flex items-center justify-center`}>
                 <span className="w-6 h-6 text-white"><Flow /></span>
               </div>
               <span className="text-xs text-gray-400 mt-1">N8N</span>
@@ -271,7 +230,7 @@ export default function Dashboard() {
             </h3>
             <div className="space-y-2">
               {g.l?.map(c => (
-                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
+                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                   <div className="flex items-center gap-3">
                     <Dot s={c.status} />
                     <div>
@@ -295,7 +254,7 @@ export default function Dashboard() {
             </h3>
             <div className="space-y-2">
               {g.n?.map(c => (
-                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
+                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                   <div className="flex items-center gap-3">
                     <Dot s={c.status} />
                     <div>
@@ -319,7 +278,7 @@ export default function Dashboard() {
             </h3>
             <div className="space-y-2">
               {g.v?.map(c => (
-                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
+                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                   <div className="flex items-center gap-3">
                     <Dot s={c.status} />
                     <div>
@@ -339,7 +298,8 @@ export default function Dashboard() {
         {/* Footer */}
         <div className="text-center text-sm text-gray-600 py-4">
           Last updated: {new Date(health.timestamp).toLocaleString("tr-TR")} • 
-          <a href="/api/realtime-status" target="_blank" className="text-purple-400 hover:text-purple-300 ml-1">View Raw API</a>
+          <a href="/api/realtime-status" target="_blank" className="text-purple-400 hover:text-purple-300 ml-1">View Raw API</a> •
+          <a href="/dashboard" className="text-purple-400 hover:text-purple-300 ml-1">Refresh</a>
         </div>
       </main>
     </div>
