@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Build: 1766272698 */
+
 :root {
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 10, 10, 15;
@@ -51,14 +53,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-    transform: scale(1);
-  }
-  50% { 
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
-    transform: scale(1.02);
-  }
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
 }
 
 .live-pulse {
@@ -68,8 +64,3 @@ body {
 .core-pulse {
   animation: pulse-glow 2s ease-in-out infinite;
 }
-
-/* Scrollbar */
-.scroll-thin::-webkit-scrollbar { width: 4px; }
-.scroll-thin::-webkit-scrollbar-track { background: transparent; }
-.scroll-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
