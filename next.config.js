@@ -1,11 +1,10 @@
-/** @type {import('next').NextConfig} */
+/** @type {import("next").NextConfig} */
 const nextConfig = {
-  output: 'export',
   images: {
     unoptimized: true
   },
-  // Static export - no API routes allowed
-  // Force fresh build - Dec 17 2025
+  // API routes enabled - Dec 20 2025
+  // Removed output: "export" to enable serverless functions
 }
 
 module.exports = nextConfig
