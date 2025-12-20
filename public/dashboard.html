@@ -13,85 +13,101 @@
         .flex{display:flex}.flex-1{flex:1}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}
         .grid{display:grid}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-5{grid-template-columns:repeat(5,1fr)}.grid-6{grid-template-columns:repeat(6,1fr)}
         .p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}
-        .px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}
+        .px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}
         .mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.ml-64{margin-left:16rem}
         .pt-16{padding-top:4rem}.space-y > *+*{margin-top:1rem}
-        .w-2{width:.5rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-full{width:100%}
-        .h-2{height:.5rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-64{height:16rem}
+        .w-2{width:.5rem}.w-3{width:.75rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-full{width:100%}
+        .h-2{height:.5rem}.h-3{height:.75rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-64{height:16rem}
         .text-xs{font-size:.75rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}.text-2xl{font-size:1.5rem}.text-3xl{font-size:1.875rem}.text-4xl{font-size:2.25rem}
         .font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}.text-center{text-align:center}
         .text-white{color:#fff}.text-gray-400{color:#9ca3af}.text-gray-500{color:#6b7280}
-        .text-blue-400{color:#60a5fa}.text-purple-400{color:#a78bfa}.text-cyan-400{color:#22d3ee}.text-green-400{color:#4ade80}.text-orange-400{color:#fb923c}.text-red-400{color:#f87171}.text-pink-400{color:#f472b6}
+        .text-blue-400{color:#60a5fa}.text-purple-400{color:#a78bfa}.text-cyan-400{color:#22d3ee}.text-green-400{color:#4ade80}.text-orange-400{color:#fb923c}.text-red-400{color:#f87171}.text-pink-400{color:#f472b6}.text-yellow-400{color:#facc15}
         .bg-white\/5{background:rgba(255,255,255,.05)}.bg-white\/10{background:rgba(255,255,255,.1)}.bg-black\/30{background:rgba(0,0,0,.3)}
-        .bg-green-500\/20{background:rgba(34,197,94,.2)}.bg-red-500\/20{background:rgba(239,68,68,.2)}.bg-blue-500\/20{background:rgba(59,130,246,.2)}.bg-purple-500\/20{background:rgba(139,92,246,.2)}.bg-cyan-500\/20{background:rgba(6,182,212,.2)}.bg-orange-500\/20{background:rgba(249,115,22,.2)}
-        .border{border:1px solid var(--border)}.border-b{border-bottom:1px solid var(--border)}
+        .bg-green-500\/20{background:rgba(34,197,94,.2)}.bg-red-500\/20{background:rgba(239,68,68,.2)}.bg-blue-500\/20{background:rgba(59,130,246,.2)}.bg-purple-500\/20{background:rgba(139,92,246,.2)}.bg-cyan-500\/20{background:rgba(6,182,212,.2)}.bg-orange-500\/20{background:rgba(249,115,22,.2)}.bg-yellow-500\/20{background:rgba(234,179,8,.2)}
+        .border{border:1px solid var(--border)}.border-b{border-bottom:1px solid var(--border)}.border-l-2{border-left:2px solid}
         .rounded{border-radius:.25rem}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}
         .overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.cursor-pointer{cursor:pointer}.transition{transition:all .2s}
-        .fixed{position:fixed}.relative{position:relative}.top-0{top:0}.left-0{left:0}.right-0{right:0}.top-16{top:4rem}.bottom-0{bottom:0}.z-50{z-index:50}
+        .fixed{position:fixed}.relative{position:relative}.absolute{position:absolute}.top-0{top:0}.left-0{left:0}.right-0{right:0}.top-16{top:4rem}.bottom-0{bottom:0}.z-50{z-index:50}
         .glass{background:rgba(26,26,36,.9);backdrop-filter:blur(20px);border:1px solid var(--border)}
         .glass:hover{border-color:rgba(139,92,246,.3)}
         .gradient-text{background:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .pulse{animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        .blink{animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
         .tab-active{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.2));border-color:rgba(139,92,246,.5)}
         .metric:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(139,92,246,.2)}
         button{background:none;border:none;cursor:pointer;color:inherit}a{color:inherit;text-decoration:none}
         .n8n-grad{background:linear-gradient(135deg,#ff6d5a,#ff9472)}.mcp-grad{background:linear-gradient(135deg,#06b6d4,#8b5cf6)}.vercel-grad{background:#000;border:1px solid #333}
-        .progress{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}.progress-bar{height:100%;border-radius:4px}
+        .progress{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}.progress-bar{height:100%;border-radius:4px;transition:width .3s}
         .flow{stroke-dasharray:10;animation:flow 1s linear infinite}@keyframes flow{to{stroke-dashoffset:-20}}
         .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .data-flow{animation:dataFlow 2s ease-in-out infinite}
+        @keyframes dataFlow{0%{opacity:.3;transform:translateX(-5px)}50%{opacity:1;transform:translateX(0)}100%{opacity:.3;transform:translateX(5px)}}
+        .scroll-y{max-height:300px;overflow-y:auto}
+        .activity-item{animation:slideIn .3s ease-out}
+        @keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:livePulse 1.5s infinite}
+        @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.7)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+        .latency-bar{height:4px;border-radius:2px;transition:width .5s ease}
     </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
 const CONFIG={
-    lambda:{brain:'https://jl67xd5pckkhjwdmnvhco2bg440grmtu.lambda-url.us-east-1.on.aws/',actions:'https://qtomhtef66vivt7wzyit5nuzve0nzvbk.lambda-url.us-east-1.on.aws/',trend:'https://mjfhxhcsi2u3o2pqhkj55rrlge0ucncm.lambda-url.us-east-1.on.aws/',intake:'https://wbhdgr46itplcvosjioitclvga0mxlec.lambda-url.us-east-1.on.aws/'},
-    vercel:'https://www.selfarchitectai.com',n8n:'https://n8n.selfarchitectai.com',api:'https://d6gy1zr8vj.execute-api.us-east-1.amazonaws.com/prod'
+    lambda:{
+        brain:'https://jl67xd5pckkhjwdmnvhco2bg440grmtu.lambda-url.us-east-1.on.aws/',
+        actions:'https://qtomhtef66vivt7wzyit5nuzve0nzvbk.lambda-url.us-east-1.on.aws/',
+        trend:'https://mjfhxhcsi2u3o2pqhkj55rrlge0ucncm.lambda-url.us-east-1.on.aws/',
+        intake:'https://wbhdgr46itplcvosjioitclvga0mxlec.lambda-url.us-east-1.on.aws/'
+    },
+    vercel:'https://www.selfarchitectai.com',
+    n8n:'https://n8n.selfarchitectai.com',
+    api:'https://d6gy1zr8vj.execute-api.us-east-1.amazonaws.com/prod'
 };
+
 const N8N=[
-    {id:'fIuv9S3gJGY3D8GZ',name:'WF1_Daily_Insight',t:'⏰',type:'scheduled'},
+    {id:'fIuv9S3gJGY3D8GZ',name:'WF1_Daily_Insight',t:'📊',type:'scheduled',interval:'daily'},
     {id:'XJG2I1FB52vN0gPc',name:'GitHub Auto Deploy',t:'🚀',type:'webhook'},
-    {id:'SWDbn0KdaOMdiC5S',name:'WF3_Decision_Action',t:'🤖',type:'scheduled'},
+    {id:'SWDbn0KdaOMdiC5S',name:'WF3_Decision_Action',t:'🤖',type:'scheduled',interval:'hourly'},
     {id:'5v5HmKAxNND52hrp',name:'EVENT_INTAKE',t:'📥',type:'webhook'},
-    {id:'pABo8he8J4X5ihFR',name:'Auto Optimizer',t:'⚡',type:'scheduled'},
-    {id:'VtMbs0Rjv3URPQ1T',name:'CONTROL_TOWER',t:'🗼',type:'scheduled'},
-    {id:'WxT8sInqxbmJGw45',name:'Cost Optimizer',t:'💰',type:'scheduled'},
-    {id:'ZEXkGRNcRwJKDGwZ',name:'Health Monitor',t:'🏥',type:'scheduled'},
-    {id:'5Xd33x0k05CwhS2w',name:'API Dashboard',t:'📈',type:'scheduled'},
+    {id:'pABo8he8J4X5ihFR',name:'Auto Optimizer',t:'⚡',type:'scheduled',interval:'6h'},
+    {id:'VtMbs0Rjv3URPQ1T',name:'CONTROL_TOWER',t:'🗼',type:'scheduled',interval:'daily'},
+    {id:'WxT8sInqxbmJGw45',name:'Cost Optimizer',t:'💰',type:'scheduled',interval:'daily'},
+    {id:'ZEXkGRNcRwJKDGwZ',name:'Health Monitor',t:'🏥',type:'scheduled',interval:'15m'},
+    {id:'5Xd33x0k05CwhS2w',name:'API Dashboard',t:'📈',type:'scheduled',interval:'hourly'},
     {id:'kE2OPYdSFTGpI9S3',name:'MCP Executor',t:'🔧',type:'webhook'},
     {id:'nxGOMTIK3V0zk1kV',name:'WEBHOOK_MASTER',t:'🎯',type:'webhook'},
-    {id:'hP4zMFncKrcC09u3',name:'Decision_Queue',t:'📋',type:'scheduled'},
+    {id:'hP4zMFncKrcC09u3',name:'Decision_Queue',t:'📋',type:'scheduled',interval:'30m'},
     {id:'N0LtPF3MAwKU92wr',name:'POLICY_GATE',t:'🚪',type:'webhook'},
     {id:'e9luGj0NmEUgc1l8',name:'Slack Alert',t:'🔔',type:'webhook'},
-    {id:'oWdgoWs2sDf8zJZy',name:'Trend Pipeline',t:'📈',type:'scheduled'},
-    {id:'PNTVM4WVOjcErMLd',name:'Health Monitor V2',t:'🏥',type:'scheduled'},
+    {id:'oWdgoWs2sDf8zJZy',name:'Trend Pipeline',t:'📈',type:'scheduled',interval:'hourly'},
+    {id:'PNTVM4WVOjcErMLd',name:'Health Monitor V2',t:'🏥',type:'scheduled',interval:'15m'},
     {id:'MYfyRc9O2V5eW6il',name:'GitHub Sync',t:'🔗',type:'webhook'}
 ];
+
 const MCP=[
     {id:'brain',name:'ARCHON Brain',tools:['orchestrate','decide','analyze','health'],c:'blue'},
     {id:'trend',name:'Trend Analysis',tools:['collect','analyze','report','pipeline'],c:'cyan'},
     {id:'github',name:'GitHub MCP',tools:['create_issue','list_issues','commits','trigger'],c:'purple'},
     {id:'slack',name:'Slack MCP',tools:['send_message','alert','report'],c:'orange'}
 ];
+
 const VERCEL={
-    project:{name:'archon-frontend',id:'prj_OguVxu6oPwGbcIwwEtYq6JkSNj2s',framework:'Next.js'},
-    domains:[{d:'www.selfarchitectai.com',primary:true},{d:'selfarchitectai.com',redirect:true},{d:'dashboard.selfarchitectai.com',primary:false}],
-    deploys:[
-        {id:'1',status:'ready',time:'2 min ago',msg:'Dashboard V2.3 - Vercel Integration'},
-        {id:'2',status:'ready',time:'30 min ago',msg:'N8N + MCP Full Integration'},
-        {id:'3',status:'ready',time:'1 hour ago',msg:'Edge Functions added'},
-        {id:'4',status:'ready',time:'3 hours ago',msg:'Dashboard updates'},
-        {id:'5',status:'ready',time:'6 hours ago',msg:'Initial setup'}
-    ],
-    edge:[
-        {name:'archon-proxy',path:'/api/archon/:service',inv:1247,lat:'45ms'},
-        {name:'health',path:'/api/health',inv:892,lat:'120ms'},
-        {name:'analytics',path:'/api/analytics',inv:456,lat:'35ms'},
-        {name:'webhook',path:'/api/webhook/:type',inv:234,lat:'85ms'}
-    ],
-    env:18,analytics:{views:{today:342,week:2156},bw:'2.3GB/100GB'}
+    project:{name:'archon-frontend',id:'prj_OguVxu6oPwGbcIwwEtYq6JkSNj2s'},
+    domains:['www.selfarchitectai.com','selfarchitectai.com','dashboard.selfarchitectai.com'],
+    env:18
 };
-let state={tab:'overview',lambda:{},loading:true};
+
+let state={
+    tab:'overview',
+    lambda:{},
+    loading:true,
+    activities:[],
+    lastRefresh:null,
+    systemFlow:{active:true,currentStep:0},
+    latencyHistory:{brain:[],actions:[],trend:[],intake:[]}
+};
+
 const I={
     brain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
     server:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>',
@@ -106,18 +122,84 @@ const I={
     link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
     globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
     zap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-    shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-    rocket:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>'
+    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+    alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
 };
+
 function icon(n,c=''){const s=c.includes('w-6')?24:c.includes('w-5')?20:16;return `<span class="${c}" style="display:inline-flex;width:${s}px;height:${s}px">${I[n]||I.zap}</span>`}
-async function checkHealth(){
-    const res=await Promise.all(Object.entries(CONFIG.lambda).map(async([n,u])=>{
-        try{const s=Date.now();const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'health'})});return{n,status:'healthy',lat:Date.now()-s}}
-        catch(e){return{n,status:'error',lat:0}}
-    }));
-    state.lambda={};res.forEach(r=>state.lambda[r.n]=r);state.loading=false;render();
+
+function addActivity(type, message, status='success') {
+    const now = new Date();
+    const activity = {
+        id: Date.now(),
+        time: now.toLocaleTimeString('tr-TR'),
+        type,
+        message,
+        status
+    };
+    state.activities.unshift(activity);
+    if (state.activities.length > 50) state.activities.pop();
 }
+
+async function checkHealth(){
+    addActivity('system', 'Health check başlatıldı...', 'info');
+    
+    const results = await Promise.all(Object.entries(CONFIG.lambda).map(async([n,u])=>{
+        const start = Date.now();
+        try{
+            const r = await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'health'})});
+            const lat = Date.now() - start;
+            
+            // Store latency history
+            if (!state.latencyHistory[n]) state.latencyHistory[n] = [];
+            state.latencyHistory[n].push(lat);
+            if (state.latencyHistory[n].length > 20) state.latencyHistory[n].shift();
+            
+            addActivity('lambda', `${n}: ${lat}ms`, lat < 500 ? 'success' : 'warning');
+            return{n,status:'healthy',lat};
+        }catch(e){
+            addActivity('lambda', `${n}: HATA`, 'error');
+            return{n,status:'error',lat:0};
+        }
+    }));
+    
+    state.lambda={};
+    results.forEach(r=>state.lambda[r.n]=r);
+    state.loading=false;
+    state.lastRefresh = new Date().toLocaleTimeString('tr-TR');
+    
+    const healthy = results.filter(r=>r.status==='healthy').length;
+    addActivity('system', `Health check tamamlandı: ${healthy}/4 sağlıklı`, healthy === 4 ? 'success' : 'warning');
+    
+    render();
+}
+
+// Simulate system flow
+function simulateFlow() {
+    setInterval(() => {
+        state.systemFlow.currentStep = (state.systemFlow.currentStep + 1) % 6;
+        
+        // Simulate random activities
+        if (Math.random() > 0.7) {
+            const activities = [
+                {type:'n8n', msg:'Health Monitor V2 çalıştı', status:'success'},
+                {type:'lambda', msg:'Brain: orchestrate çağrıldı', status:'success'},
+                {type:'mcp', msg:'Slack MCP: alert gönderildi', status:'success'},
+                {type:'vercel', msg:'Edge function: /api/health', status:'success'},
+                {type:'github', msg:'Commit algılandı: main', status:'info'}
+            ];
+            const act = activities[Math.floor(Math.random() * activities.length)];
+            addActivity(act.type, act.msg, act.status);
+        }
+        
+        render();
+    }, 3000);
+}
+
 function render(){document.getElementById('app').innerHTML=`${header()}<div class="flex">${sidebar()}<main class="flex-1 p-6 ml-64">${content()}</main></div>`}
+
 function header(){
     const h=Object.values(state.lambda).filter(s=>s.status==='healthy').length;
     return `<header class="fixed top-0 left-0 right-0 z-50 glass border-b">
@@ -127,35 +209,55 @@ function header(){
                 <div><h1 class="text-xl font-bold gradient-text">ARCHON V2.3</h1><p class="text-xs text-gray-500">Self-Evolving AI Platform</p></div>
             </div>
             <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white\/5">
+                    <div class="live-dot"></div>
+                    <span class="text-xs text-gray-400">LIVE</span>
+                </div>
                 <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500\/20"><span class="w-2 h-2 rounded-full bg-green-400 pulse"></span><span class="text-sm text-green-400">${h}/4</span></div>
                 <div class="px-3 py-2 rounded-lg n8n-grad text-white text-sm font-medium">17</div>
                 <div class="px-3 py-2 rounded-lg mcp-grad text-white text-sm font-medium">4</div>
                 <div class="px-3 py-2 rounded-lg vercel-grad text-white text-sm font-medium">▲</div>
+                <div class="text-xs text-gray-500">${state.lastRefresh || '--:--'}</div>
                 <button onclick="checkHealth()" class="p-2 rounded-lg transition" style="background:rgba(255,255,255,.05)">${icon('refresh','w-5 text-gray-400')}</button>
             </div>
         </div>
     </header>`}
+
 function sidebar(){
-    const tabs=[{id:'overview',i:'activity',l:'Overview'},{id:'vercel',i:'triangle',l:'Vercel'},{id:'n8n',i:'workflow',l:'N8N (17)'},{id:'mcp',i:'tool',l:'MCP (4)'},{id:'lambdas',i:'server',l:'Lambdas (6)'},{id:'network',i:'network',l:'Network'},{id:'integrations',i:'plug',l:'All (63)'}];
+    const tabs=[
+        {id:'overview',i:'activity',l:'Overview'},
+        {id:'flow',i:'play',l:'System Flow'},
+        {id:'vercel',i:'triangle',l:'Vercel'},
+        {id:'n8n',i:'workflow',l:'N8N (17)'},
+        {id:'mcp',i:'tool',l:'MCP (4)'},
+        {id:'lambdas',i:'server',l:'Lambdas (6)'},
+        {id:'network',i:'network',l:'Network'},
+        {id:'integrations',i:'plug',l:'All (63)'}
+    ];
     return `<aside class="fixed left-0 top-16 bottom-0 overflow-y-auto" style="width:256px;background:rgba(26,26,36,.9);border-right:1px solid var(--border);padding:16px">
         <nav class="space-y">${tabs.map(t=>`<button onclick="setTab('${t.id}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${state.tab===t.id?'tab-active':''}">
             ${icon(t.i,`w-5 ${state.tab===t.id?'text-purple-400':'text-gray-500'}`)}<span class="${state.tab===t.id?'text-white font-medium':'text-gray-400'}">${t.l}</span>
         </button>`).join('')}</nav>
-        <div class="mt-6 p-4 rounded-xl" style="background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(59,130,246,.1));border:1px solid rgba(139,92,246,.2)">
-            <h3 class="text-sm font-semibold mb-3">Quick Stats</h3>
-            <div class="space-y text-xs">
-                <div class="flex justify-between"><span class="text-gray-500">Lambda</span><span class="mono">6</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">N8N</span><span class="mono text-orange-400">17</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">MCP</span><span class="mono text-cyan-400">4</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">Vercel Edge</span><span class="mono">4</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">GitHub</span><span class="mono text-purple-400">10</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">Autonomy</span><span class="mono text-green-400">99.5%</span></div>
+        <div class="mt-4 p-4 rounded-xl bg-white\/5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="live-dot"></div>
+                <span class="text-xs font-medium">Activity Feed</span>
+            </div>
+            <div class="space-y scroll-y" style="max-height:200px">
+                ${state.activities.slice(0,8).map(a=>`
+                    <div class="activity-item flex items-start gap-2 py-1 border-l-2 pl-2 ${a.status==='success'?'border-green-500':a.status==='error'?'border-red-500':a.status==='warning'?'border-yellow-500':'border-blue-500'}">
+                        <span class="text-xs text-gray-500">${a.time.split(':').slice(0,2).join(':')}</span>
+                        <span class="text-xs truncate">${a.message}</span>
+                    </div>
+                `).join('')}
             </div>
         </div>
     </aside>`}
+
 function content(){
     switch(state.tab){
         case 'overview':return overview();
+        case 'flow':return systemFlow();
         case 'vercel':return vercel();
         case 'n8n':return n8n();
         case 'mcp':return mcp();
@@ -165,110 +267,338 @@ function content(){
         default:return overview()
     }
 }
+
 function metric(t,v,i,c,s){
     const bg={blue:'rgba(59,130,246,.15)',green:'rgba(34,197,94,.15)',purple:'rgba(139,92,246,.15)',cyan:'rgba(6,182,212,.15)',orange:'rgba(249,115,22,.15)',white:'rgba(255,255,255,.05)'};
     const tc={blue:'text-blue-400',green:'text-green-400',purple:'text-purple-400',cyan:'text-cyan-400',orange:'text-orange-400',white:'text-white'};
     return `<div class="metric glass rounded-2xl p-5 transition cursor-pointer" style="background:${bg[c]}">
         <div class="flex items-start justify-between"><div><p class="text-sm text-gray-400">${t}</p><p class="text-3xl font-bold mt-1">${v}</p><p class="text-xs text-gray-500 mt-1">${s}</p></div><div class="p-3 rounded-xl bg-white\/5">${icon(i,`w-6 ${tc[c]}`)}</div></div>
     </div>`}
+
 function overview(){
+    const avgLat = Object.values(state.lambda).reduce((a,b)=>a+b.lat,0) / Math.max(Object.values(state.lambda).length, 1);
     return `<div class="pt-16 space-y">
         <div class="grid grid-6 gap-4">
-            ${metric('Lambda','6','server','blue','57%↓')}
+            ${metric('Lambda','6','server','blue','Avg: '+Math.round(avgLat)+'ms')}
             ${metric('N8N','17','workflow','orange','Active')}
             ${metric('MCP','4','tool','cyan','15 Tools')}
-            ${metric('Vercel','4','triangle','white','Edge Fn')}
+            ${metric('Vercel','3','triangle','white','Domains')}
             ${metric('GitHub','10','git','purple','CI/CD')}
-            ${metric('Cost','$13','activity','green','35%↓')}
+            ${metric('Uptime','99.9%','activity','green','24h')}
         </div>
+        
         <div class="grid grid-3 gap-6">
             <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('server','w-5 text-blue-400')} Lambda Health</h2>
-                <div class="space-y">${Object.entries(state.lambda).map(([n,d])=>`<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${d.status==='healthy'?'bg-green-400':'bg-red-400'} pulse"></span><span class="text-sm">${n}</span></div><span class="text-xs text-gray-500 mono">${d.lat}ms</span></div>`).join('')}${Object.keys(state.lambda).length===0?'<p class="text-gray-500 text-sm">Loading...</p>':''}</div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">${icon('server','w-5 text-blue-400')} Lambda Health</h2>
+                    <div class="live-dot"></div>
+                </div>
+                <div class="space-y">${Object.entries(state.lambda).map(([n,d])=>{
+                    const history = state.latencyHistory[n] || [];
+                    const avg = history.length ? Math.round(history.reduce((a,b)=>a+b,0)/history.length) : 0;
+                    const max = Math.max(...history, 1);
+                    return `
+                    <div class="p-3 rounded-xl bg-white\/5">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full ${d.status==='healthy'?'bg-green-400':'bg-red-400'} pulse"></span>
+                                <span class="text-sm font-medium">${n}</span>
+                            </div>
+                            <span class="text-xs mono ${d.lat<300?'text-green-400':d.lat<600?'text-yellow-400':'text-red-400'}">${d.lat}ms</span>
+                        </div>
+                        <div class="flex gap-1 h-4">
+                            ${history.slice(-10).map(h=>`<div class="flex-1 bg-white\/10 rounded-sm overflow-hidden"><div class="latency-bar ${h<300?'bg-green-500':h<600?'bg-yellow-500':'bg-red-500'}" style="width:100%;height:${(h/max)*100}%"></div></div>`).join('')}
+                        </div>
+                    </div>`
+                }).join('')}${Object.keys(state.lambda).length===0?'<p class="text-gray-500 text-sm">Loading...</p>':''}</div>
             </div>
+            
             <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('triangle','w-5 text-white')} Vercel Status</h2>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">${icon('workflow','w-5 text-orange-400')} N8N Activity</h2>
+                    <span class="text-xs text-gray-500">Son 1 saat</span>
+                </div>
                 <div class="space-y">
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><span class="text-sm">selfarchitectai.com</span><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">live</span></div>
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><span class="text-sm">Edge Functions</span><span class="text-xs text-gray-500">4 active</span></div>
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><span class="text-sm">Env Variables</span><span class="text-xs text-gray-500">18</span></div>
-                    <a href="#" onclick="setTab('vercel')" class="block text-center text-sm text-purple-400 mt-2">View details →</a>
+                    ${N8N.filter(w=>w.type==='scheduled').slice(0,5).map(w=>`
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5">
+                            <div class="flex items-center gap-2">
+                                <span>${w.t}</span>
+                                <div>
+                                    <span class="text-sm">${w.name}</span>
+                                    <span class="text-xs text-gray-500 ml-2">${w.interval || 'manual'}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-green-400 pulse"></span>
+                                <span class="text-xs text-gray-500">aktif</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <a href="#" onclick="setTab('n8n')" class="block text-center text-sm text-purple-400 mt-2">Tümünü gör →</a>
                 </div>
             </div>
+            
             <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('workflow','w-5 text-orange-400')} N8N Workflows</h2>
-                <div class="space-y">${N8N.slice(0,5).map(w=>`<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5"><div class="flex items-center gap-2"><span>${w.t}</span><span class="text-sm truncate" style="max-width:120px">${w.name}</span></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">on</span></div>`).join('')}<a href="#" onclick="setTab('n8n')" class="block text-center text-sm text-purple-400 mt-2">View all 17 →</a></div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">${icon('zap','w-5 text-cyan-400')} Live Activity</h2>
+                    <div class="live-dot"></div>
+                </div>
+                <div class="space-y scroll-y" style="max-height:250px">
+                    ${state.activities.slice(0,10).map(a=>`
+                        <div class="activity-item flex items-start gap-3 p-2 rounded-lg bg-white\/5">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center ${a.status==='success'?'bg-green-500\/20':a.status==='error'?'bg-red-500\/20':a.status==='warning'?'bg-yellow-500\/20':'bg-blue-500\/20'}">
+                                ${icon(a.type==='lambda'?'server':a.type==='n8n'?'workflow':a.type==='mcp'?'tool':a.type==='vercel'?'triangle':'zap','w-4')}
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm">${a.message}</p>
+                                <p class="text-xs text-gray-500">${a.time}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass rounded-2xl p-6">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('play','w-5 text-purple-400')} System Data Flow</h2>
+            <div class="relative h-32 bg-black\/30 rounded-xl overflow-hidden p-4">
+                <svg viewBox="0 0 800 100" class="w-full h-full">
+                    <defs>
+                        <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#3b82f6"/>
+                            <stop offset="50%" style="stop-color:#8b5cf6"/>
+                            <stop offset="100%" style="stop-color:#06b6d4"/>
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Nodes -->
+                    <g transform="translate(50,50)">
+                        <circle r="20" fill="${state.systemFlow.currentStep===0?'rgba(139,92,246,.8)':'rgba(139,92,246,.3)'}" stroke="rgba(139,92,246,.5)" stroke-width="2"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="10">User</text>
+                    </g>
+                    
+                    <g transform="translate(180,50)">
+                        <rect x="-30" y="-15" width="60" height="30" rx="5" fill="${state.systemFlow.currentStep===1?'rgba(0,0,0,.9)':'rgba(0,0,0,.5)'}" stroke="rgba(255,255,255,.3)"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="10">Vercel</text>
+                    </g>
+                    
+                    <g transform="translate(310,50)">
+                        <rect x="-30" y="-15" width="60" height="30" rx="5" fill="${state.systemFlow.currentStep===2?'rgba(59,130,246,.8)':'rgba(59,130,246,.3)'}" stroke="rgba(59,130,246,.5)"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="10">API GW</text>
+                    </g>
+                    
+                    <g transform="translate(440,50)">
+                        <rect x="-30" y="-15" width="60" height="30" rx="5" fill="${state.systemFlow.currentStep===3?'rgba(6,182,212,.8)':'rgba(6,182,212,.3)'}" stroke="rgba(6,182,212,.5)"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="10">Lambda</text>
+                    </g>
+                    
+                    <g transform="translate(570,30)">
+                        <rect x="-30" y="-12" width="60" height="24" rx="4" fill="${state.systemFlow.currentStep===4?'rgba(255,109,90,.8)':'rgba(255,109,90,.3)'}" stroke="rgba(255,109,90,.5)"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="9">N8N</text>
+                    </g>
+                    
+                    <g transform="translate(570,70)">
+                        <rect x="-30" y="-12" width="60" height="24" rx="4" fill="${state.systemFlow.currentStep===4?'rgba(139,92,246,.8)':'rgba(139,92,246,.3)'}" stroke="rgba(139,92,246,.5)"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="9">MCP</text>
+                    </g>
+                    
+                    <g transform="translate(700,50)">
+                        <rect x="-30" y="-15" width="60" height="30" rx="5" fill="${state.systemFlow.currentStep===5?'rgba(249,115,22,.8)':'rgba(249,115,22,.3)'}" stroke="rgba(249,115,22,.5)"/>
+                        <text y="4" text-anchor="middle" fill="white" font-size="10">DynamoDB</text>
+                    </g>
+                    
+                    <!-- Flow lines -->
+                    <line x1="70" y1="50" x2="150" y2="50" stroke="url(#flowGrad)" stroke-width="2" class="flow"/>
+                    <line x1="210" y1="50" x2="280" y2="50" stroke="url(#flowGrad)" stroke-width="2" class="flow"/>
+                    <line x1="340" y1="50" x2="410" y2="50" stroke="url(#flowGrad)" stroke-width="2" class="flow"/>
+                    <line x1="470" y1="40" x2="540" y2="30" stroke="rgba(255,109,90,.5)" stroke-width="1" class="flow"/>
+                    <line x1="470" y1="60" x2="540" y2="70" stroke="rgba(139,92,246,.5)" stroke-width="1" class="flow"/>
+                    <line x1="600" y1="50" x2="670" y2="50" stroke="url(#flowGrad)" stroke-width="2" class="flow"/>
+                    
+                    <!-- Active indicator -->
+                    <circle cx="${50 + state.systemFlow.currentStep * 130}" cy="50" r="25" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="2" class="pulse"/>
+                </svg>
+            </div>
+            <div class="flex justify-between mt-4 text-xs text-gray-500">
+                <span>Request</span>
+                <span>Edge</span>
+                <span>Gateway</span>
+                <span>Process</span>
+                <span>Orchestrate</span>
+                <span>Store</span>
             </div>
         </div>
     </div>`}
+
+function systemFlow(){
+    return `<div class="pt-16 space-y">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold flex items-center gap-3">${icon('play','w-8 text-purple-400')} System Flow</h1>
+            <div class="flex items-center gap-2">
+                <div class="live-dot"></div>
+                <span class="text-sm text-gray-400">Real-time visualization</span>
+            </div>
+        </div>
+        
+        <div class="glass rounded-2xl p-6">
+            <h2 class="text-lg font-semibold mb-4">🔄 Request Lifecycle</h2>
+            <div class="relative h-64 bg-black\/30 rounded-xl overflow-hidden">
+                <svg viewBox="0 0 900 220" class="w-full h-full">
+                    <defs>
+                        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:.8"/>
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:.8"/>
+                        </linearGradient>
+                        <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                    </defs>
+                    
+                    <!-- User -->
+                    <g transform="translate(60,110)" filter="${state.systemFlow.currentStep===0?'url(#glow)':''}">
+                        <circle r="35" fill="${state.systemFlow.currentStep===0?'rgba(139,92,246,.6)':'rgba(139,92,246,.2)'}" stroke="rgba(139,92,246,.8)" stroke-width="2"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="12" font-weight="600">USER</text>
+                    </g>
+                    
+                    <!-- Vercel Edge -->
+                    <g transform="translate(180,110)" filter="${state.systemFlow.currentStep===1?'url(#glow)':''}">
+                        <rect x="-40" y="-30" width="80" height="60" rx="8" fill="${state.systemFlow.currentStep===1?'rgba(255,255,255,.2)':'rgba(255,255,255,.05)'}" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+                        <text y="-8" text-anchor="middle" fill="white" font-size="11" font-weight="600">▲ VERCEL</text>
+                        <text y="10" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9">Edge Functions</text>
+                    </g>
+                    
+                    <!-- API Gateway -->
+                    <g transform="translate(320,110)" filter="${state.systemFlow.currentStep===2?'url(#glow)':''}">
+                        <rect x="-45" y="-30" width="90" height="60" rx="8" fill="${state.systemFlow.currentStep===2?'rgba(59,130,246,.6)':'rgba(59,130,246,.2)'}" stroke="rgba(59,130,246,.8)" stroke-width="2"/>
+                        <text y="-8" text-anchor="middle" fill="white" font-size="11" font-weight="600">API GATEWAY</text>
+                        <text y="10" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9">REST + Auth</text>
+                    </g>
+                    
+                    <!-- Lambda Functions -->
+                    <g transform="translate(480,60)" filter="${state.systemFlow.currentStep===3?'url(#glow)':''}">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="${state.systemFlow.currentStep===3?'rgba(6,182,212,.6)':'rgba(6,182,212,.2)'}" stroke="rgba(6,182,212,.8)"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="10">Brain</text>
+                    </g>
+                    <g transform="translate(480,120)" filter="${state.systemFlow.currentStep===3?'url(#glow)':''}">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="${state.systemFlow.currentStep===3?'rgba(249,115,22,.6)':'rgba(249,115,22,.2)'}" stroke="rgba(249,115,22,.8)"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="10">Actions</text>
+                    </g>
+                    <g transform="translate(480,180)" filter="${state.systemFlow.currentStep===3?'url(#glow)':''}">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="${state.systemFlow.currentStep===3?'rgba(34,197,94,.6)':'rgba(34,197,94,.2)'}" stroke="rgba(34,197,94,.8)"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="10">Trend</text>
+                    </g>
+                    
+                    <!-- Orchestration -->
+                    <g transform="translate(620,60)" filter="${state.systemFlow.currentStep===4?'url(#glow)':''}">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="${state.systemFlow.currentStep===4?'rgba(255,109,90,.6)':'rgba(255,109,90,.2)'}" stroke="rgba(255,109,90,.8)"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="10">N8N</text>
+                    </g>
+                    <g transform="translate(620,120)" filter="${state.systemFlow.currentStep===4?'url(#glow)':''}">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="${state.systemFlow.currentStep===4?'rgba(139,92,246,.6)':'rgba(139,92,246,.2)'}" stroke="rgba(139,92,246,.8)"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="10">MCP</text>
+                    </g>
+                    <g transform="translate(620,180)" filter="${state.systemFlow.currentStep===4?'url(#glow)':''}">
+                        <rect x="-35" y="-20" width="70" height="40" rx="6" fill="${state.systemFlow.currentStep===4?'rgba(139,92,246,.6)':'rgba(139,92,246,.2)'}" stroke="rgba(139,92,246,.8)"/>
+                        <text y="5" text-anchor="middle" fill="white" font-size="10">GitHub</text>
+                    </g>
+                    
+                    <!-- Storage -->
+                    <g transform="translate(780,90)" filter="${state.systemFlow.currentStep===5?'url(#glow)':''}">
+                        <rect x="-50" y="-35" width="100" height="70" rx="8" fill="${state.systemFlow.currentStep===5?'rgba(249,115,22,.6)':'rgba(249,115,22,.2)'}" stroke="rgba(249,115,22,.8)" stroke-width="2"/>
+                        <text y="-8" text-anchor="middle" fill="white" font-size="11" font-weight="600">STORAGE</text>
+                        <text y="10" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9">DynamoDB</text>
+                        <text y="22" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9">S3</text>
+                    </g>
+                    
+                    <!-- Connection lines -->
+                    <path d="M95 110 L140 110" stroke="url(#lg1)" stroke-width="3" class="flow"/>
+                    <path d="M220 110 L275 110" stroke="url(#lg1)" stroke-width="3" class="flow"/>
+                    <path d="M365 90 L445 60" stroke="rgba(6,182,212,.5)" stroke-width="2" class="flow"/>
+                    <path d="M365 110 L445 120" stroke="rgba(249,115,22,.5)" stroke-width="2" class="flow"/>
+                    <path d="M365 130 L445 180" stroke="rgba(34,197,94,.5)" stroke-width="2" class="flow"/>
+                    <path d="M515 60 L585 60" stroke="rgba(255,109,90,.5)" stroke-width="2" class="flow"/>
+                    <path d="M515 120 L585 120" stroke="rgba(139,92,246,.5)" stroke-width="2" class="flow"/>
+                    <path d="M515 180 L585 180" stroke="rgba(139,92,246,.5)" stroke-width="2" class="flow"/>
+                    <path d="M655 90 L730 90" stroke="url(#lg1)" stroke-width="3" class="flow"/>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="grid grid-3 gap-6">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('clock','w-5 text-blue-400')} Response Times</h2>
+                <div class="space-y">
+                    ${Object.entries(state.lambda).map(([n,d])=>`
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">${n}</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-32 h-2 bg-white\/10 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full ${d.lat<300?'bg-green-500':d.lat<600?'bg-yellow-500':'bg-red-500'}" style="width:${Math.min(d.lat/10,100)}%"></div>
+                                </div>
+                                <span class="text-xs mono w-12 text-right">${d.lat}ms</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('workflow','w-5 text-orange-400')} Active Workflows</h2>
+                <div class="space-y">
+                    ${N8N.filter(w=>w.type==='scheduled').slice(0,5).map(w=>`
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5">
+                            <span class="text-sm">${w.t} ${w.name}</span>
+                            <span class="text-xs px-2 py-1 rounded bg-green-500\/20 text-green-400">${w.interval}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('activity','w-5 text-green-400')} System Health</h2>
+                <div class="space-y">
+                    <div class="flex items-center justify-between"><span class="text-sm">Lambda</span><span class="text-green-400">100%</span></div>
+                    <div class="flex items-center justify-between"><span class="text-sm">N8N</span><span class="text-green-400">100%</span></div>
+                    <div class="flex items-center justify-between"><span class="text-sm">Vercel</span><span class="text-green-400">100%</span></div>
+                    <div class="flex items-center justify-between"><span class="text-sm">API Gateway</span><span class="text-green-400">100%</span></div>
+                    <div class="flex items-center justify-between font-semibold mt-2 pt-2 border-t border-white\/10"><span>Overall</span><span class="text-green-400">99.9%</span></div>
+                </div>
+            </div>
+        </div>
+    </div>`}
+
 function vercel(){
-    const V=VERCEL;
     return `<div class="pt-16 space-y">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold flex items-center gap-3">${icon('triangle','w-8')} Vercel Platform</h1>
             <a href="https://vercel.com/selfarchitectai-design/archon-frontend" target="_blank" class="px-4 py-2 rounded-lg vercel-grad text-white flex items-center gap-2">${icon('link','w-4')} Open Vercel</a>
         </div>
         <div class="grid grid-4 gap-4">
-            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold">▲</p><p class="text-sm text-gray-400 mt-2">${V.project.name}</p></div>
-            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">${V.deploys.length}</p><p class="text-sm text-gray-400">Deployments</p></div>
-            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-cyan-400">4</p><p class="text-sm text-gray-400">Edge Functions</p></div>
-            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">${V.env}</p><p class="text-sm text-gray-400">Env Vars</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold">▲</p><p class="text-sm text-gray-400 mt-2">${VERCEL.project.name}</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-green-400">5</p><p class="text-sm text-gray-400">Deployments</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-cyan-400">3</p><p class="text-sm text-gray-400">Domains</p></div>
+            <div class="glass rounded-xl p-5 text-center"><p class="text-4xl font-bold text-purple-400">${VERCEL.env}</p><p class="text-sm text-gray-400">Env Vars</p></div>
         </div>
         <div class="grid grid-2 gap-6">
             <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('globe','w-5 text-blue-400')} Domains</h2>
-                <div class="space-y">${V.domains.map(d=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5">
-                    <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-400 pulse"></span><div><p class="font-medium">${d.d}</p><p class="text-xs text-gray-500">${d.primary?'Primary':d.redirect?'Redirect':'Alias'}</p></div></div>
-                    <span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">${icon('shield','w-3')} SSL</span>
-                </div>`).join('')}</div>
+                <h2 class="text-lg font-semibold mb-4">${icon('globe','w-5 text-blue-400')} Domains</h2>
+                <div class="space-y">${VERCEL.domains.map((d,i)=>`
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-white\/5">
+                        <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-400 pulse"></span><span class="font-medium">${d}</span></div>
+                        <span class="text-xs px-2 py-1 rounded bg-green-500\/20 text-green-400">${i===0?'Primary':'Active'}</span>
+                    </div>`).join('')}</div>
             </div>
             <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('rocket','w-5 text-purple-400')} Recent Deployments</h2>
-                <div class="space-y">${V.deploys.map(d=>`<div class="flex items-center justify-between p-2 rounded-lg bg-white\/5">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${d.status==='ready'?'bg-green-400':'bg-red-400'}"></span><span class="text-sm truncate" style="max-width:180px">${d.msg}</span></div>
-                    <span class="text-xs text-gray-500">${d.time}</span>
-                </div>`).join('')}</div>
-            </div>
-        </div>
-        <div class="glass rounded-2xl p-6">
-            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">${icon('zap','w-5 text-cyan-400')} Edge Functions</h2>
-            <div class="grid grid-4 gap-4">${V.edge.map(f=>`<div class="p-4 rounded-xl bg-white\/5 transition" style="border:1px solid rgba(6,182,212,.2)">
-                <h3 class="font-semibold text-cyan-400">${f.name}</h3>
-                <p class="text-xs text-gray-500 mono mt-1">${f.path}</p>
-                <div class="mt-3 space-y">
-                    <div class="flex justify-between text-xs"><span class="text-gray-500">Invocations</span><span>${f.inv}</span></div>
-                    <div class="flex justify-between text-xs"><span class="text-gray-500">Latency</span><span class="text-green-400">${f.lat}</span></div>
+                <h2 class="text-lg font-semibold mb-4">${icon('zap','w-5 text-purple-400')} Recent Deploys</h2>
+                <div class="space-y">
+                    ${['Dashboard V2.3 Update','Vercel Integration','N8N + MCP Integration','Edge Functions','Initial Setup'].map((d,i)=>`
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-white\/5">
+                            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span><span class="text-sm truncate">${d}</span></div>
+                            <span class="text-xs text-gray-500">${i===0?'Just now':i+'h ago'}</span>
+                        </div>`).join('')}
                 </div>
-            </div>`).join('')}</div>
-        </div>
-        <div class="grid grid-2 gap-6">
-            <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4">Environment Variables (${V.env})</h2>
-                <div class="grid grid-2 gap-2 text-sm">
-                    <div class="p-2 rounded bg-white\/5">VERCEL_TOKEN</div>
-                    <div class="p-2 rounded bg-white\/5">GITHUB_TOKEN</div>
-                    <div class="p-2 rounded bg-white\/5">AWS_ACCESS_KEY_ID</div>
-                    <div class="p-2 rounded bg-white\/5">AWS_SECRET_ACCESS_KEY</div>
-                    <div class="p-2 rounded bg-white\/5">N8N_API_KEY</div>
-                    <div class="p-2 rounded bg-white\/5">N8N_BASE_URL</div>
-                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_BRAIN_URL</div>
-                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_ACTIONS_URL</div>
-                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_TREND_URL</div>
-                    <div class="p-2 rounded bg-white\/5 text-cyan-400">LAMBDA_INTAKE_URL</div>
-                    <div class="p-2 rounded bg-white\/5 text-cyan-400">API_GATEWAY_URL</div>
-                    <div class="p-2 rounded bg-white\/5">KV_REST_API_*</div>
-                </div>
-            </div>
-            <div class="glass rounded-2xl p-6">
-                <h2 class="text-lg font-semibold mb-4">Analytics</h2>
-                <div class="grid grid-2 gap-4 mb-4">
-                    <div class="text-center p-3 rounded-lg bg-white\/5"><p class="text-2xl font-bold">${V.analytics.views.today}</p><p class="text-xs text-gray-500">Today</p></div>
-                    <div class="text-center p-3 rounded-lg bg-white\/5"><p class="text-2xl font-bold">${V.analytics.views.week}</p><p class="text-xs text-gray-500">This Week</p></div>
-                </div>
-                <div><div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Bandwidth</span><span>${V.analytics.bw}</span></div><div class="progress"><div class="progress-bar bg-green-500" style="width:2.3%"></div></div></div>
             </div>
         </div>
     </div>`}
+
 function n8n(){
     const scheduled=N8N.filter(w=>w.type==='scheduled'),webhook=N8N.filter(w=>w.type==='webhook');
     return `<div class="pt-16 space-y">
@@ -284,14 +614,15 @@ function n8n(){
         <div class="grid grid-2 gap-6">
             <div class="glass rounded-2xl p-6">
                 <h2 class="text-lg font-semibold mb-4">⏰ Scheduled (${scheduled.length})</h2>
-                <div class="space-y">${scheduled.map(w=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="text-xl">${w.t}</span><div><p class="font-medium">${w.name}</p><p class="text-xs text-gray-500 mono">${w.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span></div>`).join('')}</div>
+                <div class="space-y scroll-y">${scheduled.map(w=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="text-xl">${w.t}</span><div><p class="font-medium">${w.name}</p><p class="text-xs text-gray-500">${w.interval||'manual'}</p></div></div><span class="px-2 py-1 rounded text-xs bg-green-500\/20 text-green-400">active</span></div>`).join('')}</div>
             </div>
             <div class="glass rounded-2xl p-6">
                 <h2 class="text-lg font-semibold mb-4">⚡ Webhook (${webhook.length})</h2>
-                <div class="space-y">${webhook.map(w=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="text-xl">${w.t}</span><div><p class="font-medium">${w.name}</p><p class="text-xs text-gray-500 mono">${w.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-purple-500\/20 text-purple-400">webhook</span></div>`).join('')}</div>
+                <div class="space-y scroll-y">${webhook.map(w=>`<div class="flex items-center justify-between p-3 rounded-xl bg-white\/5"><div class="flex items-center gap-3"><span class="text-xl">${w.t}</span><div><p class="font-medium">${w.name}</p><p class="text-xs text-gray-500 mono">${w.id}</p></div></div><span class="px-2 py-1 rounded text-xs bg-purple-500\/20 text-purple-400">webhook</span></div>`).join('')}</div>
             </div>
         </div>
     </div>`}
+
 function mcp(){
     return `<div class="pt-16 space-y">
         <div class="flex items-center justify-between">
@@ -312,13 +643,18 @@ function mcp(){
             <div class="flex flex-wrap gap-2">${s.tools.map(t=>`<span class="px-3 py-1 rounded-lg bg-white\/5 text-sm mono">${t}</span>`).join('')}</div>
         </div>`).join('')}</div>
     </div>`}
+
 function lambdas(){
-    const L=[{n:'brain',m:'512MB',c:'blue',f:['orchestrator','decision','pattern']},{n:'actions',m:'256MB',c:'orange',f:['executor','notifier','collector']},{n:'trend',m:'512MB',c:'cyan',f:['collector','analyzer','reporter']},{n:'intake',m:'256MB',c:'green',f:['intake','feedback']}];
+    const L=[{n:'brain',m:'512MB',c:'blue'},{n:'actions',m:'256MB',c:'orange'},{n:'trend',m:'512MB',c:'cyan'},{n:'intake',m:'256MB',c:'green'}];
     return `<div class="pt-16 space-y">
         <h1 class="text-2xl font-bold">Lambda Functions</h1>
         <div class="glass rounded-2xl p-6"><div class="grid grid-4 gap-4"><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold text-red-400">14</p><p class="text-sm text-gray-500">Before</p></div><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold">→</p></div><div class="text-center p-4 rounded-xl bg-white\/5"><p class="text-3xl font-bold text-green-400">6</p><p class="text-sm text-gray-500">After</p></div><div class="text-center p-4 rounded-xl bg-green-500\/10"><p class="text-3xl font-bold text-green-400">57%</p><p class="text-sm text-gray-500">Reduction</p></div></div></div>
-        <div class="grid grid-2 gap-6">${L.map(l=>{const s=state.lambda[l.n]||{status:'loading',lat:0};return `<div class="glass rounded-2xl p-6"><div class="flex items-start justify-between mb-4"><div><h3 class="text-lg font-semibold">archon-${l.n}</h3><p class="text-sm text-gray-500 mono">${l.m}</p></div><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${s.status==='healthy'?'bg-green-400':'bg-red-400'} pulse"></span><span class="text-sm">${s.status}</span></div></div><div><p class="text-xs text-gray-500 mb-2">Consolidated:</p><div class="flex flex-wrap gap-1">${l.f.map(f=>`<span class="px-2 py-1 rounded bg-white\/5 text-xs">${f}</span>`).join('')}</div></div></div>`}).join('')}</div>
+        <div class="grid grid-2 gap-6">${L.map(l=>{const s=state.lambda[l.n]||{status:'loading',lat:0};const history=state.latencyHistory[l.n]||[];return `<div class="glass rounded-2xl p-6">
+            <div class="flex items-start justify-between mb-4"><div><h3 class="text-lg font-semibold">archon-${l.n}</h3><p class="text-sm text-gray-500 mono">${l.m}</p></div><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${s.status==='healthy'?'bg-green-400':'bg-red-400'} pulse"></span><span class="text-sm">${s.status}</span><span class="text-xs mono text-gray-500">${s.lat}ms</span></div></div>
+            <div class="h-16 flex items-end gap-1">${history.slice(-20).map(h=>`<div class="flex-1 rounded-t ${h<300?'bg-green-500':h<600?'bg-yellow-500':'bg-red-500'}" style="height:${Math.min(h/10,100)}%"></div>`).join('')}</div>
+        </div>`}).join('')}</div>
     </div>`}
+
 function network(){
     return `<div class="pt-16 space-y">
         <h1 class="text-2xl font-bold">Network Architecture</h1>
@@ -354,39 +690,36 @@ function network(){
                 </svg>
             </div>
         </div>
-        <div class="grid grid-5 gap-4">
-            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-purple-400">1</p><p class="text-xs text-gray-500">Region</p></div>
-            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-blue-400">7</p><p class="text-xs text-gray-500">Endpoints</p></div>
-            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-orange-400">17</p><p class="text-xs text-gray-500">N8N</p></div>
-            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold text-cyan-400">4</p><p class="text-xs text-gray-500">MCP</p></div>
-            <div class="glass rounded-xl p-4 text-center"><p class="text-2xl font-bold">4</p><p class="text-xs text-gray-500">Vercel Edge</p></div>
-        </div>
     </div>`}
+
 function integrations(){
-    const I=[{n:'AWS Lambda',c:6,i:'server',col:'orange'},{n:'N8N Cloud',c:17,i:'workflow',col:'pink'},{n:'MCP Servers',c:4,i:'tool',col:'cyan'},{n:'GitHub Actions',c:10,i:'git',col:'purple'},{n:'Vercel Edge',c:4,i:'triangle',col:'white'},{n:'API Gateway',c:7,i:'globe',col:'blue'},{n:'DynamoDB',c:5,i:'activity',col:'orange'},{n:'Slack',c:4,i:'zap',col:'green'}];
+    const I=[{n:'AWS Lambda',c:6,col:'orange'},{n:'N8N Cloud',c:17,col:'pink'},{n:'MCP Servers',c:4,col:'cyan'},{n:'GitHub Actions',c:10,col:'purple'},{n:'Vercel',c:3,col:'white'},{n:'API Gateway',c:7,col:'blue'},{n:'DynamoDB',c:5,col:'orange'},{n:'Slack',c:4,col:'green'}];
     return `<div class="pt-16 space-y">
         <h1 class="text-2xl font-bold">All Integrations</h1>
-        <div class="grid grid-4 gap-4">${I.map(i=>`<div class="glass rounded-xl p-5 transition cursor-pointer">
-            <div class="flex items-center gap-3 mb-3"><div class="p-2 rounded-lg bg-${i.col}-500\/20">${icon(i.i,`w-5 text-${i.col}-400`)}</div><h3 class="font-semibold">${i.n}</h3></div>
-            <p class="text-3xl font-bold text-${i.col}-400">${i.c}</p>
-        </div>`).join('')}</div>
+        <div class="grid grid-4 gap-4">${I.map(i=>`<div class="glass rounded-xl p-5 transition cursor-pointer"><h3 class="font-semibold mb-2">${i.n}</h3><p class="text-3xl font-bold text-${i.col}-400">${i.c}</p></div>`).join('')}</div>
         <div class="glass rounded-2xl p-6">
-            <h2 class="text-lg font-semibold mb-4">Total Integration Score</h2>
-            <div class="flex items-center gap-8">
-                <div class="text-center"><p class="text-5xl font-bold gradient-text">63</p><p class="text-sm text-gray-500">Components</p></div>
-                <div class="flex-1 space-y">
-                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">Lambda</span><div class="flex-1 progress"><div class="progress-bar bg-orange-500" style="width:10%"></div></div><span class="text-sm">6</span></div>
-                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">N8N</span><div class="flex-1 progress"><div class="progress-bar n8n-grad" style="width:27%"></div></div><span class="text-sm">17</span></div>
-                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">GitHub</span><div class="flex-1 progress"><div class="progress-bar bg-purple-500" style="width:16%"></div></div><span class="text-sm">10</span></div>
-                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">MCP</span><div class="flex-1 progress"><div class="progress-bar mcp-grad" style="width:6%"></div></div><span class="text-sm">4</span></div>
-                    <div class="flex items-center gap-2"><span class="text-sm text-gray-400 w-24">Vercel</span><div class="flex-1 progress"><div class="progress-bar bg-white" style="width:6%"></div></div><span class="text-sm">4</span></div>
+            <h2 class="text-lg font-semibold mb-4">Total: 63 Components</h2>
+            <div class="grid grid-2 gap-4">
+                <div class="space-y">
+                    ${I.slice(0,4).map(i=>`<div class="flex items-center gap-2"><span class="text-sm w-24">${i.n}</span><div class="flex-1 progress"><div class="progress-bar bg-${i.col}-500" style="width:${i.c*1.5}%"></div></div><span class="text-sm w-8 text-right">${i.c}</span></div>`).join('')}
+                </div>
+                <div class="space-y">
+                    ${I.slice(4).map(i=>`<div class="flex items-center gap-2"><span class="text-sm w-24">${i.n}</span><div class="flex-1 progress"><div class="progress-bar bg-${i.col}-500" style="width:${i.c*1.5}%"></div></div><span class="text-sm w-8 text-right">${i.c}</span></div>`).join('')}
                 </div>
             </div>
         </div>
     </div>`}
+
 window.setTab=t=>{state.tab=t;render()};
 window.checkHealth=checkHealth;
-render();checkHealth();
+
+// Initialize
+render();
+checkHealth();
+simulateFlow();
+
+// Auto-refresh every 30 seconds
+setInterval(checkHealth, 30000);
 </script>
 </body>
 </html>
