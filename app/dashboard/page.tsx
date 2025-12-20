@@ -78,11 +78,6 @@ const Icons = {
       <path d="M3 12A9 3 0 0 0 21 12"/>
     </svg>
   ),
-  cloud: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-    </svg>
-  ),
   check: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <polyline points="20 6 9 17 4 12"/>
@@ -108,11 +103,7 @@ const Icons = {
 
 // Animated Live Dot
 const LiveDot = ({ status = "green", size = "md" }: { status?: string; size?: string }) => {
-  const colors: Record<string, string> = {
-    green: "#22c55e",
-    yellow: "#eab308",
-    red: "#ef4444",
-  };
+  const colors: Record<string, string> = { green: "#22c55e", yellow: "#eab308", red: "#ef4444" };
   const sizes: Record<string, number> = { sm: 6, md: 8, lg: 12 };
   const s = sizes[size] || 8;
   const color = colors[status] || colors.green;
@@ -121,11 +112,7 @@ const LiveDot = ({ status = "green", size = "md" }: { status?: string; size?: st
     <span
       className="live-dot"
       style={{
-        width: s,
-        height: s,
-        background: color,
-        borderRadius: "50%",
-        display: "inline-block",
+        width: s, height: s, background: color, borderRadius: "50%", display: "inline-block",
         animation: status === "green" ? "livePulse 1.5s infinite" : "none",
       }}
     />
@@ -140,11 +127,7 @@ const StatusBadge = ({ status }: { status: "green" | "yellow" | "red" }) => {
     red: "bg-red-500/20 text-red-400 border-red-500/40",
   };
   const labels: Record<string, string> = { green: "Healthy", yellow: "Warning", red: "Error" };
-  const icons: Record<string, JSX.Element> = {
-    green: Icons.check,
-    yellow: Icons.alert,
-    red: Icons.x,
-  };
+  const icons: Record<string, JSX.Element> = { green: Icons.check, yellow: Icons.alert, red: Icons.x };
 
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full border ${styles[status]}`}>
@@ -163,27 +146,10 @@ const CircularGauge = ({ value, size = 160, strokeWidth = 10, color }: { value: 
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg className="transform -rotate-90" width={size} height={size}>
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="rgba(255,255,255,0.1)"
-          strokeWidth={strokeWidth}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          className="transition-all duration-1000 ease-out"
-          style={{ filter: `drop-shadow(0 0 8px ${color})` }}
-        />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={strokeWidth} />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
+          strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round"
+          className="transition-all duration-1000 ease-out" style={{ filter: `drop-shadow(0 0 8px ${color})` }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-4xl font-bold" style={{ color }}>{value}</span>
@@ -209,44 +175,26 @@ const Sparkline = ({ data, color = "#22c55e", height = 40 }: { data: number[]; c
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
-      <polygon
-        points={`0,${height} ${points} ${width},${height}`}
-        fill={`url(#sparkGrad-${color.replace("#", "")})`}
-      />
-      <polyline
-        points={points}
-        fill="none"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <polygon points={`0,${height} ${points} ${width},${height}`} fill={`url(#sparkGrad-${color.replace("#", "")})`} />
+      <polyline points={points} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={width} cy={height - ((data[data.length - 1] - min) / range) * height} r="3" fill={color} />
     </svg>
   );
 };
 
-// Network Node
-const NetworkNode = ({ name, status, type, x, y }: { name: string; status: string; type: string; x: number; y: number }) => {
+// Network Node - Fixed types
+const NetworkNode = ({ name, status, type, x, y }: { name: string; status: string; type: string; x: string; y: string }) => {
   const colors: Record<string, string> = {
     green: "from-green-500/30 to-green-600/10 border-green-500/50",
     yellow: "from-yellow-500/30 to-yellow-600/10 border-yellow-500/50",
     red: "from-red-500/30 to-red-600/10 border-red-500/50",
   };
   const icons: Record<string, JSX.Element> = {
-    lambda: Icons.cpu,
-    vercel: Icons.globe,
-    n8n: Icons.workflow,
-    mcp: Icons.plug,
-    kv: Icons.database,
-    ai: Icons.brain,
+    lambda: Icons.cpu, vercel: Icons.globe, n8n: Icons.workflow, mcp: Icons.plug, kv: Icons.database, ai: Icons.brain,
   };
 
   return (
-    <div
-      className={`absolute flex flex-col items-center transition-transform hover:scale-110 cursor-pointer`}
-      style={{ left: x, top: y, transform: "translate(-50%, -50%)" }}
-    >
+    <div className="absolute flex flex-col items-center transition-transform hover:scale-110 cursor-pointer" style={{ left: x, top: y, transform: "translate(-50%, -50%)" }}>
       <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${colors[status]} border flex items-center justify-center backdrop-blur-sm`}>
         <span className="w-7 h-7 text-white">{icons[type] || Icons.zap}</span>
       </div>
@@ -258,18 +206,10 @@ const NetworkNode = ({ name, status, type, x, y }: { name: string; status: strin
 
 // Activity Item
 const ActivityItem = ({ type, message, time, status }: { type: string; message: string; time: string; status: string }) => {
-  const icons: Record<string, JSX.Element> = {
-    lambda: Icons.cpu,
-    n8n: Icons.workflow,
-    vercel: Icons.globe,
-    network: Icons.wifi,
-    ai: Icons.brain,
-  };
+  const icons: Record<string, JSX.Element> = { lambda: Icons.cpu, n8n: Icons.workflow, vercel: Icons.globe, network: Icons.wifi, ai: Icons.brain };
   const colors: Record<string, string> = {
-    success: "border-green-500/50 bg-green-500/10",
-    warning: "border-yellow-500/50 bg-yellow-500/10",
-    error: "border-red-500/50 bg-red-500/10",
-    info: "border-blue-500/50 bg-blue-500/10",
+    success: "border-green-500/50 bg-green-500/10", warning: "border-yellow-500/50 bg-yellow-500/10",
+    error: "border-red-500/50 bg-red-500/10", info: "border-blue-500/50 bg-blue-500/10",
   };
 
   return (
@@ -285,7 +225,7 @@ const ActivityItem = ({ type, message, time, status }: { type: string; message: 
   );
 };
 
-// Main Dashboard Component
+// Main Dashboard
 export default function PremiumDashboard() {
   const [health, setHealth] = useState<SystemHealth | null>(null);
   const [loading, setLoading] = useState(true);
@@ -301,11 +241,7 @@ export default function PremiumDashboard() {
       const data = await res.json();
       setHealth(data);
       setLastUpdate(new Date());
-      
-      // Update sparkline
       setSparkData(prev => [...prev.slice(1), data.score]);
-      
-      // Add activity
       const newActivity = {
         type: "network",
         message: `Health check: ${data.score}% - ${data.components.filter((c: ComponentStatus) => c.status === "green").length}/${data.components.length} OK`,
@@ -328,63 +264,34 @@ export default function PremiumDashboard() {
     }
   }, [fetchHealth, autoRefresh]);
 
-  // Group components
   const groups = health?.components.reduce((acc, comp) => {
     let category = "other";
     if (comp.name.includes("Lambda")) category = "lambda";
     else if (comp.name.includes("N8N")) category = "n8n";
-    else if (comp.name.includes("Vercel") || comp.name.includes("AI") || comp.name.includes("KV") || comp.name.includes("MCP")) category = "vercel";
+    else category = "vercel";
     if (!acc[category]) acc[category] = [];
     acc[category].push(comp);
     return acc;
   }, {} as Record<string, ComponentStatus[]>) || {};
 
-  const statusColors: Record<string, string> = {
-    green: "#22c55e",
-    yellow: "#eab308",
-    red: "#ef4444",
-  };
-
+  const statusColors: Record<string, string> = { green: "#22c55e", yellow: "#eab308", red: "#ef4444" };
   const tabs = [
     { id: "overview", icon: Icons.activity, label: "Overview" },
     { id: "network", icon: Icons.wifi, label: "Network" },
     { id: "lambda", icon: Icons.server, label: "Lambda (4)" },
     { id: "n8n", icon: Icons.workflow, label: "N8N (18)" },
     { id: "vercel", icon: Icons.globe, label: "Vercel" },
-    { id: "integrations", icon: Icons.plug, label: "All (63)" },
   ];
 
   return (
     <>
       <style jsx global>{`
-        @keyframes livePulse {
-          0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-          70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-        @keyframes connFlow {
-          to { stroke-dashoffset: -20; }
-        }
-        .glass {
-          background: rgba(26, 26, 36, 0.8);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .glass:hover {
-          border-color: rgba(139, 92, 246, 0.4);
-        }
-        .gradient-text {
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        .conn-line {
-          stroke-dasharray: 8 4;
-          animation: connFlow 1s linear infinite;
-        }
-        .scroll-thin::-webkit-scrollbar { width: 4px; }
-        .scroll-thin::-webkit-scrollbar-track { background: transparent; }
-        .scroll-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+        @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        @keyframes connFlow { to { stroke-dashoffset: -20; } }
+        .glass { background: rgba(26, 26, 36, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass:hover { border-color: rgba(139, 92, 246, 0.4); }
+        .gradient-text { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .conn-line { stroke-dasharray: 8 4; animation: connFlow 1s linear infinite; }
       `}</style>
 
       <div className="min-h-screen bg-[#0a0a0f] text-white">
@@ -400,83 +307,46 @@ export default function PremiumDashboard() {
                 <p className="text-xs text-gray-500">Real-time Network Monitor</p>
               </div>
             </div>
-
             <div className="flex items-center gap-4">
               {health && (
                 <>
-                  <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${
-                    health.overall === "green" ? "bg-green-500/20" : health.overall === "yellow" ? "bg-yellow-500/20" : "bg-red-500/20"
-                  }`}>
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${health.overall === "green" ? "bg-green-500/20" : health.overall === "yellow" ? "bg-yellow-500/20" : "bg-red-500/20"}`}>
                     <LiveDot status={health.overall} />
-                    <span className={`text-sm font-semibold ${
-                      health.overall === "green" ? "text-green-400" : health.overall === "yellow" ? "text-yellow-400" : "text-red-400"
-                    }`}>
-                      {health.score}%
-                    </span>
+                    <span className={`text-sm font-semibold ${health.overall === "green" ? "text-green-400" : health.overall === "yellow" ? "text-yellow-400" : "text-red-400"}`}>{health.score}%</span>
                   </div>
-
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-500/20">
                     <span className="w-4 h-4 text-blue-400">{Icons.cpu}</span>
                     <span className="text-sm text-blue-400 font-medium">{groups.lambda?.length || 0}/4</span>
                   </div>
-
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-orange-500/30 to-red-500/30">
                     <span className="w-4 h-4 text-orange-400">{Icons.workflow}</span>
                     <span className="text-sm text-orange-400 font-medium">18</span>
                   </div>
                 </>
               )}
-
-              <span className="text-xs text-gray-500">
-                {lastUpdate ? lastUpdate.toLocaleTimeString("tr-TR") : "--:--"}
-              </span>
-
-              <button
-                onClick={fetchHealth}
-                disabled={loading}
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition group"
-              >
-                <span className={`w-5 h-5 text-gray-400 group-hover:text-purple-400 block ${loading ? "animate-spin" : ""}`}>
-                  {Icons.refresh}
-                </span>
+              <span className="text-xs text-gray-500">{lastUpdate ? lastUpdate.toLocaleTimeString("tr-TR") : "--:--"}</span>
+              <button onClick={fetchHealth} disabled={loading} className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition group">
+                <span className={`w-5 h-5 text-gray-400 group-hover:text-purple-400 block ${loading ? "animate-spin" : ""}`}>{Icons.refresh}</span>
               </button>
             </div>
           </div>
         </header>
 
         {/* Sidebar */}
-        <aside className="fixed left-0 top-[73px] bottom-0 w-64 glass border-r border-white/10 overflow-y-auto scroll-thin">
+        <aside className="fixed left-0 top-[73px] bottom-0 w-64 glass border-r border-white/10 overflow-y-auto">
           <nav className="p-4 space-y-2">
             {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${
-                  activeTab === tab.id
-                    ? "bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 border border-purple-500/40"
-                    : "hover:bg-white/5"
-                }`}
-              >
-                <span className={`w-5 h-5 ${activeTab === tab.id ? "text-purple-400" : "text-gray-500"}`}>
-                  {tab.icon}
-                </span>
-                <span className={activeTab === tab.id ? "text-white font-medium" : "text-gray-400"}>
-                  {tab.label}
-                </span>
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${activeTab === tab.id ? "bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 border border-purple-500/40" : "hover:bg-white/5"}`}>
+                <span className={`w-5 h-5 ${activeTab === tab.id ? "text-purple-400" : "text-gray-500"}`}>{tab.icon}</span>
+                <span className={activeTab === tab.id ? "text-white font-medium" : "text-gray-400"}>{tab.label}</span>
               </button>
             ))}
           </nav>
-
-          {/* Activity Log in Sidebar */}
           <div className="p-4 border-t border-white/10">
-            <div className="flex items-center gap-2 mb-4">
-              <LiveDot status="green" />
-              <span className="text-sm font-medium">Activity Log</span>
-            </div>
-            <div className="space-y-2 max-h-60 overflow-y-auto scroll-thin">
-              {activities.slice(0, 5).map((act, i) => (
-                <ActivityItem key={i} {...act} />
-              ))}
+            <div className="flex items-center gap-2 mb-4"><LiveDot status="green" /><span className="text-sm font-medium">Activity Log</span></div>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {activities.slice(0, 5).map((act, i) => (<ActivityItem key={i} {...act} />))}
             </div>
           </div>
         </aside>
@@ -492,26 +362,18 @@ export default function PremiumDashboard() {
             </div>
           ) : health ? (
             <div className="space-y-6">
-              {/* Top Stats Row */}
+              {/* Top Stats */}
               <div className="grid grid-cols-5 gap-6">
-                {/* Health Score */}
                 <div className="col-span-1 glass rounded-2xl p-6 flex flex-col items-center justify-center">
                   <CircularGauge value={health.score} color={statusColors[health.overall]} />
                   <div className="mt-4 flex items-center gap-2">
                     <LiveDot status={health.overall} />
-                    <span className="text-sm text-gray-400">
-                      {health.overall === "green" ? "All Systems Operational" : 
-                       health.overall === "yellow" ? "Partial Issues" : "Critical Issues"}
-                    </span>
+                    <span className="text-sm text-gray-400">{health.overall === "green" ? "All Systems Operational" : health.overall === "yellow" ? "Partial Issues" : "Critical Issues"}</span>
                   </div>
                 </div>
 
-                {/* Quick Stats */}
                 <div className="col-span-2 glass rounded-2xl p-6">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <span className="w-5 h-5 text-cyan-400">{Icons.activity}</span>
-                    Quick Stats
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><span className="w-5 h-5 text-cyan-400">{Icons.activity}</span>Quick Stats</h3>
                   <div className="grid grid-cols-4 gap-4">
                     {[
                       { label: "Total", value: health.components.length, color: "text-blue-400", bg: "bg-blue-500/20" },
@@ -527,12 +389,8 @@ export default function PremiumDashboard() {
                   </div>
                 </div>
 
-                {/* Performance Trend */}
                 <div className="col-span-2 glass rounded-2xl p-6">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <span className="w-5 h-5 text-green-400">{Icons.activity}</span>
-                    Performance Trend
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><span className="w-5 h-5 text-green-400">{Icons.activity}</span>Performance Trend</h3>
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-4xl font-bold text-green-400">{health.score}%</div>
@@ -541,122 +399,57 @@ export default function PremiumDashboard() {
                     <Sparkline data={sparkData} color={statusColors[health.overall]} height={60} />
                   </div>
                   <div className="mt-4 grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <div className="text-lg font-semibold text-white">
-                        {Math.round(health.components.reduce((a, c) => a + c.latency, 0) / health.components.length)}ms
-                      </div>
-                      <div className="text-xs text-gray-500">Avg Latency</div>
-                    </div>
-                    <div>
-                      <div className="text-lg font-semibold text-white">99.9%</div>
-                      <div className="text-xs text-gray-500">Uptime</div>
-                    </div>
-                    <div>
-                      <div className="text-lg font-semibold text-white">30s</div>
-                      <div className="text-xs text-gray-500">Refresh Rate</div>
-                    </div>
+                    <div><div className="text-lg font-semibold text-white">{Math.round(health.components.reduce((a, c) => a + c.latency, 0) / health.components.length)}ms</div><div className="text-xs text-gray-500">Avg Latency</div></div>
+                    <div><div className="text-lg font-semibold text-white">99.9%</div><div className="text-xs text-gray-500">Uptime</div></div>
+                    <div><div className="text-lg font-semibold text-white">30s</div><div className="text-xs text-gray-500">Refresh</div></div>
                   </div>
                 </div>
               </div>
 
               {/* Network Topology */}
               <div className="glass rounded-2xl p-6">
-                <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                  <span className="w-5 h-5 text-purple-400">{Icons.wifi}</span>
-                  Network Topology
-                </h3>
+                <h3 className="text-lg font-semibold mb-6 flex items-center gap-2"><span className="w-5 h-5 text-purple-400">{Icons.wifi}</span>Network Topology</h3>
                 <div className="relative h-80 bg-gradient-to-br from-purple-500/5 to-cyan-500/5 rounded-xl overflow-hidden">
-                  {/* Connection Lines SVG */}
                   <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
-                    <defs>
-                      <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.6" />
-                        <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
-                      </linearGradient>
-                    </defs>
-                    {/* ARCHON Core to Lambdas */}
+                    <defs><linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.6" /><stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" /></linearGradient></defs>
                     <line x1="50%" y1="50%" x2="15%" y2="25%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
                     <line x1="50%" y1="50%" x2="35%" y2="25%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
                     <line x1="50%" y1="50%" x2="65%" y2="25%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
                     <line x1="50%" y1="50%" x2="85%" y2="25%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
-                    {/* ARCHON Core to Vercel */}
-                    <line x1="50%" y1="50%" x2="25%" y2="75%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
+                    <line x1="50%" y1="50%" x2="25%" y2="80%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
                     <line x1="50%" y1="50%" x2="50%" y2="85%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
-                    <line x1="50%" y1="50%" x2="75%" y2="75%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
+                    <line x1="50%" y1="50%" x2="75%" y2="80%" stroke="url(#lineGrad)" strokeWidth="2" className="conn-line" />
                   </svg>
-
-                  {/* Core Node */}
                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center shadow-xl shadow-purple-500/30 animate-pulse">
                       <span className="w-10 h-10 text-white">{Icons.brain}</span>
                     </div>
-                    <div className="text-center mt-2">
-                      <span className="text-sm font-semibold text-white">ARCHON</span>
-                      <div className="flex justify-center mt-1"><LiveDot status="green" /></div>
-                    </div>
+                    <div className="text-center mt-2"><span className="text-sm font-semibold text-white">ARCHON</span><div className="flex justify-center mt-1"><LiveDot status="green" /></div></div>
                   </div>
-
-                  {/* Lambda Nodes */}
                   {groups.lambda?.map((comp, i) => {
-                    const positions = [
-                      { x: "15%", y: "25%" },
-                      { x: "35%", y: "25%" },
-                      { x: "65%", y: "25%" },
-                      { x: "85%", y: "25%" },
-                    ];
+                    const positions = [{ x: "15%", y: "25%" }, { x: "35%", y: "25%" }, { x: "65%", y: "25%" }, { x: "85%", y: "25%" }];
                     const pos = positions[i] || positions[0];
-                    return (
-                      <NetworkNode
-                        key={comp.name}
-                        name={comp.name.replace("Lambda: ", "")}
-                        status={comp.status}
-                        type="lambda"
-                        x={parseInt(pos.x) + "%"}
-                        y={parseInt(pos.y) + "%"}
-                      />
-                    );
+                    return <NetworkNode key={comp.name} name={comp.name.replace("Lambda: ", "")} status={comp.status} type="lambda" x={pos.x} y={pos.y} />;
                   })}
-
-                  {/* Vercel Nodes */}
                   {groups.vercel?.slice(0, 3).map((comp, i) => {
-                    const positions = [
-                      { x: "25%", y: "75%" },
-                      { x: "50%", y: "85%" },
-                      { x: "75%", y: "75%" },
-                    ];
+                    const positions = [{ x: "25%", y: "80%" }, { x: "50%", y: "85%" }, { x: "75%", y: "80%" }];
                     const types = ["vercel", "ai", "mcp"];
                     const pos = positions[i] || positions[0];
-                    return (
-                      <NetworkNode
-                        key={comp.name}
-                        name={comp.name.replace("Vercel ", "").replace(" API", "")}
-                        status={comp.status}
-                        type={types[i]}
-                        x={parseInt(pos.x) + "%"}
-                        y={parseInt(pos.y) + "%"}
-                      />
-                    );
+                    return <NetworkNode key={comp.name} name={comp.name.replace("Vercel ", "").replace(" API", "")} status={comp.status} type={types[i]} x={pos.x} y={pos.y} />;
                   })}
                 </div>
               </div>
 
-              {/* Component Cards Grid */}
+              {/* Component Cards */}
               <div className="grid grid-cols-3 gap-6">
-                {/* Lambda Functions */}
                 <div className="glass rounded-2xl p-6">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <span className="w-5 h-5 text-blue-400">{Icons.server}</span>
-                    AWS Lambda
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><span className="w-5 h-5 text-blue-400">{Icons.server}</span>AWS Lambda</h3>
                   <div className="space-y-3">
                     {groups.lambda?.map((comp) => (
                       <div key={comp.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
                         <div className="flex items-center gap-3">
                           <LiveDot status={comp.status} />
-                          <div>
-                            <div className="text-sm font-medium">{comp.name.replace("Lambda: ", "")}</div>
-                            <div className="text-xs text-gray-500">{comp.latency}ms</div>
-                          </div>
+                          <div><div className="text-sm font-medium">{comp.name.replace("Lambda: ", "")}</div><div className="text-xs text-gray-500">{comp.latency}ms</div></div>
                         </div>
                         <StatusBadge status={comp.status} />
                       </div>
@@ -664,21 +457,14 @@ export default function PremiumDashboard() {
                   </div>
                 </div>
 
-                {/* N8N Workflows */}
                 <div className="glass rounded-2xl p-6">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <span className="w-5 h-5 text-orange-400">{Icons.workflow}</span>
-                    N8N Workflows
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><span className="w-5 h-5 text-orange-400">{Icons.workflow}</span>N8N Workflows</h3>
                   <div className="space-y-3">
                     {groups.n8n?.map((comp) => (
                       <div key={comp.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
                         <div className="flex items-center gap-3">
                           <LiveDot status={comp.status} />
-                          <div>
-                            <div className="text-sm font-medium">{comp.name.replace("N8N ", "").replace("Webhook: ", "")}</div>
-                            <div className="text-xs text-gray-500">{comp.latency}ms</div>
-                          </div>
+                          <div><div className="text-sm font-medium">{comp.name.replace("N8N ", "").replace("Webhook: ", "")}</div><div className="text-xs text-gray-500">{comp.latency}ms</div></div>
                         </div>
                         <StatusBadge status={comp.status} />
                       </div>
@@ -686,21 +472,14 @@ export default function PremiumDashboard() {
                   </div>
                 </div>
 
-                {/* Vercel Platform */}
                 <div className="glass rounded-2xl p-6">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <span className="w-5 h-5 text-cyan-400">{Icons.globe}</span>
-                    Vercel Platform
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><span className="w-5 h-5 text-cyan-400">{Icons.globe}</span>Vercel Platform</h3>
                   <div className="space-y-3">
                     {groups.vercel?.map((comp) => (
                       <div key={comp.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
                         <div className="flex items-center gap-3">
                           <LiveDot status={comp.status} />
-                          <div>
-                            <div className="text-sm font-medium">{comp.name}</div>
-                            <div className="text-xs text-gray-500">{comp.latency}ms</div>
-                          </div>
+                          <div><div className="text-sm font-medium">{comp.name}</div><div className="text-xs text-gray-500">{comp.latency}ms</div></div>
                         </div>
                         <StatusBadge status={comp.status} />
                       </div>
@@ -709,20 +488,12 @@ export default function PremiumDashboard() {
                 </div>
               </div>
 
-              {/* Footer */}
               <div className="text-center text-xs text-gray-600 py-4">
                 Last updated: {new Date(health.timestamp).toLocaleString("tr-TR")} • Auto-refresh: {autoRefresh ? "ON" : "OFF"} (30s)
-                <button 
-                  onClick={() => setAutoRefresh(!autoRefresh)}
-                  className="ml-2 text-purple-400 hover:text-purple-300"
-                >
-                  [{autoRefresh ? "Pause" : "Resume"}]
-                </button>
+                <button onClick={() => setAutoRefresh(!autoRefresh)} className="ml-2 text-purple-400 hover:text-purple-300">[{autoRefresh ? "Pause" : "Resume"}]</button>
               </div>
             </div>
-          ) : (
-            <div className="text-center text-red-400 py-20">Failed to load network data</div>
-          )}
+          ) : (<div className="text-center text-red-400 py-20">Failed to load network data</div>)}
         </main>
       </div>
     </>
