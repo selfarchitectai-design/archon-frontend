@@ -11,7 +11,6 @@ export const dynamic = "force-dynamic";
 
 // Configuration
 const N8N_BASE = "https://n8n.selfarchitectai.com";
-const N8N_API_KEY = process.env.N8N_API_KEY || "";
 
 interface ComponentStatus {
   name: string;
@@ -29,6 +28,16 @@ interface SystemHealth {
   refreshInterval: number;
 }
 
+// Custom thresholds for specific services (in ms)
+const THRESHOLDS: Record<string, { green: number; yellow: number }> = {
+  "AI Chat (Claude)": { green: 5000, yellow: 10000 }, // Claude API is slower
+  default: { green: 1000, yellow: 3000 },
+};
+
+function getThreshold(name: string) {
+  return THRESHOLDS[name] || THRESHOLDS.default;
+}
+
 async function checkEndpoint(
   name: string,
   url: string,
@@ -37,6 +46,8 @@ async function checkEndpoint(
   headers?: Record<string, string>
 ): Promise<ComponentStatus> {
   const start = Date.now();
+  const threshold = getThreshold(name);
+  
   try {
     const opts: RequestInit = {
       method,
@@ -45,7 +56,7 @@ async function checkEndpoint(
     if (body) opts.body = JSON.stringify(body);
     
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
     opts.signal = controller.signal;
     
     const response = await fetch(url, opts);
@@ -57,7 +68,8 @@ async function checkEndpoint(
     let message = `HTTP ${response.status}`;
     
     if (response.ok) {
-      status = latency < 1000 ? "green" : latency < 3000 ? "yellow" : "red";
+      // Use custom thresholds
+      status = latency < threshold.green ? "green" : latency < threshold.yellow ? "yellow" : "red";
       message = `OK (${latency}ms)`;
     } else if (response.status < 500) {
       status = "yellow";
@@ -85,7 +97,7 @@ export async function GET(req: NextRequest) {
   // 2. Vercel Dashboard API
   components.push(await checkEndpoint("Vercel Dashboard API", "https://selfarchitectai.com/api/dashboard"));
   
-  // 3. AI Chat API
+  // 3. AI Chat API (with extended threshold)
   components.push(
     await checkEndpoint("AI Chat (Claude)", "https://selfarchitectai.com/api/ai-chat", "POST", {
       prompt: "respond OK",
@@ -111,10 +123,10 @@ export async function GET(req: NextRequest) {
     })
   );
   
-  // 6. N8N Health
+  // 6. N8N Platform Health
   components.push(await checkEndpoint("N8N Platform", `${N8N_BASE}/healthz`));
   
-  // 7. N8N Webhooks (sample)
+  // 7. N8N Webhooks
   const webhooks = ["archon/health", "archon-event"];
   for (const wh of webhooks) {
     const method = wh.includes("/") ? "GET" : "POST";
@@ -129,19 +141,9 @@ export async function GET(req: NextRequest) {
     );
   }
   
-  // 8. N8N API (workflow count)
-  if (N8N_API_KEY) {
-    const n8nApi = await checkEndpoint(
-      "N8N API",
-      `${N8N_BASE}/api/v1/workflows`,
-      "GET",
-      undefined,
-      { "X-N8N-API-KEY": N8N_API_KEY }
-    );
-    components.push(n8nApi);
-  }
+  // Note: N8N API removed - requires authentication, webhooks are sufficient for health checks
   
-  // 9. Lambda Functions (via our proxy)
+  // 8. Lambda Functions
   const lambdas = ["brain", "actions", "trend", "intake"];
   for (const fn of lambdas) {
     components.push(
@@ -169,7 +171,7 @@ export async function GET(req: NextRequest) {
     score,
     components,
     timestamp: new Date().toISOString(),
-    refreshInterval: 30, // seconds
+    refreshInterval: 30,
   };
   
   return NextResponse.json(health, {
