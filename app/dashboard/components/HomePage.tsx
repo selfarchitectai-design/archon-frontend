@@ -9,13 +9,6 @@ export default function HomePage() {
   const activeWorkflows = workflows.filter(w => w.active).length;
   const zeroErrorWorkflows = workflows.filter(w => w.zeroError).length;
 
-  const stats = [
-    { label: 'Workflows', value: workflows.length, active: activeWorkflows, icon: '⚙️', color: 'cyan' },
-    { label: 'Lambdas', value: lambdaFunctions.length, active: lambdaFunctions.length, icon: '⚡', color: 'amber' },
-    { label: 'AWS Services', value: awsServices.length, active: awsServices.length, icon: '☁️', color: 'emerald' },
-    { label: 'Zero Error', value: zeroErrorWorkflows, active: zeroErrorWorkflows, icon: '✅', color: 'blue' },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -40,19 +33,38 @@ export default function HomePage() {
 
         {/* Quick Stats */}
         <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat, i) => (
-            <div 
-              key={i}
-              className={`bg-slate-800/30 rounded-xl p-4 border border-slate-700/50 hover:border-${stat.color}-500/30 transition-all`}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xl">{stat.icon}</span>
-                <span className="text-sm text-slate-400">{stat.label}</span>
-              </div>
-              <div className="text-2xl font-bold text-white">{stat.value}</div>
-              <div className="text-xs text-emerald-400">{stat.active} active</div>
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-cyan-500/30">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">⚙️</span>
+              <span className="text-sm text-slate-400">Workflows</span>
             </div>
-          ))}
+            <div className="text-2xl font-bold text-white">{workflows.length}</div>
+            <div className="text-xs text-emerald-400">{activeWorkflows} active</div>
+          </div>
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-amber-500/30">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">⚡</span>
+              <span className="text-sm text-slate-400">Lambdas</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{lambdaFunctions.length}</div>
+            <div className="text-xs text-emerald-400">{lambdaFunctions.length} active</div>
+          </div>
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-emerald-500/30">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">☁️</span>
+              <span className="text-sm text-slate-400">AWS Services</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{awsServices.length}</div>
+            <div className="text-xs text-emerald-400">{awsServices.length} active</div>
+          </div>
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-blue-500/30">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">✅</span>
+              <span className="text-sm text-slate-400">Zero Error</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{zeroErrorWorkflows}</div>
+            <div className="text-xs text-emerald-400">{zeroErrorWorkflows} active</div>
+          </div>
         </div>
       </div>
 
