@@ -1,12 +1,26 @@
-import { headers } from "next/headers";
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 
-interface Comp { name: string; status: "green" | "yellow" | "red"; latency: number; message: string; }
-interface Health { overall: "green" | "yellow" | "red"; score: number; components: Comp[]; timestamp: string; }
+// Types
+interface Comp {
+  name: string;
+  status: 'green' | 'yellow' | 'red';
+  latency: number;
+  message: string;
+}
 
+interface Health {
+  overall: 'green' | 'yellow' | 'red';
+  score: number;
+  components: Comp[];
+  timestamp: string;
+}
+
+// Data fetching
 async function getHealth(): Promise<Health | null> {
   try {
-    const res = await fetch("https://selfarchitectai.com/api/realtime-status", {
-      cache: "no-store",
+    const res = await fetch('https://selfarchitectai.com/api/realtime-status', {
+      cache: 'no-store',
     });
     if (!res.ok) return null;
     return res.json();
@@ -15,38 +29,103 @@ async function getHealth(): Promise<Health | null> {
   }
 }
 
-const Brain = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>;
-const Server = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/></svg>;
-const Flow = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>;
-const Globe = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>;
-const Cpu = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>;
-const Wifi = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><circle cx="12" cy="20" r="1"/></svg>;
+// Dynamic imports with SSR disabled - Atomic Loading
+const HealthGauge = dynamic(
+  () => import('@/components/atoms/HealthGauge').then((mod) => mod.HealthGauge),
+  {
+    ssr: false,
+    loading: () => <HealthGaugeSkeleton />,
+  }
+);
 
-const Dot = ({ s = "green" }: { s?: string }) => {
-  const c: Record<string, string> = { green: "#22c55e", yellow: "#eab308", red: "#ef4444" };
-  return <span className={s === "green" ? "live-pulse" : ""} style={{ width: 10, height: 10, background: c[s] || c.green, borderRadius: "50%", display: "inline-block" }} />;
-};
+const QuickStats = dynamic(
+  () => import('@/components/atoms/QuickStats').then((mod) => mod.QuickStats),
+  {
+    ssr: false,
+    loading: () => <QuickStatsSkeleton />,
+  }
+);
 
-const Gauge = ({ v, c }: { v: number; c: string }) => {
-  const sz = 150, sw = 12, r = (sz - sw) / 2, circ = r * 2 * Math.PI, off = circ - (v / 100) * circ;
+const PerformancePanel = dynamic(
+  () => import('@/components/atoms/PerformancePanel').then((mod) => mod.PerformancePanel),
+  {
+    ssr: false,
+    loading: () => <PerformancePanelSkeleton />,
+  }
+);
+
+const NetworkTopology = dynamic(
+  () => import('@/components/atoms/NetworkTopology').then((mod) => mod.NetworkTopology),
+  {
+    ssr: false,
+    loading: () => <NetworkTopologySkeleton />,
+  }
+);
+
+const ComponentCards = dynamic(
+  () => import('@/components/atoms/ComponentCards').then((mod) => mod.ComponentCards),
+  {
+    ssr: false,
+    loading: () => <ComponentCardsSkeleton />,
+  }
+);
+
+// Import skeletons for loading states
+import { HealthGaugeSkeleton } from '@/components/atoms/HealthGauge';
+import { QuickStatsSkeleton } from '@/components/atoms/QuickStats';
+import { PerformancePanelSkeleton } from '@/components/atoms/PerformancePanel';
+import { NetworkTopologySkeleton } from '@/components/atoms/NetworkTopology';
+import { ComponentCardsSkeleton } from '@/components/atoms/ComponentCards';
+
+// Error Boundary wrapper
+import AtomErrorBoundary from '@/components/ui/AtomErrorBoundary';
+
+// SVG Icons
+const Brain = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full">
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+  </svg>
+);
+
+const Dot = ({ s = 'green' }: { s?: string }) => {
+  const c: Record<string, string> = { green: '#22c55e', yellow: '#eab308', red: '#ef4444' };
   return (
-    <div className="relative" style={{ width: sz, height: sz }}>
-      <svg className="-rotate-90" width={sz} height={sz}>
-        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={sw} />
-        <circle cx={sz/2} cy={sz/2} r={r} fill="none" stroke={c} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={off} strokeLinecap="round" style={{ filter: `drop-shadow(0 0 10px ${c})` }} />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-5xl font-bold" style={{ color: c }}>{v}</span>
-        <span className="text-sm text-gray-500">Health</span>
-      </div>
-    </div>
+    <span
+      className={s === 'green' ? 'live-pulse' : ''}
+      style={{
+        width: 10,
+        height: 10,
+        background: c[s] || c.green,
+        borderRadius: '50%',
+        display: 'inline-block',
+      }}
+    />
   );
 };
 
+// Error fallback component
+function AtomOffline({ name }: { name: string }) {
+  return (
+    <div className="glass rounded-2xl p-6 border border-red-500/30">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+          <span className="text-red-400">⚠️</span>
+        </div>
+        <div>
+          <h3 className="font-semibold text-red-400">{name} - Offline</h3>
+          <p className="text-xs text-gray-500">Auto-recovery in progress...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default async function Dashboard() {
   const health = await getHealth();
-  const col: Record<string, string> = { green: "#22c55e", yellow: "#eab308", red: "#ef4444" };
+  const col: Record<string, string> = { green: '#22c55e', yellow: '#eab308', red: '#ef4444' };
 
+  // Error state
   if (!health) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center text-white">
@@ -56,7 +135,10 @@ export default async function Dashboard() {
           </div>
           <h2 className="text-xl font-bold text-red-400 mb-2">Connection Error</h2>
           <p className="text-gray-400 mb-4">Could not connect to ARCHON API</p>
-          <a href="/dashboard" className="inline-block px-6 py-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium">
+          <a
+            href="/dashboard"
+            className="inline-block px-6 py-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium"
+          >
             🔄 Retry
           </a>
         </div>
@@ -64,242 +146,162 @@ export default async function Dashboard() {
     );
   }
 
-  const g = health.components.reduce((a, c) => {
-    const k = c.name.includes("Lambda") ? "l" : c.name.includes("N8N") ? "n" : "v";
-    (a[k] = a[k] || []).push(c); return a;
-  }, {} as Record<string, Comp[]>);
+  // Group components by type
+  const g = health.components.reduce(
+    (a, c) => {
+      const k = c.name.includes('Lambda') ? 'l' : c.name.includes('N8N') ? 'n' : 'v';
+      (a[k] = a[k] || []).push(c);
+      return a;
+    },
+    {} as Record<string, Comp[]>
+  );
+
+  // Calculate metrics
+  const avgLatency = Math.round(
+    health.components.reduce((a, c) => a + c.latency, 0) / health.components.length
+  );
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Header */}
+      {/* Header - Static, Server Rendered */}
       <header className="glass border-b border-white/10 sticky top-0 z-50">
         <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
-              <span className="w-7 h-7 text-white"><Brain /></span>
+              <span className="w-7 h-7 text-white">
+                <Brain />
+              </span>
             </div>
             <div>
               <h1 className="text-2xl font-bold gradient-text">ARCHON V2.5</h1>
-              <p className="text-xs text-gray-500">Real-time Network Monitor</p>
+              <p className="text-xs text-gray-500">Atomic Self-Healing Architecture</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${health.overall === "green" ? "bg-green-500/20" : health.overall === "yellow" ? "bg-yellow-500/20" : "bg-red-500/20"}`}>
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl ${
+                health.overall === 'green'
+                  ? 'bg-green-500/20'
+                  : health.overall === 'yellow'
+                  ? 'bg-yellow-500/20'
+                  : 'bg-red-500/20'
+              }`}
+            >
               <Dot s={health.overall} />
-              <span className={`text-lg font-bold ${health.overall === "green" ? "text-green-400" : health.overall === "yellow" ? "text-yellow-400" : "text-red-400"}`}>{health.score}%</span>
+              <span
+                className={`text-lg font-bold ${
+                  health.overall === 'green'
+                    ? 'text-green-400'
+                    : health.overall === 'yellow'
+                    ? 'text-yellow-400'
+                    : 'text-red-400'
+                }`}
+              >
+                {health.score}%
+              </span>
             </div>
-            <span className="text-sm text-gray-500">{new Date().toLocaleTimeString("tr-TR")}</span>
-            <a href="/dashboard" className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition text-gray-400 hover:text-purple-400">
+            <span className="text-sm text-gray-500">{new Date().toLocaleTimeString('tr-TR')}</span>
+            <a
+              href="/dashboard"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition text-gray-400 hover:text-purple-400"
+            >
               🔄
             </a>
           </div>
         </div>
       </header>
 
-      {/* Main */}
+      {/* Main Content - Atomic Components */}
       <main className="max-w-6xl mx-auto p-6 space-y-6">
         {/* Top Row */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Gauge */}
-          <div className="glass rounded-2xl p-6 flex flex-col items-center justify-center">
-            <Gauge v={health.score} c={col[health.overall]} />
-            <div className="mt-4 flex items-center gap-2">
-              <Dot s={health.overall} />
-              <span className="text-gray-400">{health.overall === "green" ? "All Systems OK" : "Issues Detected"}</span>
+          {/* Gauge Atom */}
+          <AtomErrorBoundary atomId="health-gauge" fallback={<AtomOffline name="Health Gauge" />}>
+            <div className="glass rounded-2xl p-6 flex flex-col items-center justify-center">
+              <Suspense fallback={<HealthGaugeSkeleton />}>
+                <HealthGauge score={health.score} status={health.overall} />
+              </Suspense>
+              <div className="mt-4 flex items-center gap-2">
+                <Dot s={health.overall} />
+                <span className="text-gray-400">
+                  {health.overall === 'green' ? 'All Systems OK' : 'Issues Detected'}
+                </span>
+              </div>
             </div>
-          </div>
+          </AtomErrorBoundary>
 
-          {/* Stats */}
-          <div className="glass rounded-2xl p-6">
-            <h3 className="text-lg font-semibold mb-4">📊 Quick Stats</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-blue-500/20 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-blue-400">{health.components.length}</div>
-                <div className="text-xs text-gray-500">Total</div>
-              </div>
-              <div className="bg-green-500/20 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-green-400">{health.components.filter(c => c.status === "green").length}</div>
-                <div className="text-xs text-gray-500">Healthy</div>
-              </div>
-              <div className="bg-yellow-500/20 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-yellow-400">{health.components.filter(c => c.status === "yellow").length}</div>
-                <div className="text-xs text-gray-500">Warning</div>
-              </div>
-              <div className="bg-red-500/20 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-red-400">{health.components.filter(c => c.status === "red").length}</div>
-                <div className="text-xs text-gray-500">Error</div>
-              </div>
-            </div>
-          </div>
+          {/* Quick Stats Atom */}
+          <AtomErrorBoundary atomId="quick-stats" fallback={<AtomOffline name="Quick Stats" />}>
+            <Suspense fallback={<QuickStatsSkeleton />}>
+              <QuickStats
+                total={health.components.length}
+                healthy={health.components.filter((c) => c.status === 'green').length}
+                warning={health.components.filter((c) => c.status === 'yellow').length}
+                error={health.components.filter((c) => c.status === 'red').length}
+              />
+            </Suspense>
+          </AtomErrorBoundary>
 
-          {/* Performance */}
-          <div className="col-span-2 glass rounded-2xl p-6">
-            <h3 className="text-lg font-semibold mb-4">⚡ Performance</h3>
-            <div className="grid grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-4xl font-bold" style={{ color: col[health.overall] }}>{health.score}%</div>
-                <div className="text-sm text-gray-500">Health Score</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-white">{Math.round(health.components.reduce((a, c) => a + c.latency, 0) / health.components.length)}ms</div>
-                <div className="text-sm text-gray-500">Avg Latency</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-purple-400">30s</div>
-                <div className="text-sm text-gray-500">Refresh Rate</div>
-              </div>
+          {/* Performance Panel Atom */}
+          <AtomErrorBoundary
+            atomId="performance-panel"
+            fallback={<AtomOffline name="Performance Panel" />}
+          >
+            <div className="col-span-2">
+              <Suspense fallback={<PerformancePanelSkeleton />}>
+                <PerformancePanel
+                  healthScore={health.score}
+                  avgLatency={avgLatency}
+                  refreshRate={30}
+                  status={health.overall}
+                />
+              </Suspense>
             </div>
-          </div>
+          </AtomErrorBoundary>
         </div>
 
-        {/* Network Topology */}
-        <div className="glass rounded-2xl p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <span className="w-5 h-5 text-purple-400"><Wifi /></span>
-            Network Topology
-          </h3>
-          <div className="relative h-72 rounded-xl overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(6,182,212,0.08))" }}>
-            {/* SVG Lines */}
-            <svg className="absolute inset-0 w-full h-full">
-              <defs>
-                <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.6" />
-                  <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
-                </linearGradient>
-              </defs>
-              <line x1="50%" y1="50%" x2="15%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              <line x1="50%" y1="50%" x2="38%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              <line x1="50%" y1="50%" x2="62%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              <line x1="50%" y1="50%" x2="85%" y2="15%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              <line x1="50%" y1="50%" x2="25%" y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              <line x1="50%" y1="50%" x2="50%" y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-              <line x1="50%" y1="50%" x2="75%" y2="85%" stroke="url(#lg)" strokeWidth="2" className="conn-line" />
-            </svg>
+        {/* Network Topology Atom */}
+        <AtomErrorBoundary
+          atomId="network-topology"
+          fallback={<AtomOffline name="Network Topology" />}
+        >
+          <Suspense fallback={<NetworkTopologySkeleton />}>
+            <NetworkTopology lambdas={g.l || []} n8n={g.n || []} vercel={g.v || []} />
+          </Suspense>
+        </AtomErrorBoundary>
 
-            {/* Core */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center shadow-2xl shadow-purple-500/50 core-pulse">
-                <span className="w-10 h-10 text-white"><Brain /></span>
-              </div>
-              <div className="text-center mt-2 font-bold">ARCHON</div>
-            </div>
-
-            {/* Lambda Nodes */}
-            {g.l?.map((c, i) => (
-              <div key={c.name} className="absolute flex flex-col items-center z-10" style={{ left: ["15%", "38%", "62%", "85%"][i], top: "15%", transform: "translate(-50%,-50%)" }}>
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${c.status === "green" ? "from-green-500/40 to-green-600/20 border-green-500/60" : c.status === "yellow" ? "from-yellow-500/40 to-yellow-600/20 border-yellow-500/60" : "from-red-500/40 to-red-600/20 border-red-500/60"} border flex items-center justify-center`}>
-                  <span className="w-6 h-6 text-white"><Cpu /></span>
-                </div>
-                <span className="text-xs text-gray-400 mt-1">{c.name.replace("Lambda: ", "")}</span>
-                <Dot s={c.status} />
-              </div>
-            ))}
-
-            {/* Bottom Nodes */}
-            <div className="absolute flex flex-col items-center z-10" style={{ left: "25%", top: "85%", transform: "translate(-50%,-50%)" }}>
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${g.v?.[0]?.status === "green" ? "from-green-500/40 to-green-600/20 border-green-500/60" : "from-yellow-500/40 to-yellow-600/20 border-yellow-500/60"} border flex items-center justify-center`}>
-                <span className="w-6 h-6 text-white"><Globe /></span>
-              </div>
-              <span className="text-xs text-gray-400 mt-1">Vercel</span>
-              <Dot s={g.v?.[0]?.status || "green"} />
-            </div>
-            <div className="absolute flex flex-col items-center z-10" style={{ left: "50%", top: "85%", transform: "translate(-50%,-50%)" }}>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500/40 to-yellow-600/20 border border-yellow-500/60 flex items-center justify-center">
-                <span className="w-6 h-6 text-white"><Brain /></span>
-              </div>
-              <span className="text-xs text-gray-400 mt-1">AI Chat</span>
-              <Dot s="yellow" />
-            </div>
-            <div className="absolute flex flex-col items-center z-10" style={{ left: "75%", top: "85%", transform: "translate(-50%,-50%)" }}>
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${g.n?.[0]?.status === "green" ? "from-green-500/40 to-green-600/20 border-green-500/60" : "from-yellow-500/40 to-yellow-600/20 border-yellow-500/60"} border flex items-center justify-center`}>
-                <span className="w-6 h-6 text-white"><Flow /></span>
-              </div>
-              <span className="text-xs text-gray-400 mt-1">N8N</span>
-              <Dot s={g.n?.[0]?.status || "green"} />
-            </div>
-          </div>
-        </div>
-
-        {/* Component Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Lambda */}
-          <div className="glass rounded-2xl p-5">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className="w-5 h-5 text-blue-400"><Server /></span>
-              AWS Lambda
-            </h3>
-            <div className="space-y-2">
-              {g.l?.map(c => (
-                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Dot s={c.status} />
-                    <div>
-                      <div className="font-medium">{c.name.replace("Lambda: ", "")}</div>
-                      <div className="text-xs text-gray-500">{c.latency}ms</div>
-                    </div>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs ${c.status === "green" ? "bg-green-500/20 text-green-400" : c.status === "yellow" ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>
-                    {c.status === "green" ? "OK" : c.status === "yellow" ? "Warn" : "Err"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* N8N */}
-          <div className="glass rounded-2xl p-5">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className="w-5 h-5 text-orange-400"><Flow /></span>
-              N8N Workflows
-            </h3>
-            <div className="space-y-2">
-              {g.n?.map(c => (
-                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Dot s={c.status} />
-                    <div>
-                      <div className="font-medium">{c.name.replace("N8N ", "").replace("Webhook: ", "")}</div>
-                      <div className="text-xs text-gray-500">{c.latency}ms</div>
-                    </div>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs ${c.status === "green" ? "bg-green-500/20 text-green-400" : c.status === "yellow" ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>
-                    {c.status === "green" ? "OK" : c.status === "yellow" ? "Warn" : "Err"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Vercel */}
-          <div className="glass rounded-2xl p-5">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className="w-5 h-5 text-cyan-400"><Globe /></span>
-              Vercel Platform
-            </h3>
-            <div className="space-y-2">
-              {g.v?.map(c => (
-                <div key={c.name} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Dot s={c.status} />
-                    <div>
-                      <div className="font-medium">{c.name}</div>
-                      <div className="text-xs text-gray-500">{c.latency}ms</div>
-                    </div>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs ${c.status === "green" ? "bg-green-500/20 text-green-400" : c.status === "yellow" ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>
-                    {c.status === "green" ? "OK" : c.status === "yellow" ? "Warn" : "Err"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Component Cards Atom */}
+        <AtomErrorBoundary
+          atomId="component-cards"
+          fallback={<AtomOffline name="Component Cards" />}
+        >
+          <Suspense fallback={<ComponentCardsSkeleton />}>
+            <ComponentCards lambdas={g.l || []} n8n={g.n || []} vercel={g.v || []} />
+          </Suspense>
+        </AtomErrorBoundary>
 
         {/* Footer */}
         <div className="text-center text-sm text-gray-600 py-4">
-          Last updated: {new Date(health.timestamp).toLocaleString("tr-TR")} • 
-          <a href="/api/realtime-status" target="_blank" className="text-purple-400 hover:text-purple-300 ml-1">View Raw API</a> •
-          <a href="/dashboard" className="text-purple-400 hover:text-purple-300 ml-1">Refresh</a>
+          Last updated: {new Date(health.timestamp).toLocaleString('tr-TR')} •
+          <a
+            href="/api/realtime-status"
+            target="_blank"
+            className="text-purple-400 hover:text-purple-300 ml-1"
+          >
+            View Raw API
+          </a>{' '}
+          •
+          <a
+            href="/api/registry"
+            target="_blank"
+            className="text-cyan-400 hover:text-cyan-300 ml-1"
+          >
+            Atom Registry
+          </a>{' '}
+          •
+          <a href="/dashboard" className="text-purple-400 hover:text-purple-300 ml-1">
+            Refresh
+          </a>
         </div>
       </main>
     </div>
