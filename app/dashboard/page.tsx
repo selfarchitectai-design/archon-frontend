@@ -247,7 +247,7 @@ const ArchonDashboard = () => {
       icon: '🏛️',
       status: 'active',
       endpoint: 'selfarchitectai.com/api',
-      version: 'ARCHON V2.2-Ultimate',
+      version: 'ARCHON V2.5-Final',
       description: 'ARCHON sisteminin ana MCP sunucusu. Orchestration, health check ve system management.',
       stats: { endpoints: 8, tools: 10, dailyCalls: '~500' },
       tools: [
@@ -2752,7 +2752,7 @@ const ArchonDashboard = () => {
           </div>
           <div>
             <h1 className="font-bold">ARCHON</h1>
-            <p className="text-xs text-gray-500">V2.2-Ultimate</p>
+            <p className="text-xs text-gray-500">V2.5-Final</p>
           </div>
         </div>
 
