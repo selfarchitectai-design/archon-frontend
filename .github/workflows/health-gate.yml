@@ -1,0 +1,64 @@
+name: 🏥 Health Gate
+
+on:
+  deployment_status:
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: Post-Deploy Health Check
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Wait for deployment to stabilize
+        run: sleep 30
+        
+      - name: Check Dashboard Health
+        id: health
+        run: |
+          RESPONSE=$(curl -s https://selfarchitectai.com/api/realtime-status)
+          SCORE=$(echo $RESPONSE | jq -r '.score // 0')
+          echo "Health Score: $SCORE"
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          
+          if [ "$SCORE" -lt 80 ]; then
+            echo "❌ Health check failed! Score: $SCORE"
+            exit 1
+          fi
+          
+          echo "✅ Health check passed! Score: $SCORE"
+          
+      - name: Check Atom Registry
+        run: |
+          RESPONSE=$(curl -s https://selfarchitectai.com/api/registry)
+          HEALTHY=$(echo $RESPONSE | jq -r '.summary.healthy // 0')
+          TOTAL=$(echo $RESPONSE | jq -r '.summary.total // 0')
+          echo "Atoms: $HEALTHY/$TOTAL healthy"
+          
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "event": "deployment_health_failed",
+              "score": "${{ steps.health.outputs.score }}",
+              "commit": "${{ github.sha }}",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+  auto-rollback:
+    name: Auto Rollback on Failure
+    runs-on: ubuntu-latest
+    needs: health-check
+    if: failure()
+    
+    steps:
+      - name: Trigger Rollback
+        run: |
+          echo "🔄 Initiating automatic rollback..."
+          curl -X POST "https://api.vercel.com/v6/deployments/${{ github.sha }}/rollback" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json"
+          echo "✅ Rollback triggered"
