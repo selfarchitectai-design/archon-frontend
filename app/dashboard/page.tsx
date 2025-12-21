@@ -977,7 +977,7 @@ const ArchonDashboard = () => {
 
       {/* Quick Access Cards */}
       <div className="grid grid-cols-3 gap-4">
-        {menuItems.filter(m => m.id !== 'home').map((item) => (
+        {menuItems.filter(m => m.id !== 'home').map((item: any) => (
           <div
             key={item.id}
             onClick={() => setCurrentPage(item.id)}
@@ -1021,11 +1021,11 @@ const ArchonDashboard = () => {
   // ============================================
   
   const MetricsPage = () => {
-    const formatTime = (iso) => new Date(iso).toLocaleTimeString('tr-TR');
+    const formatTime = (iso: string) => new Date(iso).toLocaleTimeString('tr-TR');
     
-    const SparkLine = ({ data, color }) => {
+    const SparkLine = ({ data, color }: { data: number[], color: string }) => {
       const max = Math.max(...data), min = Math.min(...data), range = max - min || 1;
-      const points = data.map((v, i) => `${(i / (data.length - 1)) * 100},${100 - ((v - min) / range) * 80}`).join(' ');
+      const points = data.map((v: any, i: number) => `${(i / (data.length - 1)) * 100},${100 - ((v - min) / range) * 80}`).join(' ');
       return (
         <svg viewBox="0 0 100 100" className="w-full h-8" preserveAspectRatio="none">
           <polyline points={points} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" />
@@ -1957,7 +1957,7 @@ const ArchonDashboard = () => {
 
         {/* Workflow List */}
         <div className="space-y-3">
-          {filtered.map((wf) => (
+          {filtered.map((wf: any) => (
             <div
               key={wf.id}
               className="rounded-xl transition-all"
@@ -2475,7 +2475,7 @@ const ArchonDashboard = () => {
 
       {/* Integration Cards */}
       <div className="space-y-3">
-        {integrations.map((int) => (
+        {integrations.map((int: any) => (
           <div
             key={int.id}
             className="rounded-xl transition-all"
@@ -2733,7 +2733,7 @@ const ArchonDashboard = () => {
         </div>
 
         <nav className="space-y-1">
-          {menuItems.map((item) => (
+          {menuItems.map((item: any) => (
             <button
               key={item.id}
               onClick={() => { setCurrentPage(item.id); setSelectedItem(null); }}
