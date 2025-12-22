@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react';
 
 const ArchonDashboard = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const [selectedItem, setSelectedItem] = useState(null);
   const [mounted, setMounted] = useState(false);
 
-  // Hydration guard - prevents SSR mismatch
+  // Hydration guard - prevents SSR/client mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
-  const [selectedItem, setSelectedItem] = useState(null);
 
   // ============================================
   // DATA DEFINITIONS
@@ -247,7 +247,7 @@ const ArchonDashboard = () => {
       icon: '🏛️',
       status: 'active',
       endpoint: 'selfarchitectai.com/api',
-      version: 'ARCHON V2.5-Final',
+      version: 'ARCHON V2.2-Ultimate',
       description: 'ARCHON sisteminin ana MCP sunucusu. Orchestration, health check ve system management.',
       stats: { endpoints: 8, tools: 10, dailyCalls: '~500' },
       tools: [
@@ -2729,18 +2729,17 @@ const ArchonDashboard = () => {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #0a0a0f 100%)' }}>
         <div className="text-center">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-4xl animate-pulse" style={{ background: 'linear-gradient(135deg, #ff6d5a, #f59e0b)' }}>
-            🏛️
-          </div>
+          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-4xl animate-pulse" style={{ background: 'linear-gradient(135deg, #ff6d5a, #f59e0b)' }}>🏛️</div>
           <h1 className="text-2xl font-bold text-white mb-2">ARCHON V2.5</h1>
           <p className="text-gray-400 mb-4">Loading Dashboard...</p>
           <div className="w-48 h-1 bg-gray-800 rounded-full overflow-hidden mx-auto">
-            <div className="h-full bg-gradient-to-r from-orange-500 to-amber-500 animate-pulse" style={{ width: '60%' }} />
+            <div className="h-full bg-gradient-to-r from-orange-500 to-amber-500 animate-pulse" style={{ width: '60%' }}></div>
           </div>
         </div>
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen text-white flex" style={{ background: 'linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #0a0a0f 100%)', fontFamily: 'system-ui, sans-serif' }}>
@@ -2752,7 +2751,7 @@ const ArchonDashboard = () => {
           </div>
           <div>
             <h1 className="font-bold">ARCHON</h1>
-            <p className="text-xs text-gray-500">V2.5-Final</p>
+            <p className="text-xs text-gray-500">V2.2-Ultimate</p>
           </div>
         </div>
 
