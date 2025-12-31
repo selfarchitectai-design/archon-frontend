@@ -104,6 +104,7 @@ const ArchonDashboard = () => {
     { id: 'aws', label: 'AWS Services', icon: '☁️', count: 6 },
     { id: 'integrations', label: 'Integrations', icon: '🔗', count: 8 },
     { id: 'dataflow', label: 'Data Flow', icon: '🔄' },
+    { id: 'guardian', label: 'Storage Guardian', icon: '🛡️' },
   ];
 
   // SSR Loading
@@ -320,6 +321,10 @@ const ArchonDashboard = () => {
       case 'lambdas': return <LambdasPage />;
       case 'mcp': return <MCPPage />;
       case 'health': return <HealthPage />;
+      case 'guardian':
+        // Open Guardian in new page
+        if (typeof window !== 'undefined') window.location.href = '/guardian';
+        return <HomePage />;
       default: return <HomePage />;
     }
   };
