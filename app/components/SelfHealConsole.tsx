@@ -38,28 +38,28 @@ interface HealResponse {
 }
 
 async function triggerHeal(target: string = 'all'): Promise<HealResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/heal', {
+  const res = await fetch('/api/archon/heal', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ target, strategy: 'auto' })
+    body: JSON.stringify({ action: 'heal', target, strategy: 'auto' })
   })
   return res.json()
 }
 
 async function triggerRollback(scope: string = 'config'): Promise<HealResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/rollback', {
+  const res = await fetch('/api/archon/heal', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ scope, target: 'last_snapshot' })
+    body: JSON.stringify({ action: 'rollback', scope, target: 'last_snapshot' })
   })
   return res.json()
 }
 
 async function createSnapshot(): Promise<HealResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/snapshot', {
+  const res = await fetch('/api/archon/heal', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({})
+    body: JSON.stringify({ action: 'snapshot' })
   })
   return res.json()
 }

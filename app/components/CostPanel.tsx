@@ -42,13 +42,13 @@ interface CostData {
 }
 
 async function fetchCosts(): Promise<CostData> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/costs')
+  const res = await fetch('/api/archon/costs')
   if (!res.ok) throw new Error('Cost fetch failed')
   return res.json()
 }
 
 async function triggerOptimize() {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/optimize', {
+  const res = await fetch('/api/archon/costs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'analyze' })

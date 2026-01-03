@@ -48,7 +48,7 @@ interface MCPCallResponse {
 }
 
 async function fetchMCPTools(): Promise<MCPListResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/mcp', {
+  const res = await fetch('/api/archon/mcp', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -61,7 +61,7 @@ async function fetchMCPTools(): Promise<MCPListResponse> {
 }
 
 async function callMCPTool(toolName: string): Promise<MCPCallResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/mcp', {
+  const res = await fetch('/api/archon/mcp', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

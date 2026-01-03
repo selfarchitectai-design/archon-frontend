@@ -25,7 +25,7 @@ interface VerifyResponse {
 }
 
 async function runVerification(target: string = 'all'): Promise<VerifyResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/verify', {
+  const res = await fetch('/api/archon/verify', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ target, mode: 'full' })

@@ -19,13 +19,13 @@ interface DashboardData {
 }
 
 async function fetchHealth(): Promise<HealthData> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/health')
+  const res = await fetch('/api/archon/health')
   if (!res.ok) throw new Error('Health fetch failed')
   return res.json()
 }
 
 async function fetchDashboard(): Promise<DashboardData> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/dashboard-api')
+  const res = await fetch('/api/archon/dashboard')
   if (!res.ok) throw new Error('Dashboard fetch failed')
   return res.json()
 }

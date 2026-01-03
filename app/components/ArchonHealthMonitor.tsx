@@ -26,7 +26,7 @@ interface HealthResponse {
 }
 
 async function fetchHealth(): Promise<HealthResponse> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/health')
+  const res = await fetch('/api/archon/health')
   if (!res.ok) throw new Error('Health fetch failed')
   return res.json()
 }

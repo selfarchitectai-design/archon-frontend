@@ -62,13 +62,13 @@ interface TrendData {
 }
 
 async function fetchReport(): Promise<ReportData> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/report')
+  const res = await fetch('/api/archon/report')
   if (!res.ok) throw new Error('Report fetch failed')
   return res.json()
 }
 
 async function fetchTrend(): Promise<TrendData> {
-  const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/trend')
+  const res = await fetch('/api/archon/report?type=trend')
   if (!res.ok) throw new Error('Trend fetch failed')
   return res.json()
 }
