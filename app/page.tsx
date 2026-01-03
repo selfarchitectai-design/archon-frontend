@@ -1,155 +1,138 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion'
+import { 
+  Brain, 
+  Activity, 
+  Settings,
+  ExternalLink,
+  Menu,
+  X
+} from 'lucide-react'
+import { useState } from 'react'
 
-// Navbar Component
-const Navbar = () => (
-  <nav className="bg-gray-900 text-white p-4 fixed top-0 left-0 right-0 z-50">
-    <div className="container mx-auto flex justify-between items-center">
-      <a href="/" className="text-2xl font-bold hover:text-purple-400 transition-colors">
-        ARCHON<span className="text-purple-400">.ai</span>
-      </a>
-      <div className="flex items-center space-x-6">
-        <a href="/demos" className="hover:text-purple-400 transition-colors font-medium">Demos</a>
-        <a href="/case-studies" className="hover:text-purple-400 transition-colors font-medium">Case Studies</a>
-        <a href="/modes" className="hover:text-purple-400 transition-colors font-medium">Persona Modes</a>
-        <a href="/workflows" className="hover:text-purple-400 transition-colors font-medium">Workflows</a>
-        <a href="/dashboard" className="hover:text-purple-400 transition-colors font-medium">Dashboard</a>
-        <a href="/pricing" className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg hover:scale-105 transition-transform font-semibold">
-          Get Started
-        </a>
-      </div>
-    </div>
-  </nav>
-);
+import { SystemOverview } from './components/SystemOverview'
+import { ArchonHealthMonitor } from './components/ArchonHealthMonitor'
+import { SelfHealConsole } from './components/SelfHealConsole'
+import { CostPanel } from './components/CostPanel'
+import { ReportPanel } from './components/ReportPanel'
+import { MCPToolsPanel } from './components/MCPToolsPanel'
+import { VerifyPanel } from './components/VerifyPanel'
+import { TrustAnalyzer } from './components/TrustAnalyzer'
 
-interface SystemStatus {
-  version: string;
-  status: string;
-  infrastructure: {
-    lambda: { total: number; active: number };
-    dynamodb: { tables: string[] };
-    s3: { buckets: string[] };
-  };
-  costs: { estimated: string };
-  metrics: { performanceScore: number; autonomyLevel: number };
-}
-
-export default function Home() {
-  const [status, setStatus] = useState<SystemStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/system-status')
-      .then(res => res.json())
-      .then(data => {
-        setStatus(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+export default function DashboardPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-16">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
-          
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <div className="text-center">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-8">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></span>
-                <span className="text-purple-300 text-sm font-medium">
-                  {loading ? 'Loading...' : `v${status?.version || '2.2.0'} • ${status?.status || 'operational'}`}
-                </span>
+    <div className="min-h-screen">
+      {/* Header */}
+      <header className="sticky top-0 z-50 glass border-b border-white/5">
+        <div className="max-w-[1800px] mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo & Title */}
+            <div className="flex items-center gap-4">
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                className="relative"
+              >
+                <div className="absolute inset-0 bg-archon-accent/20 rounded-xl blur-xl" />
+                <div className="relative p-3 rounded-xl bg-gradient-to-br from-archon-accent/20 to-archon-purple/20 border border-archon-accent/30">
+                  <Brain className="w-8 h-8 text-archon-accent" />
+                </div>
+              </motion.div>
+              
+              <div>
+                <h1 className="text-2xl font-bold font-display">
+                  <span className="gradient-text">ARCHON</span>
+                  <span className="text-archon-text-dim text-lg ml-2">V3.6</span>
+                </h1>
+                <p className="text-sm text-archon-text-dim">Enterprise AI Command Center</p>
               </div>
-              
-              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-                <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                  ARCHON
-                </span>
-                <br />
-                <span className="text-3xl md:text-4xl text-gray-300">
-                  Self-Evolving AI Operations Platform
-                </span>
-              </h1>
-              
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12">
-                Enterprise-grade AI infrastructure that learns, adapts, and optimizes itself.
-                Built on AWS Lambda, N8N workflows, and advanced AI orchestration.
-              </p>
-              
-              <div className="flex justify-center gap-4 flex-wrap">
-                <a href="/dashboard" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl text-white font-semibold hover:scale-105 transition-transform shadow-lg shadow-purple-500/25">
-                  View Dashboard →
-                </a>
-                <a href="/demos" className="px-8 py-4 bg-white/10 backdrop-blur rounded-xl text-white font-semibold hover:bg-white/20 transition-colors border border-white/20">
-                  Explore Demos
-                </a>
+            </div>
+
+            {/* Status & Actions */}
+            <div className="flex items-center gap-4">
+              {/* Live Status */}
+              <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl glass border border-white/5">
+                <span className="status-dot status-healthy" />
+                <span className="text-sm text-archon-text-dim">System</span>
+                <span className="text-sm font-medium text-archon-success">OPERATIONAL</span>
               </div>
+
+              {/* External Links */}
+              <a
+                href="https://n8n.selfarchitectai.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-archon-panel hover:bg-archon-panel-light transition-colors"
+              >
+                <Activity className="w-4 h-4 text-archon-accent" />
+                <span className="text-sm">N8N</span>
+                <ExternalLink className="w-3 h-3 text-archon-text-dim" />
+              </a>
+
+              {/* Mobile menu */}
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="md:hidden p-2 rounded-lg bg-archon-panel"
+              >
+                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
+      </header>
 
-        {/* Stats Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
-              <div className="text-3xl font-bold text-white">{status?.infrastructure?.lambda?.total || 6}</div>
-              <div className="text-gray-400">Lambda Functions</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
-              <div className="text-3xl font-bold text-white">20+</div>
-              <div className="text-gray-400">N8N Workflows</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
-              <div className="text-3xl font-bold text-white">{status?.metrics?.performanceScore || 95}%</div>
-              <div className="text-gray-400">Performance Score</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
-              <div className="text-3xl font-bold text-emerald-400">{status?.costs?.estimated || '$15-30'}</div>
-              <div className="text-gray-400">Monthly Cost</div>
-            </div>
-          </div>
+      {/* Main Content */}
+      <main className="max-w-[1800px] mx-auto px-4 py-6">
+        {/* Top Row - Overview & Health */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <SystemOverview />
+          <ArchonHealthMonitor />
         </div>
 
-        {/* Features Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">Core Capabilities</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 hover:border-purple-500/50 transition-colors">
-              <div className="text-4xl mb-4">🧠</div>
-              <h3 className="text-xl font-semibold text-white mb-2">AI Brain</h3>
-              <p className="text-gray-400">Claude Haiku-powered decision engine with 85% cost optimization</p>
-            </div>
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 hover:border-purple-500/50 transition-colors">
-              <div className="text-4xl mb-4">⚡</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Auto Actions</h3>
-              <p className="text-gray-400">Self-healing workflows with automatic error recovery</p>
-            </div>
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 hover:border-purple-500/50 transition-colors">
-              <div className="text-4xl mb-4">📊</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Real-time Monitoring</h3>
-              <p className="text-gray-400">Live dashboard with network topology and health metrics</p>
-            </div>
-          </div>
+        {/* Trust Analyzer - Featured Section */}
+        <div className="mb-6">
+          <TrustAnalyzer />
+        </div>
+
+        {/* Middle Row - Operations */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <SelfHealConsole />
+          <CostPanel />
+          <ReportPanel />
+        </div>
+
+        {/* Bottom Row - Tools & Verification */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MCPToolsPanel />
+          <VerifyPanel />
         </div>
 
         {/* Footer */}
-        <footer className="border-t border-white/10 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex justify-between items-center">
-              <div className="text-gray-400">© 2024 ARCHON. Self-Architect AI.</div>
-              <div className="flex gap-6">
-                <a href="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</a>
-                <a href="https://github.com/selfarchitectai-design" className="text-gray-400 hover:text-white transition-colors">GitHub</a>
-              </div>
+        <footer className="mt-12 pt-6 border-t border-white/5">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-archon-text-dim">
+                ARCHON V3.6 © 2026 SelfArchitectAI
+              </span>
+              <span className="w-1 h-1 rounded-full bg-archon-text-dim" />
+              <span className="text-sm text-archon-text-dim">
+                GPT-5 Integration Ready
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-6 text-sm text-archon-text-dim">
+              <span className="font-mono">/archon/health</span>
+              <span className="font-mono">/dashboard-api</span>
+              <span className="font-mono">/api/archon/trust</span>
+              <span className="font-mono">/webhook/mcp</span>
             </div>
           </div>
         </footer>
       </main>
-    </>
-  );
+    </div>
+  )
 }
