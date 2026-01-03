@@ -28,6 +28,16 @@ interface TrustData {
   }
   trust_level: string
   gpt5_ready: boolean
+  gpt5_connected: boolean
+  gpt5_analysis?: {
+    trust_score?: number
+    trust_level?: string
+    fault_source?: string
+    cause?: string
+    recommended_action?: string
+    insights?: string[]
+  }
+  last_gpt5_sync?: string
   api_version: string
 }
 
@@ -108,10 +118,20 @@ export function TrustAnalyzer() {
           </div>
         </div>
         
-        {/* GPT-5 Ready Badge */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-archon-purple/10 border border-archon-purple/30">
-          <span className="w-2 h-2 rounded-full bg-archon-purple animate-pulse" />
-          <span className="text-xs font-mono text-archon-purple">GPT-5 READY</span>
+        {/* GPT-5 Connection Badge */}
+        <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${
+          data?.gpt5_connected 
+            ? 'bg-archon-success/10 border border-archon-success/30' 
+            : 'bg-archon-purple/10 border border-archon-purple/30'
+        }`}>
+          <span className={`w-2 h-2 rounded-full animate-pulse ${
+            data?.gpt5_connected ? 'bg-archon-success' : 'bg-archon-purple'
+          }`} />
+          <span className={`text-xs font-mono ${
+            data?.gpt5_connected ? 'text-archon-success' : 'text-archon-purple'
+          }`}>
+            {data?.gpt5_connected ? '🟢 GPT-5 CONNECTED' : 'GPT-5 READY'}
+          </span>
         </div>
       </div>
 
@@ -213,17 +233,51 @@ export function TrustAnalyzer() {
 
       {/* GPT-5 Controller Info */}
       <div className="p-4 rounded-xl bg-gradient-to-r from-archon-purple/10 to-archon-accent/10 border border-archon-purple/20">
-        <div className="flex items-center gap-3 mb-2">
-          <Brain className="w-5 h-5 text-archon-purple" />
-          <span className="text-sm font-medium">GPT-5 Controller Interface</span>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <Brain className="w-5 h-5 text-archon-purple" />
+            <span className="text-sm font-medium">GPT-5 Controller Interface</span>
+          </div>
+          {data?.gpt5_connected && (
+            <span className="text-xs text-archon-success font-mono">● LIVE</span>
+          )}
         </div>
-        <p className="text-xs text-archon-text-dim mb-2">
-          External GPT-5 Controller will connect to <code className="px-1 py-0.5 rounded bg-archon-panel font-mono">/api/archon/trust</code> to push real-time trust metrics and verification commands.
-        </p>
-        <div className="flex items-center gap-4 text-xs">
+        
+        {/* GPT-5 Analysis Insights */}
+        {data?.gpt5_analysis?.insights && data.gpt5_analysis.insights.length > 0 ? (
+          <div className="space-y-2 mb-3">
+            {data.gpt5_analysis.insights.slice(0, 3).map((insight, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs">
+                <span className="text-archon-accent">→</span>
+                <span className="text-archon-text-dim">{insight}</span>
+              </div>
+            ))}
+            {data.gpt5_analysis.recommended_action && (
+              <div className="mt-2 p-2 rounded bg-archon-panel/50 border border-archon-accent/20">
+                <span className="text-xs text-archon-accent font-medium">Recommended: </span>
+                <span className="text-xs text-archon-text">{data.gpt5_analysis.recommended_action}</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-xs text-archon-text-dim mb-2">
+            {data?.gpt5_connected 
+              ? 'Analyzing system metrics...' 
+              : 'Awaiting GPT-5 connection for live insights...'}
+          </p>
+        )}
+        
+        <div className="flex items-center gap-4 text-xs border-t border-white/5 pt-2 mt-2">
           <span className="text-archon-text-dim">
-            API Version: <span className="text-archon-accent font-mono">{data?.api_version || '3.6.0'}</span>
+            API: <span className="text-archon-accent font-mono">{data?.api_version || '3.6.1'}</span>
           </span>
+          {data?.last_gpt5_sync && (
+            <span className="text-archon-text-dim">
+              Last Sync: <span className="text-archon-success font-mono">
+                {new Date(data.last_gpt5_sync).toLocaleTimeString()}
+              </span>
+            </span>
+          )}
           <span className="text-archon-text-dim">
             Last Check: <span className="text-archon-accent font-mono">
               {data?.last_check ? new Date(data.last_check).toLocaleTimeString() : '--'}
