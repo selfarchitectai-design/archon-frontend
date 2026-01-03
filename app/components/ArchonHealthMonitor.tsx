@@ -18,11 +18,15 @@ import { useState } from 'react'
 interface HealthResponse {
   status: string
   timestamp: string
-  workflows: { active: number; total: number; health: string }
-  executions: { success_rate: number; total: number; errors: number }
-  uptime: string
-  selfHeal: { active: boolean; lastAction: string }
-  services: Record<string, boolean>
+  workflows: { active: number; total: number; list?: Array<{ id: string; name: string }> }
+  executions: { success_rate?: number; rate?: number; total: number; errors?: number; error?: number }
+  uptime?: string
+  system?: { status: string; score: number; uptime: number }
+  selfHeal?: { active?: boolean; status?: string; lastAction?: string; auto_fixes_today?: number }
+  self_heal?: { status: string; auto_fixes_today: number }
+  services?: Array<{ name: string; status: string; details?: string }> | Record<string, boolean>
+  lambdas?: { count: number; status: string }
+  trust?: { level: string; mode: string; successRate: number }
 }
 
 async function fetchHealth(): Promise<HealthResponse> {
@@ -47,7 +51,7 @@ export function ArchonHealthMonitor() {
   }
 
   const status = data?.status || 'unknown'
-  const successRate = data?.executions?.success_rate || 0
+  const successRate = data?.executions?.rate ?? data?.executions?.success_rate ?? 0
 
   const getStatusIcon = () => {
     switch (status?.toLowerCase()) {
@@ -68,10 +72,10 @@ export function ArchonHealthMonitor() {
   }
 
   const services = [
-    { name: 'N8N Workflows', icon: Server, status: data?.workflows?.health === 'healthy' },
-    { name: 'Lambda Functions', icon: Cloud, status: true },
-    { name: 'MCP Server', icon: Database, status: true },
-    { name: 'API Gateway', icon: Wifi, status: true },
+    { name: 'N8N Workflows', icon: Server, status: (data?.workflows?.active ?? 0) > 0 },
+    { name: 'Lambda Functions', icon: Cloud, status: (data?.lambdas?.count ?? 0) > 0 || data?.lambdas?.status === 'online' },
+    { name: 'MCP Server', icon: Database, status: data?.status === 'healthy' },
+    { name: 'API Gateway', icon: Wifi, status: data?.status === 'healthy' },
   ]
 
   return (
@@ -194,7 +198,7 @@ export function ArchonHealthMonitor() {
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold font-mono text-archon-danger">
-            {data?.executions?.errors || 0}
+            {data?.executions?.errors ?? data?.executions?.error ?? 0}
           </p>
           <p className="text-xs text-archon-text-dim">Errors (24h)</p>
         </div>
