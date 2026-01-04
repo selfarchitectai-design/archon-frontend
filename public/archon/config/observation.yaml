@@ -1,0 +1,99 @@
+# ARCHON External Observation Pipeline
+# Claude Assisted Observation Architecture (CAOA)
+# Version: 1.0.0
+
+project: "ARCHON External Observation"
+version: "1.0.0"
+description: "Claude-driven observation bridge for GPT-5"
+created: "2026-01-04"
+managed_by: "Claude Supervisor"
+
+# Observation Targets
+targets:
+  - name: selfarchitectai_main
+    url: "https://www.selfarchitectai.com"
+    type: website
+    schedule: "*/5 * * * *"  # Every 5 minutes
+    
+  - name: dashboard
+    url: "https://dashboard.selfarchitectai.com"
+    type: dashboard
+    schedule: "*/5 * * * *"
+    
+  - name: n8n_api
+    url: "https://n8n.selfarchitectai.com/webhook/archon/health"
+    type: api
+    schedule: "*/1 * * * *"  # Every minute
+
+# Pipeline Modules
+modules:
+  - name: fetch_site_content
+    type: http
+    description: "Fetch HTML/JSON content from target URLs"
+    schedule: "*/5 * * * *"
+    targets:
+      - "https://www.selfarchitectai.com"
+      - "https://dashboard.selfarchitectai.com"
+    output_dir: "/data/archon/snapshots"
+    
+  - name: diff_engine
+    type: compare
+    description: "Compare current snapshot with previous"
+    inputs:
+      current: "/data/archon/snapshots/current"
+      previous: "/data/archon/snapshots/previous"
+    output: "/data/archon/diffs/latest.json"
+    threshold:
+      min_change_percent: 1  # Ignore changes < 1%
+      
+  - name: send_to_gpt5
+    type: lambda
+    description: "Send diff data to GPT-5 for analysis"
+    endpoint: "/api/observation/analyze"
+    method: "POST"
+    body_template:
+      site_diff: "{{ diff.json }}"
+      timestamp: "{{ now }}"
+      origin: "Claude Supervisor"
+      
+  - name: generate_report
+    type: report
+    description: "Generate observation report"
+    output: "/data/archon/reports/observation_report.md"
+    format: markdown
+
+# Anomaly Detection Rules
+anomaly_rules:
+  - name: ui_change
+    trigger: "dom_structure_changed"
+    severity: info
+    action: log
+    
+  - name: content_missing
+    trigger: "content_removed > 50%"
+    severity: warning
+    action: alert
+    
+  - name: api_down
+    trigger: "status_code != 200"
+    severity: critical
+    action: auto_heal
+    
+  - name: latency_spike
+    trigger: "response_time > 5000ms"
+    severity: warning
+    action: log
+
+# Storage Configuration
+storage:
+  snapshots_keep: 100
+  diffs_keep: 50
+  reports_keep: 30
+  cleanup_schedule: "0 0 * * *"  # Daily at midnight
+
+# GPT-5 Integration
+gpt5:
+  enabled: true
+  analyze_on_diff: true
+  trend_analysis: true
+  anomaly_classification: true

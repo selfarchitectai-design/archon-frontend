@@ -19,6 +19,7 @@ import { ReportPanel } from './components/ReportPanel'
 import { MCPToolsPanel } from './components/MCPToolsPanel'
 import { VerifyPanel } from './components/VerifyPanel'
 import { TrustAnalyzer } from './components/TrustAnalyzer'
+import { ObservationPanel } from './components/ObservationPanel'
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -106,9 +107,14 @@ export default function DashboardPage() {
         </div>
 
         {/* Bottom Row - Tools & Verification */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <MCPToolsPanel />
           <VerifyPanel />
+        </div>
+
+        {/* Observation Hub - CAOA */}
+        <div className="mb-6">
+          <ObservationPanel />
         </div>
 
         {/* Footer */}
