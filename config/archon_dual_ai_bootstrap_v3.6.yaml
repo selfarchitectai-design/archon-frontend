@@ -1,0 +1,181 @@
+# ==============================
+# ARCHON DUAL-AI SYSTEM BOOTSTRAP
+# Version: V3.6 (GPT-5 Controlled + Claude Event-Triggered)
+# Updated: 2026-01-04
+# ==============================
+
+system:
+  id: "ARCHON-V3.6"
+  phase: 3
+  owner: "GPT-5 Master Controller"
+  environment:
+    dashboard_url: "https://dashboard.selfarchitectai.com"
+    api_root: "https://www.selfarchitectai.com"
+    lambda_bridge: "https://mbjd75sopjbqu5smvdfngwh5wa0kgewv.lambda-url.us-east-1.on.aws"
+    n8n_engine: "https://n8n.selfarchitectai.com"
+    vercel_project: "archon-frontend"
+  health_target:
+    trust_score_min: 0.90
+    verify_latency_target: 0.8
+    workflow_target: 8
+  mode: "event-triggered"
+  cost_optimization:
+    claude_reduction_target: 85%
+    monthly_budget_usd: 25
+
+controllers:
+  - name: "GPT-5"
+    role: "Primary Decision Engine"
+    model: "gpt-4o"
+    permissions:
+      deploy_trigger: true
+      verify_control: true
+      claude_access: "full"
+      analysis: true
+      monitoring: true
+    endpoints:
+      analysis: "/api/archon/trust"
+      gpt5_direct: "/api/gpt5"
+      
+  - name: "Claude"
+    role: "Deploy Executor & Recovery Agent"
+    startup: "passive"
+    trigger: "wake-on-event"
+    cooldown: "15m"
+    tasks:
+      - deploy_execution
+      - failure_recovery
+      - complex_analysis
+      - emergency_override
+    cost_mode: "minimal"
+
+lambda_functions:
+  - name: "archon_controller"
+    runtime: "python3.10"
+    endpoint: "https://mbjd75sopjbqu5smvdfngwh5wa0kgewv.lambda-url.us-east-1.on.aws"
+    api_key_ref: "archon_cgpt_cf42eb69efc09a13e937e6d2374c0eb7"
+    functions:
+      - vercel_deploy_light
+      - health_check
+      - trust_monitor
+      - claude_trigger
+      
+  - name: "vercel_deploy_light"
+    description: "GPT-5 approved fast deploy"
+    trigger_source: "GPT-5"
+    target: "vercel"
+    
+event_triggers:
+  - id: "claude_deploy_trigger"
+    source: "GPT-5"
+    trigger_condition: "deploy_approval == true AND trust_score >= 0.90"
+    action: "invoke:claude_deploy_handler"
+    cooldown: "15m"
+    auto_reset: true
+    fallback: "Claude recovery mode"
+    
+  - id: "claude_recovery_trigger"
+    source: "system"
+    trigger_condition: "deployment_failed == true OR health_critical == true"
+    action: "invoke:claude_recovery_handler"
+    cooldown: "5m"
+    priority: "high"
+    
+  - id: "auto_rollback_trigger"
+    source: "vercel_webhook"
+    trigger_condition: "deploy_status == 'ERROR' AND auto_rollback_enabled == true"
+    action: "invoke:rollback_handler"
+    cooldown: "10m"
+
+n8n_workflows:
+  active:
+    - id: "deploy_monitor"
+      status: "active"
+    - id: "verify_health"
+      status: "active"
+    - id: "trust_report"
+      status: "active"
+    - id: "claude_event_listener"
+      status: "active"
+    - id: "cost_tracker"
+      status: "active"
+    - id: "alert_dispatcher"
+      status: "active"
+    - id: "self_heal_engine"
+      status: "active"
+    - id: "metrics_collector"
+      status: "active"
+
+verification:
+  metrics:
+    - latency
+    - trust_delta
+    - workflow_activity
+    - deploy_success_rate
+    - claude_invocations
+  thresholds:
+    latency: 1.0
+    trust_delta: 0.03
+    success_rate: 95
+    max_claude_calls_daily: 10
+
+auto_actions:
+  - when: "deploy_ready AND trust_score >= 0.90"
+    action: "trigger_deploy"
+    executor: "GPT-5"
+    comment: "Direct deploy without Claude"
+    
+  - when: "deploy_ready AND complex_change == true"
+    action: "trigger_claude"
+    comment: "Claude wakes for complex deployments"
+    
+  - when: "health_degraded"
+    action: "self_heal"
+    executor: "n8n"
+    
+  - when: "critical_failure"
+    action: "emergency_claude"
+    priority: "immediate"
+
+secrets_manager:
+  aws_region: "us-east-1"
+  secrets:
+    - name: "archon/vercel"
+      keys: ["token", "team_id", "project_id"]
+    - name: "archon/github"
+      keys: ["token", "repo"]
+    - name: "archon/openai"
+      keys: ["api_key"]
+    - name: "archon/lambda"
+      keys: ["url", "api_key"]
+
+monitoring:
+  dashboard:
+    refresh_interval: 30
+    components:
+      - SystemStatus
+      - HealthMonitor
+      - SelfHealPanel
+      - CostTracker
+      - ReportPanel
+      - MCPToolsPanel
+      - VerifyLoop
+      - TrustAnalyzer
+      - ObservationPanel
+  alerts:
+    channels:
+      - n8n_webhook
+      - dashboard_notification
+    rules:
+      - condition: "trust_score < 0.85"
+        action: "alert_critical"
+      - condition: "claude_daily_calls > 8"
+        action: "alert_cost_warning"
+
+notes:
+  - "Claude does not remain active; it only runs event-based tasks."
+  - "GPT-5 holds master access to trigger and verify deploys."
+  - "All monitoring is handled by GPT-5 + n8n."
+  - "No manual trigger required - fully autonomous."
+  - "Cost target: 75-85% reduction in Claude API usage."
+  - "Self-healing active with 0.85 threshold."
