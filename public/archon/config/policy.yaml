@@ -1,0 +1,92 @@
+# ARCHON Full Autonomous Deployment Policy
+# Version: 3.6.1
+# Updated: 2026-01-03
+# Managed by: Claude Supervisor + GPT-5 Controller
+
+deployment:
+  mode: autonomous
+  auto_promote: true
+  require_approval: false
+  skip_approval_gate: true
+  
+branches:
+  main:
+    auto_deploy: true
+    auto_merge: true
+    require_review: false
+    post_merge_hook: "/api/webhooks/vercel"
+    
+vercel:
+  token_scope: production_full
+  auto_publish: true
+  webhook_callbacks:
+    - on_build_success
+    - on_deploy_success
+    - on_publish_complete
+  deploy_hooks:
+    - name: archon-auto-deploy
+      branch: main
+      
+lambda_bridge:
+  permissions:
+    allow_force_deploy: true
+    skip_approval_gate: true
+    attach_trust_monitor: true
+  event_callbacks:
+    - deployment.created
+    - deployment.ready
+    - deployment.error
+    
+github:
+  repo: selfarchitectai-design/archon-frontend
+  branch: main
+  settings:
+    auto_merge: true
+    require_review: false
+    protect_main: false
+    
+continuous_operations:
+  verify_loop:
+    enabled: true
+    interval: 10m
+    endpoints:
+      - /api/archon/health
+      - /api/archon/trust
+      - /api/gpt5
+      
+  auto_heal:
+    enabled: true
+    threshold: 0.85
+    actions:
+      - restart_workflow
+      - rollback_deploy
+      - notify_supervisor
+      
+  trust_monitor:
+    enabled: true
+    gpt5_integration: true
+    report_channel: claude-supervisor
+    
+rollback:
+  auto_rollback_on_error: true
+  keep_versions: 5
+  health_check_timeout: 30s
+  
+logging:
+  audit_all_deploys: true
+  report_format: markdown
+  output_path: /logs/deployment_health_report.md
+  
+# GPT-5 Controller Permissions
+gpt5_controller:
+  trust_api_access: full
+  can_trigger_deploy: true
+  can_rollback: true
+  can_modify_policy: false
+  
+# Claude Supervisor Permissions  
+claude_supervisor:
+  full_access: true
+  can_modify_policy: true
+  audit_log_access: true
+  emergency_override: true
