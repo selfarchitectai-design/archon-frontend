@@ -1,0 +1,279 @@
+{
+  "name": "ARCHON-V3.6-Claude-Event-Listener",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "claude-trigger-log",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Claude Trigger Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process incoming Claude trigger event\nconst data = $input.all()[0].json;\n\nreturn [{\n  json: {\n    timestamp: data.timestamp || new Date().toISOString(),\n    trigger: data.trigger || 'unknown',\n    source: data.source || 'unknown',\n    payload: data.payload || {},\n    result: data.result || {},\n    claude_invoked: data.claude_invoked || false,\n    processed_at: new Date().toISOString(),\n    event_type: 'claude_trigger',\n    archon_version: '3.6'\n  }\n}];"
+      },
+      "id": "process-trigger",
+      "name": "Process Trigger Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.source }}",
+              "operation": "equals",
+              "value2": "GPT-5"
+            }
+          ]
+        }
+      },
+      "id": "validate-source",
+      "name": "Validate GPT-5 Source",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $env.ARCHON_LOG_SHEET_ID }}"
+        },
+        "sheetName": "Claude Triggers",
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "log-to-sheet",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://www.selfarchitectai.com/api/archon/trust/events",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event_type",
+              "value": "claude_trigger"
+            },
+            {
+              "name": "data",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "notify-archon",
+      "name": "Notify ARCHON Dashboard",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.trigger }}",
+              "operation": "equals",
+              "value2": "claude_recovery_handler"
+            }
+          ]
+        }
+      },
+      "id": "check-recovery",
+      "name": "Is Recovery Trigger?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "channel": "#archon-alerts",
+        "text": "⚠️ *Claude Recovery Triggered*\n\nSource: {{ $json.source }}\nTrigger: {{ $json.trigger }}\nReason: {{ $json.payload.reason || 'Not specified' }}\nTimestamp: {{ $json.timestamp }}",
+        "otherOptions": {}
+      },
+      "id": "slack-alert",
+      "name": "Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate daily trigger metrics\nconst today = new Date().toISOString().split('T')[0];\nconst trigger = $input.all()[0].json;\n\nreturn [{\n  json: {\n    date: today,\n    trigger_count: 1,\n    last_trigger: trigger.timestamp,\n    last_trigger_type: trigger.trigger,\n    claude_cost_saved: true // Light deploy = no Claude cost\n  }\n}];"
+      },
+      "id": "update-metrics",
+      "name": "Update Daily Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1250, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Event logged', event_id: $json.timestamp } }}",
+        "options": {}
+      },
+      "id": "respond-success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: 'Invalid source - only GPT-5 triggers allowed' } }}",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "respond-error",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 500]
+    }
+  ],
+  "connections": {
+    "Claude Trigger Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Trigger Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Trigger Event": {
+      "main": [
+        [
+          {
+            "node": "Validate GPT-5 Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate GPT-5 Source": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify ARCHON Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Is Recovery Trigger?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify ARCHON Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Is Recovery Trigger?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Recovery Trigger?": {
+      "main": [
+        [
+          {
+            "node": "Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Daily Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Alert": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Daily Metrics": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    "archon",
+    "claude",
+    "dual-ai",
+    "v3.6"
+  ],
+  "pinData": {},
+  "versionId": "1"
+}
