@@ -1,0 +1,176 @@
+# claude_event_trigger.yaml
+# ARCHON V3.6 - Claude Event Trigger Configuration
+# GPT-5 Trusted Event Exception System
+# Updated: 2026-01-04
+
+# ==============================
+# EVENT TRIGGER CONFIGURATION
+# ==============================
+
+event_source: "GPT-5"
+trigger_condition: "deploy_approval == true"
+action: "invoke:claude_deploy_handler"
+cooldown: "15m"
+auto_reset: true
+
+# ==============================
+# TRUSTED SOURCES - GPT-5 Exception
+# ==============================
+# Claude supervisor mode accepts events from these sources
+# via trusted_override flag
+
+trusted_sources:
+  - name: "GPT-5"
+    allow_override: true
+    description: "GPT-5 may issue deploy triggers during supervisor mode"
+    permissions:
+      - deploy_trigger
+      - recovery_trigger
+      - analysis_trigger
+    require_signature: false
+    min_trust_score: 0.90
+    
+  - name: "system"
+    allow_override: true
+    description: "Internal system events for recovery and self-heal"
+    permissions:
+      - recovery_trigger
+      - health_check
+    require_signature: false
+    min_trust_score: 0.85
+
+# ==============================
+# SUPERVISOR MODE SETTINGS
+# ==============================
+
+supervisor_mode:
+  enabled: true
+  allow_trusted_override: true
+  
+  # Claude accepts these events in supervisor mode
+  accept_events:
+    - source: "GPT-5"
+      condition: "trusted_override == true"
+      action: "process_as_internal"
+      
+    - source: "system"
+      condition: "trusted_override == true"
+      action: "process_as_internal"
+  
+  # Reject events from unknown sources
+  reject_events:
+    - source: "*"
+      condition: "source not in trusted_sources"
+      action: "ignore"
+      log: true
+
+# ==============================
+# SECURITY GATES
+# ==============================
+
+security_gates:
+  # Gate 1: Trust Score
+  trust_score:
+    enabled: true
+    threshold: 0.90
+    action_on_fail: "reject"
+    
+  # Gate 2: Verify Failures
+  verify_failures:
+    enabled: true
+    max_failures: 2
+    action_on_fail: "reject"
+    
+  # Gate 3: Signature Verification (optional)
+  signature:
+    enabled: false
+    algorithm: "hmac-sha256"
+    action_on_fail: "reject"
+
+# ==============================
+# OVERRIDE VALIDATION
+# ==============================
+
+override_validation:
+  # Claude checks these conditions before accepting trusted_override
+  rules:
+    - name: "source_check"
+      condition: "source in ['GPT-5', 'system']"
+      required: true
+      
+    - name: "trust_check"
+      condition: "trust_score >= 0.90"
+      required: true
+      
+    - name: "approval_check"
+      condition: "approved == true"
+      required: true
+
+  # Combined check for acceptance
+  acceptance_logic: |
+    if trusted_override and source == "GPT-5":
+        accept as internal event
+    elif trusted_override and source == "system":
+        accept as internal event
+    else:
+        reject as external event
+
+# ==============================
+# EVENT HANDLERS
+# ==============================
+
+handlers:
+  claude_deploy_handler:
+    description: "Handle deploy requests from GPT-5"
+    accepts_trusted_override: true
+    cooldown: "15m"
+    max_daily_triggers: 10
+    
+  claude_recovery_handler:
+    description: "Handle recovery requests"
+    accepts_trusted_override: true
+    cooldown: "5m"
+    max_daily_triggers: 20
+    priority: "high"
+    
+  claude_analysis_handler:
+    description: "Handle deep analysis requests"
+    accepts_trusted_override: true
+    cooldown: "10m"
+    max_daily_triggers: 15
+
+# ==============================
+# LOGGING
+# ==============================
+
+logging:
+  enabled: true
+  log_trusted_overrides: true
+  log_rejections: true
+  log_security_gate_results: true
+  
+  destinations:
+    - type: "n8n_webhook"
+      url: "https://n8n.selfarchitectai.com/webhook/claude-trigger-log"
+    - type: "archon_api"
+      url: "https://www.selfarchitectai.com/api/archon/trust/log"
+
+# ==============================
+# FALLBACK BEHAVIOR
+# ==============================
+
+fallback:
+  on_trigger_fail: "Claude recovery mode"
+  on_security_fail: "Log and notify"
+  on_cooldown: "Queue for retry"
+  
+# ==============================
+# NOTES
+# ==============================
+
+notes:
+  - "Claude stays in supervisor mode but accepts GPT-5 trusted events"
+  - "trusted_override flag allows events to bypass supervisor restrictions"
+  - "All security gates must pass before event is accepted"
+  - "Cost optimization maintained through daily trigger limits"
+  - "Comprehensive logging for audit trail"
