@@ -1,0 +1,95 @@
+{
+  "product_name": "ARCHON AI Platform",
+  "version": "2.5.1",
+  "release_cycle": "continuous",
+  "description": "AI-powered orchestration platform with self-healing capabilities",
+  
+  "modules": [
+    {
+      "name": "AI Core",
+      "description": "Decision Pool with 5 AI models",
+      "components": ["GPT-4o", "GPT-5", "Claude", "Gemini", "DeepSeek"],
+      "status": "active"
+    },
+    {
+      "name": "Supervisor Engine",
+      "description": "Trust evaluation and pipeline control",
+      "components": ["supervisor.py", "trust_engine.py"],
+      "status": "active"
+    },
+    {
+      "name": "Telemetry Engine",
+      "description": "Metrics collection and learning feedback",
+      "components": ["telemetry_collector.py", "memory_store.sqlite"],
+      "status": "active"
+    },
+    {
+      "name": "Production Line",
+      "description": "Automated continuous build mechanism",
+      "components": ["line_controller.py", "self_heal"],
+      "status": "active"
+    },
+    {
+      "name": "Policy Guard",
+      "description": "OPA-based security and authorization",
+      "components": ["policy_rules.rego"],
+      "status": "active"
+    }
+  ],
+  
+  "build_target": "GitHub MCP Runner",
+  "deploy_target": {
+    "platform": "Vercel",
+    "project": "archon-frontend",
+    "domains": [
+      "dashboard.selfarchitectai.com",
+      "www.selfarchitectai.com"
+    ]
+  },
+  
+  "auto_deploy": true,
+  "auto_rollback": true,
+  
+  "success_threshold": 3,
+  "retry_policy": {
+    "max_attempts": 3,
+    "delay_seconds": 60,
+    "exponential_backoff": true
+  },
+  
+  "self_heal": {
+    "enabled": true,
+    "failure_threshold": 3,
+    "actions": [
+      "notify_supervisor",
+      "rollback_to_last_good",
+      "reduce_ai_weights"
+    ]
+  },
+  
+  "optimization": {
+    "engine": "GPT-5",
+    "schedule": "weekly",
+    "auto_apply": false,
+    "metrics": [
+      "build_success_rate",
+      "latency",
+      "token_cost",
+      "trust_score"
+    ]
+  },
+  
+  "reporting": {
+    "success_summary": "reports/build_summary.json",
+    "threshold": 3,
+    "frequency": "on_threshold",
+    "destinations": [
+      "supervisor",
+      "dashboard",
+      "slack"
+    ]
+  },
+  
+  "created_at": "2026-01-06T00:00:00Z",
+  "updated_at": "2026-01-06T00:00:00Z"
+}

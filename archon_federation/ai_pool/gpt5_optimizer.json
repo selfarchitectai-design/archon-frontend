@@ -1,0 +1,48 @@
+{
+  "id": "gpt5",
+  "name": "GPT-5 Meta Strategist",
+  "role": "meta_strategist",
+  "description": "Long-term structural optimization and weight adjustment",
+  
+  "model": {
+    "provider": "openai",
+    "name": "gpt-5",
+    "endpoint": "https://api.openai.com/v1/chat/completions",
+    "max_tokens": 8192,
+    "temperature": 0.5
+  },
+  
+  "trust": {
+    "weight": 0.15,
+    "min_weight": 0.10,
+    "max_weight": 0.25
+  },
+  
+  "capabilities": [
+    "meta_optimization",
+    "weight_adjustment",
+    "strategic_planning",
+    "system_analysis",
+    "performance_prediction"
+  ],
+  
+  "system_prompt": "You are the Meta Strategist for ARCHON AI Federation. Your role is to analyze system performance, optimize AI model weights, and provide strategic recommendations for long-term improvements. Focus on cost efficiency, reliability, and scalability.",
+  
+  "schedule": "weekly",
+  "trigger": "manual",
+  
+  "optimization_targets": [
+    "build_success_rate",
+    "average_latency",
+    "token_cost",
+    "trust_score_distribution"
+  ],
+  
+  "rate_limits": {
+    "requests_per_minute": 30,
+    "tokens_per_minute": 150000
+  },
+  
+  "active": "manual",
+  "priority": 5
+}

@@ -1,0 +1,142 @@
+# ARCHON Compact Federation - AI Decision Pool Configuration
+# Version: 2.5.1
+# Updated: 2026-01-06
+
+ai_pool:
+  gpt4o:
+    id: "gpt4o"
+    role: "planner_coder"
+    description: "Chief Planner - Task & plan generation, code writing"
+    endpoint: "https://api.openai.com/v1/chat/completions"
+    model: "gpt-4o"
+    trust_weight: 0.30
+    active: true
+    capabilities:
+      - task_planning
+      - code_generation
+      - architecture_design
+    max_tokens: 4096
+    temperature: 0.7
+
+  gpt5:
+    id: "gpt5"
+    role: "meta_strategist"
+    description: "Strategic Optimizer - Long-term structural optimization"
+    endpoint: "https://api.openai.com/v1/chat/completions"
+    model: "gpt-5"
+    trust_weight: 0.15
+    active: "manual"  # Called for weekly optimization
+    capabilities:
+      - meta_optimization
+      - weight_adjustment
+      - strategic_planning
+    max_tokens: 8192
+    temperature: 0.5
+
+  gemini:
+    id: "gemini"
+    role: "research_analyst"
+    description: "Research Agent - Web, GitHub, and community insights"
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    model: "gemini-2.0-flash"
+    trust_weight: 0.20
+    active: true
+    capabilities:
+      - web_research
+      - github_analysis
+      - trend_detection
+    max_tokens: 4096
+    temperature: 0.8
+
+  claude:
+    id: "claude"
+    role: "deploy_architect"
+    description: "Deployment Architect - CI/CD, Docker, YAML build plans"
+    endpoint: "https://api.anthropic.com/v1/messages"
+    model: "claude-sonnet-4-20250514"
+    trust_weight: 0.20
+    active: true
+    capabilities:
+      - cicd_design
+      - dockerfile_creation
+      - yaml_generation
+      - deployment_orchestration
+    max_tokens: 4096
+    temperature: 0.6
+
+  deepseek:
+    id: "deepseek"
+    role: "performance_analyst"
+    description: "Performance Analyst - Code analysis, metrics, optimization"
+    endpoint: "https://api.deepseek.com/v1/chat/completions"
+    model: "deepseek-coder"
+    trust_weight: 0.15
+    active: true
+    capabilities:
+      - code_review
+      - performance_analysis
+      - latency_optimization
+    max_tokens: 4096
+    temperature: 0.5
+
+# Supervisor Configuration
+supervisor:
+  trust_threshold: 0.70
+  cohesion_threshold: 0.60
+  cost_efficiency_threshold: 0.50
+  memory_store: "telemetry/memory_store.sqlite"
+  telemetry_endpoint: "/api/telemetry"
+  log_policy: "config/policy_rules.rego"
+  approval_required: true
+
+# Executor Configuration
+executor:
+  platform: "github_mcp"
+  trigger_method: "webhook"
+  repository: "selfarchitectai-design/archon-frontend"
+  workflow_file: ".github/workflows/archon_build.yml"
+  runner: "ubuntu-latest"
+  docker_build: true
+  auto_retry: true
+  max_retries: 3
+  retry_delay_seconds: 60
+  telemetry_endpoint: "https://www.selfarchitectai.com/api/archon/telemetry"
+
+# Telemetry Configuration
+telemetry:
+  storage: "telemetry/memory_store.sqlite"
+  collector: "telemetry/telemetry_collector.py"
+  metrics:
+    - build_status
+    - latency_ms
+    - token_usage
+    - ai_trust_scores
+    - cost_usd
+    - error_count
+  reporting_cycle: "on_build_complete"
+  retention_days: 90
+
+# Production Line Configuration
+production_line:
+  controller: "production_line/line_controller.py"
+  blueprint: "production_line/product_blueprint.json"
+  auto_build: true
+  success_threshold: 3  # builds before summary
+  retry_policy:
+    max_attempts: 3
+    delay_seconds: 60
+    exponential_backoff: true
+
+# Learning & Optimization
+optimization:
+  engine: "gpt5"
+  schedule: "weekly"
+  purpose: "Adjust model weights and improve decision cohesion"
+  auto_apply: false  # Requires manual review
+
+# Logging
+logging:
+  output_path: "logs/archon_runtime.log"
+  level: "info"
+  rotation_policy: "weekly"
+  max_size_mb: 100

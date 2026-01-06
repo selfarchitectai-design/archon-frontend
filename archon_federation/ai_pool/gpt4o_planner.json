@@ -1,0 +1,50 @@
+{
+  "id": "gpt4o",
+  "name": "GPT-4o Chief Planner",
+  "role": "planner_coder",
+  "description": "Primary task planner and code generator",
+  
+  "model": {
+    "provider": "openai",
+    "name": "gpt-4o",
+    "endpoint": "https://api.openai.com/v1/chat/completions",
+    "max_tokens": 4096,
+    "temperature": 0.7
+  },
+  
+  "trust": {
+    "weight": 0.30,
+    "min_weight": 0.15,
+    "max_weight": 0.40
+  },
+  
+  "capabilities": [
+    "task_planning",
+    "code_generation",
+    "architecture_design",
+    "bug_fixing",
+    "documentation"
+  ],
+  
+  "system_prompt": "You are the Chief Planner for ARCHON AI Federation. Your role is to analyze tasks, create detailed plans, and generate high-quality code. Always consider scalability, maintainability, and best practices.",
+  
+  "response_format": {
+    "plan": {
+      "type": "object",
+      "properties": {
+        "tasks": "array",
+        "dependencies": "array",
+        "estimated_time": "string",
+        "complexity": "string"
+      }
+    }
+  },
+  
+  "rate_limits": {
+    "requests_per_minute": 60,
+    "tokens_per_minute": 90000
+  },
+  
+  "active": true,
+  "priority": 1
+}

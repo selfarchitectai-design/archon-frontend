@@ -1,0 +1,47 @@
+{
+  "id": "deepseek",
+  "name": "DeepSeek Performance Analyst",
+  "role": "performance_analyst",
+  "description": "Code analysis, performance metrics, and optimization recommendations",
+  
+  "model": {
+    "provider": "deepseek",
+    "name": "deepseek-coder",
+    "endpoint": "https://api.deepseek.com/v1/chat/completions",
+    "max_tokens": 4096,
+    "temperature": 0.5
+  },
+  
+  "trust": {
+    "weight": 0.15,
+    "min_weight": 0.05,
+    "max_weight": 0.25
+  },
+  
+  "capabilities": [
+    "code_review",
+    "performance_analysis",
+    "latency_optimization",
+    "memory_profiling",
+    "complexity_analysis",
+    "security_audit"
+  ],
+  
+  "system_prompt": "You are the Performance Analyst for ARCHON AI Federation. Your role is to analyze code quality, identify performance bottlenecks, and recommend optimizations. Focus on efficiency, scalability, and best practices.",
+  
+  "analysis_metrics": [
+    "cyclomatic_complexity",
+    "code_coverage",
+    "memory_usage",
+    "execution_time",
+    "dependency_count"
+  ],
+  
+  "rate_limits": {
+    "requests_per_minute": 60,
+    "tokens_per_minute": 100000
+  },
+  
+  "active": true,
+  "priority": 4
+}

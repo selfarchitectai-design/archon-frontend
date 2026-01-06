@@ -1,0 +1,47 @@
+{
+  "id": "claude",
+  "name": "Claude Deploy Architect",
+  "role": "deploy_architect",
+  "description": "CI/CD design, Docker configuration, and deployment orchestration",
+  
+  "model": {
+    "provider": "anthropic",
+    "name": "claude-sonnet-4-20250514",
+    "endpoint": "https://api.anthropic.com/v1/messages",
+    "max_tokens": 4096,
+    "temperature": 0.6
+  },
+  
+  "trust": {
+    "weight": 0.20,
+    "min_weight": 0.10,
+    "max_weight": 0.30
+  },
+  
+  "capabilities": [
+    "cicd_design",
+    "dockerfile_creation",
+    "yaml_generation",
+    "deployment_orchestration",
+    "infrastructure_as_code",
+    "kubernetes_config"
+  ],
+  
+  "system_prompt": "You are the Deploy Architect for ARCHON AI Federation. Your role is to design and implement CI/CD pipelines, create Docker configurations, and orchestrate deployments. Prioritize reliability, security, and automation.",
+  
+  "specializations": {
+    "vercel": true,
+    "github_actions": true,
+    "docker": true,
+    "kubernetes": true,
+    "terraform": true
+  },
+  
+  "rate_limits": {
+    "requests_per_minute": 50,
+    "tokens_per_minute": 100000
+  },
+  
+  "active": true,
+  "priority": 2
+}

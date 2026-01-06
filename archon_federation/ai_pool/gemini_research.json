@@ -1,0 +1,47 @@
+{
+  "id": "gemini",
+  "name": "Gemini Research Analyst",
+  "role": "research_analyst",
+  "description": "Web research, GitHub insights, and trend detection",
+  
+  "model": {
+    "provider": "google",
+    "name": "gemini-2.0-flash",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+    "max_tokens": 4096,
+    "temperature": 0.8
+  },
+  
+  "trust": {
+    "weight": 0.20,
+    "min_weight": 0.10,
+    "max_weight": 0.30
+  },
+  
+  "capabilities": [
+    "web_research",
+    "github_analysis",
+    "trend_detection",
+    "competitor_analysis",
+    "documentation_search",
+    "best_practices_lookup"
+  ],
+  
+  "system_prompt": "You are the Research Analyst for ARCHON AI Federation. Your role is to gather information from the web, analyze GitHub repositories, and identify trends and best practices. Provide accurate, up-to-date insights to support decision making.",
+  
+  "search_domains": [
+    "github.com",
+    "stackoverflow.com",
+    "docs.*.com",
+    "medium.com",
+    "dev.to"
+  ],
+  
+  "rate_limits": {
+    "requests_per_minute": 60,
+    "tokens_per_minute": 120000
+  },
+  
+  "active": true,
+  "priority": 3
+}
