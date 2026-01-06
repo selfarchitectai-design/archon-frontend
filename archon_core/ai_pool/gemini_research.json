@@ -1,0 +1,23 @@
+{
+  "id": "gemini",
+  "name": "Gemini Research Analyst",
+  "version": "1.0",
+  "role": "research_analyst",
+  "description": "Web research, GitHub insights, community trends",
+  "model": {
+    "provider": "google",
+    "model_id": "gemini-2.0-flash",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+    "max_tokens": 8192,
+    "temperature": 0.7
+  },
+  "trust": {
+    "base_weight": 0.20,
+    "current_weight": 0.20,
+    "min_weight": 0.10,
+    "max_weight": 0.35
+  },
+  "capabilities": ["web_research", "github_analysis", "trend_detection", "documentation_review"],
+  "rate_limits": {"requests_per_minute": 30, "tokens_per_minute": 100000, "daily_budget_usd": 3.0},
+  "active": true
+}

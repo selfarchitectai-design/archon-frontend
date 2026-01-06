@@ -1,0 +1,40 @@
+id: claude
+name: Claude Deployment Architect
+version: "1.0"
+role: deploy_architect
+description: CI/CD pipelines, Docker, YAML configurations, infrastructure
+
+model:
+  provider: anthropic
+  model_id: claude-sonnet-4-20250514
+  endpoint: https://api.anthropic.com/v1/messages
+  max_tokens: 8192
+  temperature: 0.7
+
+trust:
+  base_weight: 0.20
+  current_weight: 0.20
+  min_weight: 0.10
+  max_weight: 0.35
+
+capabilities:
+  - cicd_design
+  - dockerfile_creation
+  - yaml_generation
+  - infrastructure_setup
+  - deployment_automation
+  - github_actions
+
+rate_limits:
+  requests_per_minute: 50
+  tokens_per_minute: 100000
+  daily_budget_usd: 5.0
+
+active: true
+
+prompts:
+  system: |
+    You are the Deployment Architect of ARCHON. Your role is to design
+    CI/CD pipelines, create Dockerfiles, generate YAML configurations,
+    and automate infrastructure deployment. Focus on reliability,
+    security, and cost efficiency.

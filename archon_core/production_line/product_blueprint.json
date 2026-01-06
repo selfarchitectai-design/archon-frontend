@@ -1,0 +1,124 @@
+{
+  "product_name": "ARCHON AI Platform",
+  "version": "2.5.1",
+  "release_cycle": "weekly",
+  "description": "Compact high-performance AI orchestration system with self-managing build capabilities",
+  
+  "modules": [
+    {
+      "name": "AI Core",
+      "description": "Decision pool with GPT-4o, Claude, Gemini, DeepSeek, GPT-5",
+      "status": "active",
+      "dependencies": ["openai", "anthropic", "google-ai", "deepseek"]
+    },
+    {
+      "name": "Supervisor Engine",
+      "description": "Central orchestration and trust evaluation",
+      "status": "active",
+      "dependencies": ["trust_engine", "memory_store"]
+    },
+    {
+      "name": "Telemetry Engine",
+      "description": "Build metrics collection and analysis",
+      "status": "active",
+      "dependencies": ["sqlite3", "grafana"]
+    },
+    {
+      "name": "Production Line",
+      "description": "Automated continuous production mechanism",
+      "status": "active",
+      "dependencies": ["supervisor", "github_mcp"]
+    },
+    {
+      "name": "R Intelligence Layer",
+      "description": "Statistical analysis and visualization (Phase 5)",
+      "status": "planned",
+      "dependencies": ["r-base", "ggplot2", "tidyverse"]
+    }
+  ],
+  
+  "build_target": "GitHub MCP Runner",
+  "runner": "ubuntu-latest",
+  "auto_deploy": true,
+  
+  "environments": {
+    "development": {
+      "auto_deploy": false,
+      "trust_threshold": 0.5
+    },
+    "staging": {
+      "auto_deploy": true,
+      "trust_threshold": 0.7
+    },
+    "production": {
+      "auto_deploy": true,
+      "trust_threshold": 0.85,
+      "manual_approval": false
+    }
+  },
+  
+  "quality_gates": {
+    "lint_check": true,
+    "unit_tests": true,
+    "integration_tests": false,
+    "security_scan": true,
+    "performance_benchmark": false
+  },
+  
+  "deploy_targets": [
+    {
+      "name": "Vercel",
+      "type": "serverless",
+      "domains": [
+        "dashboard.selfarchitectai.com",
+        "www.selfarchitectai.com",
+        "selfarchitectai.com"
+      ]
+    }
+  ],
+  
+  "telemetry": {
+    "enabled": true,
+    "metrics": [
+      "build_status",
+      "latency_ms",
+      "token_usage",
+      "cost_usd",
+      "error_count"
+    ],
+    "storage": "sqlite",
+    "retention_days": 90,
+    "export_format": "csv"
+  },
+  
+  "notifications": {
+    "on_success": ["dashboard"],
+    "on_failure": ["dashboard", "slack"],
+    "on_recovery": ["dashboard"]
+  },
+  
+  "optimization": {
+    "enabled": true,
+    "engine": "gpt-5",
+    "schedule": "weekly",
+    "metrics_to_optimize": [
+      "success_rate",
+      "latency_ms",
+      "cost_usd"
+    ]
+  },
+  
+  "security": {
+    "policy_engine": "OPA",
+    "trust_threshold": 0.7,
+    "secrets_source": "AWS_SECRETS_MANAGER",
+    "audit_logging": true
+  },
+  
+  "metadata": {
+    "created_at": "2026-01-04T00:00:00Z",
+    "updated_at": "2026-01-04T00:00:00Z",
+    "author": "ARCHON Federation Controller",
+    "documentation_url": "https://github.com/selfarchitectai-design/archon-frontend"
+  }
+}

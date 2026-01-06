@@ -1,0 +1,373 @@
+{
+  "name": "ARCHON Build Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "archon/build/trigger",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "webhook_trigger",
+      "name": "Build Trigger Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.trust_score }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ parseFloat($json.trust_score) }}",
+              "operation": "largerEqual",
+              "value2": 0.7
+            }
+          ]
+        }
+      },
+      "id": "trust_validator",
+      "name": "Validate Trust Score",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/selfarchitectai-design/archon-deploy-bridge/actions/workflows/vercel-deploy.yml/dispatches",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.GITHUB_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "ref",
+              "value": "main"
+            },
+            {
+              "name": "inputs",
+              "value": "={{ JSON.stringify({ deploy_target: $json.deploy_target || 'production', triggered_by: 'n8n-archon', description: $json.description || 'N8N triggered build', decision_id: $json.decision_id }) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "github_dispatch",
+      "name": "Trigger GitHub Actions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [690, 220]
+    },
+    {
+      "parameters": {
+        "functionCode": "const timestamp = new Date().toISOString();\nconst decision_id = items[0].json.decision_id;\nconst source = items[0].json.source || 'n8n';\nconst trust_score = items[0].json.trust_score || 0.75;\n\nreturn [{\n  json: {\n    event: 'build_triggered',\n    decision_id: decision_id,\n    source: source,\n    trust_score: trust_score,\n    timestamp: timestamp,\n    status: 'triggered'\n  }\n}];"
+      },
+      "id": "prepare_log",
+      "name": "Prepare Log Entry",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [910, 220]
+    },
+    {
+      "parameters": {
+        "url": "https://www.selfarchitectai.com/api/archon/trust/log",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event",
+              "value": "={{ $json.event }}"
+            },
+            {
+              "name": "decision_id",
+              "value": "={{ $json.decision_id }}"
+            },
+            {
+              "name": "source",
+              "value": "={{ $json.source }}"
+            },
+            {
+              "name": "trust_score",
+              "value": "={{ $json.trust_score }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "log_to_dashboard",
+      "name": "Log to ARCHON Dashboard",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1130, 220]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{\n  json: {\n    success: true,\n    message: 'Build triggered successfully',\n    decision_id: items[0].json.decision_id,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "success_response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1350, 220]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{\n  json: {\n    success: false,\n    error: 'Trust score below threshold (0.7)',\n    received_score: items[0].json.trust_score,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "rejection_response",
+      "name": "Rejection Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [690, 420]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "respond_success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1570, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "respond_rejection",
+      "name": "Respond Rejection",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [910, 420]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "archon/telemetry",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "telemetry_webhook",
+      "name": "Telemetry Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "functionCode": "const data = items[0].json;\nconst timestamp = new Date().toISOString();\n\nreturn [{\n  json: {\n    timestamp: timestamp,\n    decision_id: data.decision_id,\n    build_status: data.build_status || 'unknown',\n    latency_ms: data.latency_ms || 0,\n    token_usage: data.token_usage || 0,\n    cost_usd: data.cost_usd || 0,\n    error_count: data.error_count || 0\n  }\n}];"
+      },
+      "id": "process_telemetry",
+      "name": "Process Telemetry",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [470, 600]
+    },
+    {
+      "parameters": {
+        "url": "https://www.selfarchitectai.com/api/archon/telemetry",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "store_telemetry",
+      "name": "Store Telemetry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [690, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Telemetry received' } }}",
+        "options": {}
+      },
+      "id": "telemetry_response",
+      "name": "Telemetry Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [910, 600]
+    }
+  ],
+  "connections": {
+    "Build Trigger Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Trust Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Trust Score": {
+      "main": [
+        [
+          {
+            "node": "Trigger GitHub Actions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rejection Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger GitHub Actions": {
+      "main": [
+        [
+          {
+            "node": "Prepare Log Entry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Log Entry": {
+      "main": [
+        [
+          {
+            "node": "Log to ARCHON Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to ARCHON Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success Response": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rejection Response": {
+      "main": [
+        [
+          {
+            "node": "Respond Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telemetry Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Telemetry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Telemetry": {
+      "main": [
+        [
+          {
+            "node": "Store Telemetry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Telemetry": {
+      "main": [
+        [
+          {
+            "node": "Telemetry Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "ARCHON",
+      "createdAt": "2026-01-04T00:00:00.000Z",
+      "updatedAt": "2026-01-04T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-01-04T00:00:00.000Z",
+  "versionId": "1"
+}

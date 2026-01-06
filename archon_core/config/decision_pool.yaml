@@ -1,0 +1,164 @@
+# ARCHON Compact Federation - Decision Pool Configuration
+# Version: 2.5.1
+# Updated: 2026-01-04
+
+ai_pool:
+  # Chief Planner & Coder - Primary decision maker
+  gpt4o:
+    id: "gpt4o"
+    role: "planner_coder"
+    description: "Task planning, code generation, architectural decisions"
+    endpoint: "https://api.openai.com/v1/chat/completions"
+    model: "gpt-4o"
+    trust_weight: 0.30
+    active: true
+    capabilities:
+      - task_planning
+      - code_generation
+      - architecture_design
+      - problem_solving
+    rate_limit:
+      requests_per_minute: 60
+      tokens_per_minute: 150000
+    
+  # Meta Strategist - Long-term optimization
+  gpt5:
+    id: "gpt5"
+    role: "meta_strategist"
+    description: "Long-term structural optimization, model weight adjustment"
+    endpoint: "https://api.openai.com/v1/chat/completions"
+    model: "gpt-5"
+    trust_weight: 0.15
+    active: "manual"  # Called only for strategic reviews
+    capabilities:
+      - strategic_planning
+      - weight_optimization
+      - system_analysis
+      - performance_tuning
+    schedule: "weekly"
+    
+  # Research Analyst - Web & GitHub insights
+  gemini:
+    id: "gemini"
+    role: "research_analyst"
+    description: "Web research, GitHub insights, community trends"
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    model: "gemini-2.0-flash"
+    trust_weight: 0.20
+    active: true
+    capabilities:
+      - web_research
+      - github_analysis
+      - trend_detection
+      - documentation_review
+    rate_limit:
+      requests_per_minute: 30
+      
+  # Deployment Architect - CI/CD & Infrastructure
+  claude:
+    id: "claude"
+    role: "deploy_architect"
+    description: "CI/CD pipelines, Docker, YAML configurations, infrastructure"
+    endpoint: "https://api.anthropic.com/v1/messages"
+    model: "claude-sonnet-4-20250514"
+    trust_weight: 0.20
+    active: true
+    capabilities:
+      - cicd_design
+      - dockerfile_creation
+      - yaml_generation
+      - infrastructure_setup
+      - deployment_automation
+    rate_limit:
+      requests_per_minute: 50
+      
+  # Performance Analyst - Code analysis & metrics
+  deepseek:
+    id: "deepseek"
+    role: "performance_analyst"
+    description: "Code analysis, performance metrics, optimization suggestions"
+    endpoint: "https://api.deepseek.com/v1/chat/completions"
+    model: "deepseek-coder"
+    trust_weight: 0.15
+    active: true
+    capabilities:
+      - code_review
+      - performance_analysis
+      - latency_measurement
+      - optimization_suggestions
+    rate_limit:
+      requests_per_minute: 40
+
+# Supervisor Configuration
+supervisor:
+  trust_threshold: 0.70
+  cohesion_threshold: 0.60
+  cost_efficiency_threshold: 0.50
+  memory_db: "telemetry/memory_store.sqlite"
+  telemetry_endpoint: "/api/telemetry"
+  policy_file: "config/policy_rules.rego"
+  max_retry_attempts: 3
+  cooldown_minutes: 5
+
+# Executor Configuration
+executor:
+  platform: "github_mcp"
+  trigger_method: "webhook"
+  repository: "selfarchitectai-design/archon-frontend"
+  workflow_file: ".github/workflows/archon_build.yml"
+  runner: "ubuntu-latest"
+  docker_build: true
+  auto_retry: true
+  telemetry_endpoint: "https://www.selfarchitectai.com/api/archon/telemetry"
+
+# Trigger Configuration
+trigger:
+  type: "webhook"
+  dispatcher: "trigger/webhook_dispatch.py"
+  github_dispatch_url: "https://api.github.com/repos/selfarchitectai-design/archon-deploy-bridge/actions/workflows/vercel-deploy.yml/dispatches"
+  event_type: "archon_build_trigger"
+  cooldown_seconds: 300
+
+# Telemetry Configuration
+telemetry:
+  storage: "telemetry/memory_store.sqlite"
+  collector: "telemetry/telemetry_collector.py"
+  metrics:
+    - build_status
+    - latency_ms
+    - token_usage
+    - ai_trust_score
+    - cost_usd
+    - error_count
+  reporting_cycle: "on_build_complete"
+  retention_days: 90
+
+# Production Line Configuration
+production_line:
+  enabled: true
+  controller: "production_line/line_controller.py"
+  blueprint: "production_line/product_blueprint.json"
+  retry_policy:
+    max_attempts: 3
+    delay_seconds: 60
+    backoff_multiplier: 2.0
+  success_threshold: 3  # Generate summary after N successful builds
+  auto_deploy: true
+
+# Learning & Optimization
+learning:
+  enabled: true
+  memory_db: "telemetry/memory_store.sqlite"
+  vector_db: "telemetry/chroma_index"
+  optimization_schedule: "weekly"
+  weight_adjustment_factor: 0.05
+  min_samples_for_adjustment: 10
+
+# Security & Policy
+security:
+  policy_engine: "OPA"
+  policy_file: "config/policy_rules.rego"
+  secrets_source: "AWS_SECRETS_MANAGER"
+  secrets_prefix: "archon/"
+  required_trust_for_deploy: 0.70
+  audit_logging: true

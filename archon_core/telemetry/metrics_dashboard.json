@@ -1,0 +1,67 @@
+{
+  "dashboard": {
+    "title": "ARCHON Telemetry Dashboard",
+    "version": "2.5.1",
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Build Success Rate",
+        "type": "gauge",
+        "query": "SELECT (successful_builds * 100.0 / total_builds) FROM daily_metrics ORDER BY date DESC LIMIT 1",
+        "thresholds": [50, 80],
+        "colors": ["red", "yellow", "green"]
+      },
+      {
+        "id": 2,
+        "title": "Build Latency Trend",
+        "type": "graph",
+        "query": "SELECT date, avg_latency_ms FROM daily_metrics ORDER BY date DESC LIMIT 30"
+      },
+      {
+        "id": 3,
+        "title": "Daily Build Count",
+        "type": "bar",
+        "query": "SELECT date, total_builds, successful_builds, failed_builds FROM daily_metrics ORDER BY date DESC LIMIT 14"
+      },
+      {
+        "id": 4,
+        "title": "Cumulative Costs",
+        "type": "graph",
+        "query": "SELECT date, SUM(total_cost_usd) OVER (ORDER BY date) as cumulative_cost FROM daily_metrics"
+      },
+      {
+        "id": 5,
+        "title": "Error Distribution",
+        "type": "pie",
+        "query": "SELECT build_status, COUNT(*) FROM telemetry GROUP BY build_status"
+      },
+      {
+        "id": 6,
+        "title": "AI Trust Scores",
+        "type": "table",
+        "query": "SELECT ai_id, weight, updated_at FROM ai_weights ORDER BY weight DESC"
+      }
+    ]
+  },
+  "alerts": [
+    {
+      "name": "Low Success Rate",
+      "condition": "success_rate < 0.7",
+      "severity": "warning",
+      "notification": "dashboard"
+    },
+    {
+      "name": "High Latency",
+      "condition": "avg_latency_ms > 300000",
+      "severity": "warning",
+      "notification": "dashboard"
+    },
+    {
+      "name": "Build Failure Spike",
+      "condition": "consecutive_failures >= 3",
+      "severity": "critical",
+      "notification": "slack"
+    }
+  ]
+}

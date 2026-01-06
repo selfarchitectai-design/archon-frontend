@@ -1,0 +1,23 @@
+{
+  "id": "deepseek",
+  "name": "DeepSeek Performance Analyst",
+  "version": "1.0",
+  "role": "performance_analyst",
+  "description": "Code analysis, performance metrics, optimization suggestions",
+  "model": {
+    "provider": "deepseek",
+    "model_id": "deepseek-coder",
+    "endpoint": "https://api.deepseek.com/v1/chat/completions",
+    "max_tokens": 8192,
+    "temperature": 0.3
+  },
+  "trust": {
+    "base_weight": 0.15,
+    "current_weight": 0.15,
+    "min_weight": 0.05,
+    "max_weight": 0.30
+  },
+  "capabilities": ["code_review", "performance_analysis", "latency_measurement", "optimization_suggestions"],
+  "rate_limits": {"requests_per_minute": 40, "tokens_per_minute": 80000, "daily_budget_usd": 2.0},
+  "active": true
+}
