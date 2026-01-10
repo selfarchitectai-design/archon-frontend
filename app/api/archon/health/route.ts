@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 
-// Real system status - always operational
-const SYSTEM_STATUS = {
+const N8N_BASE = 'https://n8n.selfarchitectai.com/webhook'
+
+// Fallback data when N8N is unavailable
+const FALLBACK_HEALTH = {
   status: 'healthy',
   health: 100,
   timestamp: new Date().toISOString(),
@@ -16,37 +18,38 @@ const SYSTEM_STATUS = {
     github: { status: 'connected', webhooks: 2 }
   },
   metrics: { uptime: 99.99, avgLatency: 112, errorRate: 0.1 },
-  version: 'V3.6',
-  source: 'vercel-api'
+  version: 'V3.6'
 }
 
 export async function GET() {
-  // Return healthy status - N8N check is optional
-  const response = {
-    ...SYSTEM_STATUS,
-    timestamp: new Date().toISOString()
-  }
-  
-  // Try N8N but don't fail if unavailable
+  // Try N8N first
   try {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 2000)
+    const timeout = setTimeout(() => controller.abort(), 3000)
     
-    const res = await fetch('https://n8n.selfarchitectai.com/webhook/archon/health', {
+    const res = await fetch(`${N8N_BASE}/archon/health`, {
       cache: 'no-store',
-      signal: controller.signal
+      signal: controller.signal,
+      headers: { 'Content-Type': 'application/json' }
     })
+    
     clearTimeout(timeout)
     
     if (res.ok) {
       const data = await res.json()
-      if (data.status === 'healthy') {
-        return NextResponse.json(data)
+      // Check for N8N error response
+      if (data.code !== 0 && !data.message?.includes('problem')) {
+        return NextResponse.json({ ...data, source: 'n8n' })
       }
     }
   } catch {
-    // N8N unavailable, use local status
+    // N8N unavailable, use fallback
   }
   
-  return NextResponse.json(response)
+  // Return fallback with current timestamp
+  return NextResponse.json({
+    ...FALLBACK_HEALTH,
+    timestamp: new Date().toISOString(),
+    source: 'fallback'
+  })
 }
