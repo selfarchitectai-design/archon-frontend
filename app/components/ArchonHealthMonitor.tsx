@@ -1,5 +1,3 @@
-// ARCHON HealthMonitor - Cache-busting deployment trigger
-// Last updated: 2026-01-11T22:00:00Z
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
@@ -13,9 +11,10 @@ import {
   Server,
   Database,
   Cloud,
-  Wifi
+  Wifi,
+  Loader2
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface HealthResponse {
   status: string
@@ -32,18 +31,25 @@ interface HealthResponse {
 }
 
 async function fetchHealth(): Promise<HealthResponse> {
-  const res = await fetch('/api/archon/health')
+  const res = await fetch('/api/archon/health', { cache: 'no-store' })
   if (!res.ok) throw new Error('Health fetch failed')
   return res.json()
 }
 
 export function ArchonHealthMonitor() {
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  
+  // Only run on client
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['health-monitor'],
     queryFn: fetchHealth,
     refetchInterval: 30000,
+    enabled: mounted, // Only fetch when mounted on client
   })
 
   const handleRefresh = async () => {
@@ -52,10 +58,14 @@ export function ArchonHealthMonitor() {
     setTimeout(() => setIsRefreshing(false), 1000)
   }
 
-  const status = data?.status || 'unknown'
+  // Show loading state during SSR and initial load
+  const showLoading = !mounted || isLoading || !data
+
+  const status = data?.status || 'loading'
   const successRate = data?.executions?.rate ?? data?.executions?.success_rate ?? 0
 
   const getStatusIcon = () => {
+    if (showLoading) return <Loader2 className="w-8 h-8 text-archon-accent animate-spin" />
     switch (status?.toLowerCase()) {
       case 'healthy': return <CheckCircle2 className="w-8 h-8 text-archon-success" />
       case 'critical': return <XCircle className="w-8 h-8 text-archon-danger" />
@@ -65,6 +75,7 @@ export function ArchonHealthMonitor() {
   }
 
   const getStatusBg = () => {
+    if (showLoading) return 'bg-archon-panel border-white/10'
     switch (status?.toLowerCase()) {
       case 'healthy': return 'bg-archon-success/10 border-archon-success/30'
       case 'critical': return 'bg-archon-danger/10 border-archon-danger/30'
@@ -73,12 +84,33 @@ export function ArchonHealthMonitor() {
     }
   }
 
+  // Service status - show loading when no data
+  const getServiceStatus = (checkFn: () => boolean) => {
+    if (showLoading) return null // null = loading
+    return checkFn()
+  }
+
   const services = [
-    { name: 'N8N Workflows', icon: Server, status: (data?.workflows?.active ?? 0) > 0 },
-    { name: 'Lambda Functions', icon: Cloud, status: (data?.lambdas?.count ?? 0) > 0 || data?.lambdas?.status === 'online' },
-    { name: 'MCP Server', icon: Database, status: data?.status === 'healthy' },
-    { name: 'API Gateway', icon: Wifi, status: data?.status === 'healthy' },
+    { name: 'N8N Workflows', icon: Server, status: getServiceStatus(() => (data?.workflows?.active ?? 0) > 0) },
+    { name: 'Lambda Functions', icon: Cloud, status: getServiceStatus(() => (data?.lambdas?.count ?? 0) > 0 || data?.lambdas?.status === 'online') },
+    { name: 'MCP Server', icon: Database, status: getServiceStatus(() => data?.status === 'healthy') },
+    { name: 'API Gateway', icon: Wifi, status: getServiceStatus(() => data?.status === 'healthy') },
   ]
+
+  const getServiceStatusDisplay = (status: boolean | null) => {
+    if (status === null) {
+      return {
+        dotClass: 'status-dot bg-archon-accent animate-pulse',
+        text: 'CHECKING...',
+        textClass: 'text-archon-accent'
+      }
+    }
+    return {
+      dotClass: status ? 'status-dot status-healthy' : 'status-dot status-critical',
+      text: status ? 'ONLINE' : 'OFFLINE',
+      textClass: status ? 'text-archon-success' : 'text-archon-danger'
+    }
+  }
 
   return (
     <motion.div
@@ -101,8 +133,8 @@ export function ArchonHealthMonitor() {
         
         <button
           onClick={handleRefresh}
-          disabled={isRefreshing}
-          className="p-2 rounded-lg bg-archon-panel hover:bg-archon-panel-light transition-colors"
+          disabled={isRefreshing || showLoading}
+          className="p-2 rounded-lg bg-archon-panel hover:bg-archon-panel-light transition-colors disabled:opacity-50"
         >
           <RefreshCw className={`w-5 h-5 text-archon-accent ${isRefreshing ? 'animate-spin' : ''}`} />
         </button>
@@ -115,7 +147,7 @@ export function ArchonHealthMonitor() {
             {getStatusIcon()}
             <div>
               <p className="text-2xl font-bold font-display uppercase">
-                {isLoading ? 'Loading...' : status}
+                {showLoading ? 'Connecting...' : status}
               </p>
               <p className="text-sm text-archon-text-dim">
                 Overall system health
@@ -143,14 +175,16 @@ export function ArchonHealthMonitor() {
                 strokeWidth="6"
                 fill="none"
                 strokeLinecap="round"
-                className={successRate >= 90 ? 'text-archon-success' : successRate >= 70 ? 'text-archon-warning' : 'text-archon-danger'}
+                className={showLoading ? 'text-archon-accent' : successRate >= 90 ? 'text-archon-success' : successRate >= 70 ? 'text-archon-warning' : 'text-archon-danger'}
                 initial={{ strokeDasharray: '0 220' }}
-                animate={{ strokeDasharray: `${(successRate / 100) * 220} 220` }}
+                animate={{ strokeDasharray: showLoading ? '55 220' : `${(successRate / 100) * 220} 220` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-lg font-bold font-mono">{Math.round(successRate)}%</span>
+              <span className="text-lg font-bold font-mono">
+                {showLoading ? '...' : `${Math.round(successRate)}%`}
+              </span>
             </div>
           </div>
         </div>
@@ -162,45 +196,48 @@ export function ArchonHealthMonitor() {
           Service Status
         </h3>
         
-        {services.map((service, index) => (
-          <motion.div
-            key={service.name}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="flex items-center justify-between p-3 rounded-lg bg-archon-panel/50 border border-white/5"
-          >
-            <div className="flex items-center gap-3">
-              <service.icon className="w-5 h-5 text-archon-accent" />
-              <span className="text-sm">{service.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`status-dot ${service.status ? 'status-healthy' : 'status-critical'}`} />
-              <span className={`text-xs font-mono ${service.status ? 'text-archon-success' : 'text-archon-danger'}`}>
-                {service.status ? 'ONLINE' : 'OFFLINE'}
-              </span>
-            </div>
-          </motion.div>
-        ))}
+        {services.map((service, index) => {
+          const statusDisplay = getServiceStatusDisplay(service.status)
+          return (
+            <motion.div
+              key={service.name}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="flex items-center justify-between p-3 rounded-lg bg-archon-panel/50 border border-white/5"
+            >
+              <div className="flex items-center gap-3">
+                <service.icon className="w-5 h-5 text-archon-accent" />
+                <span className="text-sm">{service.name}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={statusDisplay.dotClass} />
+                <span className={`text-xs font-mono ${statusDisplay.textClass}`}>
+                  {statusDisplay.text}
+                </span>
+              </div>
+            </motion.div>
+          )
+        })}
       </div>
 
       {/* Metrics */}
       <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/5">
         <div className="text-center">
           <p className="text-2xl font-bold font-mono text-archon-accent">
-            {data?.workflows?.active || 8}
+            {showLoading ? '...' : (data?.workflows?.active || 0)}
           </p>
           <p className="text-xs text-archon-text-dim">Active Workflows</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold font-mono text-archon-success">
-            {data?.executions?.total || 0}
+            {showLoading ? '...' : (data?.executions?.total || 0)}
           </p>
           <p className="text-xs text-archon-text-dim">Total Executions</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold font-mono text-archon-danger">
-            {data?.executions?.errors ?? data?.executions?.error ?? 0}
+            {showLoading ? '...' : (data?.executions?.errors ?? data?.executions?.error ?? 0)}
           </p>
           <p className="text-xs text-archon-text-dim">Errors (24h)</p>
         </div>
