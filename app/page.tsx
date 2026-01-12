@@ -20,6 +20,7 @@ import { MCPToolsPanel } from './components/MCPToolsPanel'
 import { VerifyPanel } from './components/VerifyPanel'
 import { TrustAnalyzer } from './components/TrustAnalyzer'
 import { ObservationPanel } from './components/ObservationPanel'
+import TelemetryDashboard from './components/TelemetryDashboard'
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -47,7 +48,7 @@ export default function DashboardPage() {
               <div>
                 <h1 className="text-2xl font-bold font-display">
                   <span className="gradient-text">ARCHON</span>
-                  <span className="text-archon-text-dim text-lg ml-2">V3.6</span>
+                  <span className="text-archon-text-dim text-lg ml-2">V7.0</span>
                 </h1>
                 <p className="text-sm text-archon-text-dim">Enterprise AI Command Center</p>
               </div>
@@ -55,12 +56,8 @@ export default function DashboardPage() {
 
             {/* Status & Actions */}
             <div className="flex items-center gap-4">
-              {/* Live Status */}
-              <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl glass border border-white/5">
-                <span className="status-dot status-healthy" />
-                <span className="text-sm text-archon-text-dim">System</span>
-                <span className="text-sm font-medium text-archon-success">OPERATIONAL</span>
-              </div>
+              {/* Live Telemetry Compact */}
+              <TelemetryDashboard showFullDashboard={false} className="hidden lg:flex" />
 
               {/* External Links */}
               <a
@@ -94,6 +91,11 @@ export default function DashboardPage() {
           <ArchonHealthMonitor />
         </div>
 
+        {/* V7 Telemetry Dashboard - Full View */}
+        <div className="mb-6">
+          <TelemetryDashboard showFullDashboard={true} />
+        </div>
+
         {/* Trust Analyzer - Featured Section */}
         <div className="mb-6">
           <TrustAnalyzer />
@@ -122,18 +124,18 @@ export default function DashboardPage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <span className="text-sm text-archon-text-dim">
-                ARCHON V3.6 © 2026 SelfArchitectAI
+                ARCHON V7.0 © 2026 SelfArchitectAI
               </span>
               <span className="w-1 h-1 rounded-full bg-archon-text-dim" />
               <span className="text-sm text-archon-text-dim">
-                GPT-5 Integration Ready
+                GPT-5 + Claude Integration
               </span>
             </div>
             
             <div className="flex items-center gap-6 text-sm text-archon-text-dim">
-              <span className="font-mono">/archon/health</span>
-              <span className="font-mono">/dashboard-api</span>
-              <span className="font-mono">/api/archon/trust</span>
+              <span className="font-mono">/api/telemetry</span>
+              <span className="font-mono">/api/telemetry/stream</span>
+              <span className="font-mono">/api/archon/health</span>
               <span className="font-mono">/webhook/mcp</span>
             </div>
           </div>
