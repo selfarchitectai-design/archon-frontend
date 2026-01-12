@@ -1,100 +1,73 @@
-import { NextRequest } from 'next/server';
+// ARCHON V7 Telemetry SSE Stream
+// Force dynamic rendering to avoid static generation timeout
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
-// ARCHON V7 Telemetry Stream (Server-Sent Events)
-// Real-time telemetry updates every 2 seconds
-
-// Telemetry state
-let telemetryState = {
-  trust_delta: 0.88,
-  latency_p95: 950,
-  drift_level: 0.17,
-  system_health: 100,
-  active_workflows: 22,
-  lambda_count: 14,
-  success_rate: 100.0,
-  reflection_depth: 3,
-  ethics_score: 0.95,
-  memory_utilization: 0.42,
-  timestamp: new Date().toISOString()
-};
-
-function simulateDrift() {
-  telemetryState.trust_delta = Math.round(
-    Math.max(0.7, Math.min(1.0, telemetryState.trust_delta + (Math.random() - 0.5) * 0.04)) * 1000
-  ) / 1000;
-  
-  telemetryState.latency_p95 = Math.max(
-    800, Math.min(1200, telemetryState.latency_p95 + Math.floor((Math.random() - 0.5) * 40))
-  );
-  
-  telemetryState.drift_level = Math.round(
-    Math.max(0.1, Math.min(0.4, telemetryState.drift_level + (Math.random() - 0.5) * 0.02)) * 1000
-  ) / 1000;
-  
-  telemetryState.ethics_score = Math.round(
-    Math.max(0.85, Math.min(1.0, telemetryState.ethics_score + (Math.random() - 0.5) * 0.02)) * 1000
-  ) / 1000;
-  
-  telemetryState.memory_utilization = Math.round(
-    Math.max(0.3, Math.min(0.7, telemetryState.memory_utilization + (Math.random() - 0.5) * 0.04)) * 1000
-  ) / 1000;
-  
-  telemetryState.timestamp = new Date().toISOString();
-  
-  return {
-    ...telemetryState,
-    glow_intensity: Math.round((0.3 + 0.7 * telemetryState.trust_delta) * 1000) / 1000,
-    trust_zone: telemetryState.trust_delta > 0.85 ? 'GREEN' : 
-                telemetryState.trust_delta > 0.7 ? 'YELLOW' : 'RED'
-  };
-}
-
-export async function GET(request: NextRequest) {
+export async function GET() {
   const encoder = new TextEncoder();
   
   const stream = new ReadableStream({
     async start(controller) {
+      const sendMetrics = async () => {
+        try {
+          // Fetch from main telemetry endpoint or generate
+          let metrics;
+          try {
+            const response = await fetch('https://n8n.selfarchitectai.com/webhook/archon/telemetry', {
+              cache: 'no-store'
+            });
+            if (response.ok) {
+              metrics = await response.json();
+            }
+          } catch {
+            // Generate simulated metrics
+            metrics = {
+              trust_delta: 0.85 + Math.random() * 0.1,
+              latency_p95: 800 + Math.random() * 200,
+              drift_level: 0.08 + Math.random() * 0.05,
+              system_health: 98 + Math.random() * 2,
+              active_workflows: 24,
+              lambda_count: 14,
+              ethics_score: 0.94 + Math.random() * 0.04,
+              memory_utilization: 0.4 + Math.random() * 0.1,
+              glow_intensity: 0.85 + Math.random() * 0.1,
+              trust_zone: 'GREEN',
+              timestamp: new Date().toISOString()
+            };
+          }
+          
+          const data = `data: ${JSON.stringify(metrics)}
+
+`;
+          controller.enqueue(encoder.encode(data));
+        } catch (error) {
+          console.error('SSE error:', error);
+        }
+      };
+
       // Send initial data
-      const initialData = simulateDrift();
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialData)}\n\n`));
+      await sendMetrics();
       
-      // Keep sending updates
+      // Send updates every 2 seconds for 60 seconds max
       let count = 0;
-      const maxUpdates = 300; // ~10 minutes of updates
-      
-      const intervalId = setInterval(() => {
+      const interval = setInterval(async () => {
         count++;
-        
-        if (count >= maxUpdates) {
-          clearInterval(intervalId);
+        if (count >= 30) {
+          clearInterval(interval);
           controller.close();
           return;
         }
-        
-        try {
-          const data = simulateDrift();
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
-        } catch (error) {
-          clearInterval(intervalId);
-          controller.close();
-        }
+        await sendMetrics();
       }, 2000);
-      
-      // Clean up on client disconnect
-      request.signal.addEventListener('abort', () => {
-        clearInterval(intervalId);
-        controller.close();
-      });
     }
   });
-  
+
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-      'X-Accel-Buffering': 'no',
-    },
+      'Access-Control-Allow-Origin': '*'
+    }
   });
 }
