@@ -1,125 +1,76 @@
-import { NextRequest, NextResponse } from 'next/server';
-
 // ARCHON V7 Telemetry API Route
-// Proxies requests to the FastAPI telemetry service
+// Force dynamic rendering to avoid static generation timeout
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
-const N8N_BASE_URL = process.env.N8N_BASE_URL || 'https://n8n.selfarchitectai.com';
+interface TelemetryData {
+  trust_delta: number;
+  latency_p95: number;
+  drift_level: number;
+  system_health: number;
+  active_workflows: number;
+  lambda_count: number;
+  ethics_score: number;
+  memory_utilization: number;
+  glow_intensity: number;
+  trust_zone: string;
+  timestamp: string;
+}
 
-// Telemetry state (for fallback when external service unavailable)
-let telemetryState = {
+let currentMetrics: TelemetryData = {
   trust_delta: 0.88,
   latency_p95: 950,
-  drift_level: 0.17,
+  drift_level: 0.12,
   system_health: 100,
-  active_workflows: 22,
+  active_workflows: 24,
   lambda_count: 14,
-  success_rate: 100.0,
-  reflection_depth: 3,
   ethics_score: 0.95,
-  memory_utilization: 0.42,
-  glow_intensity: 0.5,
+  memory_utilization: 0.45,
+  glow_intensity: 0.88,
   trust_zone: 'GREEN',
   timestamp: new Date().toISOString()
 };
 
-// Simulate realistic metric drift
-function simulateDrift() {
-  telemetryState.trust_delta = Math.round(
-    Math.max(0.7, Math.min(1.0, telemetryState.trust_delta + (Math.random() - 0.5) * 0.04)) * 1000
-  ) / 1000;
-  
-  telemetryState.latency_p95 = Math.max(
-    800, Math.min(1200, telemetryState.latency_p95 + Math.floor((Math.random() - 0.5) * 40))
-  );
-  
-  telemetryState.drift_level = Math.round(
-    Math.max(0.1, Math.min(0.4, telemetryState.drift_level + (Math.random() - 0.5) * 0.02)) * 1000
-  ) / 1000;
-  
-  telemetryState.ethics_score = Math.round(
-    Math.max(0.85, Math.min(1.0, telemetryState.ethics_score + (Math.random() - 0.5) * 0.02)) * 1000
-  ) / 1000;
-  
-  telemetryState.memory_utilization = Math.round(
-    Math.max(0.3, Math.min(0.7, telemetryState.memory_utilization + (Math.random() - 0.5) * 0.04)) * 1000
-  ) / 1000;
-  
-  telemetryState.glow_intensity = Math.round((0.3 + 0.7 * telemetryState.trust_delta) * 1000) / 1000;
-  
-  telemetryState.trust_zone = 
-    telemetryState.trust_delta > 0.85 ? 'GREEN' : 
-    telemetryState.trust_delta > 0.7 ? 'YELLOW' : 'RED';
-  
-  telemetryState.timestamp = new Date().toISOString();
-}
-
-export async function GET(request: NextRequest) {
+export async function GET() {
+  // Try to fetch from N8N
   try {
-    // Try to fetch from N8N first
-    const n8nResponse = await fetch(`${N8N_BASE_URL}/webhook/archon/status`, {
+    const n8nResponse = await fetch('https://n8n.selfarchitectai.com/webhook/archon/telemetry', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      next: { revalidate: 2 } // Cache for 2 seconds
+      cache: 'no-store'
     });
-
+    
     if (n8nResponse.ok) {
-      const n8nData = await n8nResponse.json();
-      
-      // Merge with local state
-      return NextResponse.json({
-        ...telemetryState,
-        system_health: n8nData.health || 100,
-        active_workflows: n8nData.workflows?.active || 22,
-        n8n_status: n8nData.status,
-        source: 'n8n'
-      });
+      const data = await n8nResponse.json();
+      currentMetrics = { ...currentMetrics, ...data, timestamp: new Date().toISOString() };
     }
-  } catch (error) {
-    console.log('N8N fetch failed, using local simulation');
+  } catch (e) {
+    // Use simulated metrics with slight drift
+    currentMetrics.trust_delta = Math.min(1, Math.max(0.7, currentMetrics.trust_delta + (Math.random() - 0.5) * 0.02));
+    currentMetrics.drift_level = Math.min(0.4, Math.max(0.05, currentMetrics.drift_level + (Math.random() - 0.5) * 0.01));
+    currentMetrics.glow_intensity = currentMetrics.trust_delta;
+    currentMetrics.timestamp = new Date().toISOString();
   }
 
-  // Fallback: simulate drift and return local state
-  simulateDrift();
-  
-  return NextResponse.json({
-    ...telemetryState,
-    source: 'simulation'
-  });
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const data = await request.json();
-    
-    // Update telemetry state
-    if (data.trust_delta !== undefined) telemetryState.trust_delta = data.trust_delta;
-    if (data.latency_p95 !== undefined) telemetryState.latency_p95 = data.latency_p95;
-    if (data.drift_level !== undefined) telemetryState.drift_level = data.drift_level;
-    if (data.system_health !== undefined) telemetryState.system_health = data.system_health;
-    if (data.ethics_score !== undefined) telemetryState.ethics_score = data.ethics_score;
-    
-    telemetryState.timestamp = new Date().toISOString();
-    
-    return NextResponse.json({
-      updated: true,
-      state: telemetryState
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to update telemetry' },
-      { status: 400 }
-    );
-  }
-}
-
-// CORS headers
-export async function OPTIONS() {
-  return new NextResponse(null, {
+  return new Response(JSON.stringify(currentMetrics), {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Access-Control-Allow-Origin': '*'
+    }
   });
+}
+
+export async function POST(request: Request) {
+  try {
+    const data = await request.json();
+    currentMetrics = { ...currentMetrics, ...data, timestamp: new Date().toISOString() };
+    return new Response(JSON.stringify({ success: true, metrics: currentMetrics }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'Invalid request' }), { status: 400 });
+  }
 }
